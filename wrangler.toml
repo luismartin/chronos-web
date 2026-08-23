@@ -1,6 +1,7 @@
 name = "chronos-web"
 compatibility_date = "2026-08-14"
 main = "src/index.js"
+workers_dev = true
 
 [assets]
 directory = "./docs"
