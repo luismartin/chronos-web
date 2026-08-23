@@ -5,3 +5,6 @@ main = "src/index.js"
 [assets]
 directory = "./docs"
 binding = "ASSETS"
+
+[observability]
+enabled = false
