@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chronos — Shared alarm</title>
+<meta name="description" content="Someone shared a Chronos alarm with you. Open it in the app, or get Chronos for Android.">
+<!-- Not a page anyone should land on from a search result: it is only ever
+     meaningful with a payload in the fragment, and that fragment is never
+     visible to a crawler. -->
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b0912">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<meta property="og:site_name" content="Chronos">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://chronosintelligentalarm.com/a">
+<meta property="og:title" content="Chronos — Shared alarm">
+<meta property="og:description" content="Someone shared a Chronos alarm with you. Open it in the app, or get Chronos for Android.">
+<meta property="og:image" content="https://chronosintelligentalarm.com/assets/social-preview.png">
+<meta property="og:image:secure_url" content="https://chronosintelligentalarm.com/assets/social-preview.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chronos — Shared alarm">
+<meta name="twitter:description" content="Someone shared a Chronos alarm with you. Open it in the app, or get Chronos for Android.">
+<meta name="twitter:image" content="https://chronosintelligentalarm.com/assets/social-preview.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0912;
+    --card: #191426;
+    --border: #2b2340;
+    --text: #f4f1fb;
+    --muted: #a89ec3;
+    --accent: #8b6cf0;
+    --accent-light: #c3b3fb;
+    --warm: #ffb457;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+    margin: 0; color: var(--text); line-height: 1.6; background: var(--bg);
+    min-height: 100vh; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 0 22px 56px; }
+  header {
+    padding: 16px 0; display: flex; justify-content: space-between; align-items: center;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 1.15em; color: inherit; text-decoration: none;
+  }
+  .brand img {
+    width: 34px; height: 34px; border-radius: 50%; display: block;
+    box-shadow: 0 0 0 1px rgba(139, 108, 240, 0.5), 0 0 18px rgba(139, 108, 240, 0.45);
+  }
+  .brand .dot { color: var(--warm); }
+  .lang-switch { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 9px; padding: 3px; }
+  .lang-switch button {
+    background: none; border: none; color: var(--muted);
+    border-radius: 6px; padding: 4px 12px; cursor: pointer; font-size: 0.83em; font-weight: 600;
+    font-family: inherit;
+  }
+  .lang-switch button.active { background: var(--accent); color: #0b0912; }
+
+  .intro { text-align: center; padding: 28px 0 22px; }
+  .intro h1 { font-size: 1.5em; margin: 0 0 8px; font-weight: 800; }
+  .intro p { color: var(--muted); margin: 0; font-size: 0.98em; }
+
+  .alarm-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+    padding: 26px 24px; text-align: center;
+    background-image: radial-gradient(420px 220px at 50% 0%, rgba(139, 108, 240, 0.18), transparent 70%);
+  }
+  .alarm-icon { font-size: 2em; line-height: 1; margin-bottom: 6px; }
+  .alarm-time { font-size: 3.4em; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; }
+  .alarm-time .suffix { font-size: 0.32em; font-weight: 700; color: var(--muted); margin-left: 6px; }
+  .alarm-name { font-size: 1.15em; font-weight: 600; margin-top: 8px; word-break: break-word; }
+  .alarm-desc { color: var(--muted); font-size: 0.95em; margin-top: 2px; word-break: break-word; }
+  /* Seven chips, one row, on a 360px phone too: they share the width instead
+     of wrapping a lone "Sun" onto a second line. */
+  .days { display: flex; gap: 5px; justify-content: center; margin-top: 16px; }
+  .day {
+    flex: 1 1 0; min-width: 0; padding: 4px 3px; border-radius: 999px;
+    font-size: 0.75em; font-weight: 600; overflow: hidden;
+    background: rgba(139, 108, 240, 0.14); border: 1px solid var(--border); color: var(--muted);
+  }
+  .day.on { background: var(--accent); border-color: var(--accent); color: #0b0912; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 18px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px; font-size: 0.84em;
+    background: rgba(139, 108, 240, 0.12); border: 1px solid var(--border); color: var(--accent-light);
+  }
+
+  .note {
+    margin-top: 18px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 18px 20px;
+  }
+  .note h2 { font-size: 0.95em; margin: 0 0 8px; font-weight: 700; }
+  .note ul { margin: 0; padding-left: 20px; color: var(--muted); font-size: 0.92em; }
+  .note li { margin-bottom: 3px; }
+
+  .cta { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px 22px; border-radius: 14px; font-weight: 700; font-size: 1em;
+    text-decoration: none; border: 1px solid var(--border);
+  }
+  .btn-primary { background: var(--accent); color: #0b0912; border-color: var(--accent); }
+  .btn-secondary { background: var(--card); color: var(--text); }
+  .cta-hint { text-align: center; color: var(--muted); font-size: 0.86em; margin: 2px 0 0; }
+
+  .privacy {
+    margin-top: 26px; text-align: center; color: var(--muted); font-size: 0.82em;
+    border-top: 1px solid var(--border); padding-top: 18px;
+  }
+  .privacy a { color: var(--accent-light); }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <a class="brand" href="/">
+      <img src="../assets/logo.png" alt="Chronos logo">
+      <span>Chronos<span class="dot">.</span></span>
+    </a>
+    <div class="lang-switch">
+      <button id="btn-en" type="button">EN</button>
+      <button id="btn-es" type="button">ES</button>
+    </div>
+  </header>
+
+  <main id="root"></main>
+</div>
+
+<script>
+/* Shared-alarm landing (see the app repo, docs/specs/alarm-sharing-deeplink.md).
+ *
+ * The payload lives in the URL fragment, so it NEVER reaches GitHub Pages'
+ * logs — this page decodes it here, in the browser. Do not "improve" this by
+ * moving the payload to a query string or by sending it anywhere: the promise
+ * that a shared alarm's name and configuration stay between the two phones is
+ * the whole reason the fragment was chosen (spec §2.1, §2.10).
+ *
+ * The payload is HOSTILE INPUT — anyone can craft a link. Everything below
+ * mirrors the app's codec: a length cap before decoding, no exceptions
+ * escaping, unknown keys ignored. Every value that comes out of it reaches the
+ * DOM through textContent, never innerHTML.
+ */
+(function () {
+  'use strict';
+
+  var PACKAGE = 'com.chronos.smartalarm';
+  // The custom scheme the app also accepts (spec §2.1). It is what makes the
+  // "Open in Chronos" button work even when App Link verification failed and
+  // the tap landed in the browser instead of the app.
+  var APP_SCHEME_URL = 'com.chronos.smartalarm://alarm#';
+  var STORE_URL = 'https://play.google.com/store/apps/details?id=' + PACKAGE;
+  // Flip to true the day the Play listing is public. Until then the page says
+  // "coming soon", exactly like the home page, instead of sending people to a
+  // store URL that 404s.
+  var STORE_LIVE = false;
+  var MAX_PAYLOAD_CHARS = 3000; // AlarmShareCodec.maxPayloadChars
+
+  var VERSION = 1;
+  var lang = 'en';
+  var root = document.getElementById('root');
+
+  var T = {
+    en: {
+      title: 'Someone shared an alarm with you',
+      subtitle: 'Open it in Chronos to add it. Nothing is added until you confirm in the app.',
+      invalidTitle: 'This alarm link is not valid',
+      invalidBody: 'The link may have been cut short by the app it was sent through. Ask for it again, and make sure the whole link is copied — including everything after the # sign.',
+      outdatedTitle: 'This link needs a newer Chronos',
+      outdatedBody: 'It was created with a newer version of the app. Update Chronos and open the link again.',
+      emptyTitle: 'Nothing to see here',
+      emptyBody: 'This page shows an alarm someone shared with you. Open the link they sent you to see it.',
+      open: 'Open in Chronos',
+      get: 'Get Chronos on Google Play',
+      soon: 'Coming soon to Google Play',
+      home: 'Visit chronosintelligentalarm.com',
+      hint: 'Already have Chronos? The button opens it straight into the alarm.',
+      caveats: 'Worth knowing',
+      privacy: 'This alarm was decoded in your browser. The part of the link after the # is never sent to our server — nobody but you and whoever sent it has seen it.',
+      days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      everyDay: 'Every day',
+      onceOnly: 'One time only',
+      yearly: 'Every year',
+      monthly: 'Every month',
+      noRepeat: "Doesn't repeat",
+      inactive: 'Arrives switched off',
+      smart: 'Skips holidays',
+      gentle: 'Gentle Wake',
+      gentleLead: function (n) { return 'Gentle Wake ' + n + ' min before'; },
+      briefing: 'Spoken briefing',
+      sleep: 'Sleep planning',
+      wakeCheck: function (n) { return 'Wake check after ' + n + ' min'; },
+      snooze: function (n) { return n + ' min snooze'; },
+      maxSnoozes: function (n) { return 'Max ' + n + ' snoozes'; },
+      background: 'Wallpaper',
+      solar: {
+        sunrise: 'Rings at sunrise',
+        sunset: 'Rings at sunset',
+        civilDawn: 'Rings at first light'
+      },
+      dismiss: {
+        math: 'Dismiss: solve a maths problem',
+        retype: 'Dismiss: retype a number',
+        pattern: 'Dismiss: repeat a pattern',
+        emoji: 'Dismiss: find the emojis',
+        shake: 'Dismiss: shake the phone',
+        steps: 'Dismiss: walk some steps',
+        scan_item: 'Dismiss: scan an everyday object'
+      },
+      omitted: {
+        geo: 'The location condition (the sender’s coordinates are never shared)',
+        snd: 'The ringtone, which belongs to the sender’s own device',
+        bgf: 'Their custom background image',
+        pho: 'The photo mission',
+        bar: 'The QR or barcode mission',
+        act: 'The action that runs after the alarm is turned off'
+      }
+    },
+    es: {
+      title: 'Alguien te ha compartido una alarma',
+      subtitle: 'Ábrela en Chronos para añadirla. No se añade nada hasta que lo confirmes en la app.',
+      invalidTitle: 'Este enlace de alarma no es válido',
+      invalidBody: 'Puede que la app por la que te lo enviaron lo haya cortado. Pide que te lo manden otra vez y asegúrate de copiar el enlace entero, incluido todo lo que va después del signo #.',
+      outdatedTitle: 'Este enlace necesita una versión más nueva',
+      outdatedBody: 'Se creó con una versión más reciente de la app. Actualiza Chronos y vuelve a abrirlo.',
+      emptyTitle: 'Aquí no hay nada que ver',
+      emptyBody: 'Esta página muestra una alarma que alguien te ha compartido. Abre el enlace que te enviaron para verla.',
+      open: 'Abrir en Chronos',
+      get: 'Consigue Chronos en Google Play',
+      soon: 'Muy pronto en Google Play',
+      home: 'Ir a chronosintelligentalarm.com',
+      hint: '¿Ya tienes Chronos? El botón la abre directamente en la alarma.',
+      caveats: 'Ten en cuenta',
+      privacy: 'Esta alarma se ha descifrado en tu navegador. La parte del enlace que va después del # no se envía nunca a nuestro servidor: nadie más que tú y quien te lo mandó la ha visto.',
+      days: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+      everyDay: 'Todos los días',
+      onceOnly: 'Una sola vez',
+      yearly: 'Cada año',
+      monthly: 'Cada mes',
+      noRepeat: 'No se repite',
+      inactive: 'Llega desactivada',
+      smart: 'Respeta festivos',
+      gentle: 'Despertar suave',
+      gentleLead: function (n) { return 'Despertar suave ' + n + ' min antes'; },
+      briefing: 'Briefing hablado',
+      sleep: 'Planificación del sueño',
+      wakeCheck: function (n) { return 'Comprobación a los ' + n + ' min'; },
+      snooze: function (n) { return 'Posponer ' + n + ' min'; },
+      maxSnoozes: function (n) { return 'Máx. ' + n + ' posposiciones'; },
+      background: 'Fondo de pantalla',
+      solar: {
+        sunrise: 'Suena al amanecer',
+        sunset: 'Suena al atardecer',
+        civilDawn: 'Suena con la primera luz'
+      },
+      dismiss: {
+        math: 'Para apagarla: resolver una operación',
+        retype: 'Para apagarla: teclear un número',
+        pattern: 'Para apagarla: repetir un patrón',
+        emoji: 'Para apagarla: encontrar los emojis',
+        shake: 'Para apagarla: agitar el móvil',
+        steps: 'Para apagarla: dar unos pasos',
+        scan_item: 'Para apagarla: escanear un objeto cotidiano'
+      },
+      omitted: {
+        geo: 'La condición de ubicación (las coordenadas de quien la comparte nunca viajan)',
+        snd: 'El tono, que es propio del dispositivo de quien la comparte',
+        bgf: 'Su imagen de fondo personalizada',
+        pho: 'La misión de foto',
+        bar: 'La misión de código QR o de barras',
+        act: 'La acción que se ejecuta al apagarla'
+      }
+    }
+  };
+
+  // ── Payload ──────────────────────────────────────────────────────────────
+
+  /** Decodes the fragment. Never throws: returns a tagged result, like the
+   *  app's AlarmShareCodec.decode does. */
+  function readPayload() {
+    var raw = window.location.hash.replace(/^#/, '').trim();
+    if (!raw) return { status: 'empty' };
+    // Length check FIRST, on the untrusted string, before decoding anything.
+    if (raw.length > MAX_PAYLOAD_CHARS) return { status: 'invalid' };
+    if (!/^[A-Za-z0-9\-_]+$/.test(raw)) return { status: 'invalid' };
+    var json;
+    try {
+      var pad = raw.length % 4 ? new Array(5 - (raw.length % 4)).join('=') : '';
+      var bin = window.atob(raw.replace(/-/g, '+').replace(/_/g, '/') + pad);
+      var bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      json = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
+    } catch (e) {
+      return { status: 'invalid' };
+    }
+    if (!json || typeof json !== 'object' || Array.isArray(json)) {
+      return { status: 'invalid' };
+    }
+    if (typeof json.v !== 'number') return { status: 'invalid' };
+    if (json.v > VERSION) return { status: 'outdated' };
+    return { status: 'ok', alarm: json, raw: raw };
+  }
+
+  function intIn(value, lo, hi) {
+    if (typeof value !== 'number' || !isFinite(value)) return null;
+    var n = Math.round(value);
+    return n < lo || n > hi ? null : n;
+  }
+
+  function text(value, max) {
+    return typeof value === 'string' ? value.slice(0, max) : '';
+  }
+
+  // ── Rendering ────────────────────────────────────────────────────────────
+
+  function el(tag, className, content) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    // textContent, never innerHTML: everything here may come from the payload.
+    if (content !== undefined && content !== null) node.textContent = content;
+    return node;
+  }
+
+  function formatTime(hh, mm) {
+    var minutes = String(mm).padStart(2, '0');
+    if (lang === 'es') return { time: hh + ':' + minutes, suffix: '' };
+    var suffix = hh < 12 ? 'AM' : 'PM';
+    var h12 = hh % 12 === 0 ? 12 : hh % 12;
+    return { time: h12 + ':' + minutes, suffix: suffix };
+  }
+
+  function icon(value) {
+    // The app stores a custom emoji as "emoji:<char>"; a catalog key (an
+    // internal name like "work") means nothing here, so it is dropped.
+    var raw = text(value, 32);
+    return raw.indexOf('emoji:') === 0 ? raw.slice(6) : '';
+  }
+
+  function badgesFor(a, t) {
+    var out = [];
+    if (a.sm === true) out.push('🗓️ ' + t.smart);
+    if (a.sa && t.solar[a.sa]) out.push('🌅 ' + t.solar[a.sa]);
+    if (a.gw === true) {
+      var lead = intIn(a.gl, 1, 60);
+      out.push('🌊 ' + (lead ? t.gentleLead(lead) : t.gentle));
+    }
+    if (a.xm && t.dismiss[a.xm]) out.push('🧠 ' + t.dismiss[a.xm]);
+    if (a.be === true) out.push('🗣️ ' + t.briefing);
+    if (a.sp === true) out.push('🛌 ' + t.sleep);
+    var check = intIn(a.wc, 1, 60);
+    if (check) out.push('⏱️ ' + t.wakeCheck(check));
+    var snooze = intIn(a.sz, 1, 60);
+    if (snooze) out.push('😴 ' + t.snooze(snooze));
+    var maxSnoozes = intIn(a.mx, 1, 10);
+    if (maxSnoozes) out.push('🔁 ' + t.maxSnoozes(maxSnoozes));
+    if (typeof a.bg === 'string' && a.bg) out.push('🖼️ ' + t.background);
+    if (a.dr === 'once') out.push('📌 ' + t.onceOnly);
+    else if (a.dr === 'yearly') out.push('📌 ' + t.yearly);
+    else if (a.dr === 'monthly') out.push('📌 ' + t.monthly);
+    else if (a.rp === false) out.push('📌 ' + t.noRepeat);
+    if (a.ac === false) out.push('⏸️ ' + t.inactive);
+    return out;
+  }
+
+  function renderAlarm(a, raw, t) {
+    var frag = document.createDocumentFragment();
+
+    var intro = el('section', 'intro');
+    intro.appendChild(el('h1', null, t.title));
+    intro.appendChild(el('p', null, t.subtitle));
+    frag.appendChild(intro);
+
+    var card = el('section', 'alarm-card');
+
+    var emoji = icon(a.ic);
+    if (emoji) card.appendChild(el('div', 'alarm-icon', emoji));
+
+    var hh = intIn(a.hh, 0, 23);
+    var mm = intIn(a.mm, 0, 59);
+    var time = formatTime(hh === null ? 0 : hh, mm === null ? 0 : mm);
+    var timeNode = el('div', 'alarm-time', time.time);
+    if (time.suffix) timeNode.appendChild(el('span', 'suffix', time.suffix));
+    card.appendChild(timeNode);
+
+    var name = text(a.nm, 80);
+    if (name) card.appendChild(el('div', 'alarm-name', name));
+    var desc = text(a.ds, 200);
+    if (desc) card.appendChild(el('div', 'alarm-desc', desc));
+
+    var days = [];
+    if (Array.isArray(a.dw)) {
+      for (var i = 0; i < a.dw.length; i++) {
+        var d = intIn(a.dw[i], 1, 7);
+        if (d !== null && days.indexOf(d) === -1) days.push(d);
+      }
+    }
+    if (days.length === 7) {
+      var allRow = el('div', 'days');
+      allRow.appendChild(el('span', 'day on', t.everyDay));
+      card.appendChild(allRow);
+    } else if (days.length > 0) {
+      var row = el('div', 'days');
+      for (var day = 1; day <= 7; day++) {
+        row.appendChild(el('span', 'day' + (days.indexOf(day) === -1 ? '' : ' on'), t.days[day - 1]));
+      }
+      card.appendChild(row);
+    }
+
+    var badges = badgesFor(a, t);
+    if (badges.length) {
+      var badgeRow = el('div', 'badges');
+      for (var b = 0; b < badges.length; b++) {
+        badgeRow.appendChild(el('span', 'badge', badges[b]));
+      }
+      card.appendChild(badgeRow);
+    }
+    frag.appendChild(card);
+
+    // What the sender's app stripped out before sharing (spec §2.3). Shown
+    // here for the same reason the app shows it: the receiver should know the
+    // original had a location condition or a custom ringtone that did not
+    // travel, rather than wonder why their copy behaves differently.
+    var omitted = [];
+    if (Array.isArray(a.om)) {
+      for (var o = 0; o < a.om.length; o++) {
+        var label = t.omitted[a.om[o]];
+        if (label && omitted.indexOf(label) === -1) omitted.push(label);
+      }
+    }
+    if (omitted.length) {
+      var note = el('div', 'note');
+      note.appendChild(el('h2', null, t.caveats));
+      var list = el('ul');
+      for (var k = 0; k < omitted.length; k++) list.appendChild(el('li', null, omitted[k]));
+      note.appendChild(list);
+      frag.appendChild(note);
+    }
+
+    frag.appendChild(ctaBlock(raw, t));
+    frag.appendChild(el('p', 'privacy', t.privacy));
+    return frag;
+  }
+
+  function ctaBlock(raw, t) {
+    var cta = el('div', 'cta');
+    if (raw) {
+      var open = el('a', 'btn btn-primary', t.open);
+      open.href = APP_SCHEME_URL + raw;
+      cta.appendChild(open);
+    }
+    if (STORE_LIVE) {
+      var store = el('a', 'btn btn-secondary', t.get);
+      store.href = STORE_URL;
+      store.rel = 'noopener';
+      cta.appendChild(store);
+    } else {
+      var home = el('a', 'btn btn-secondary', t.home);
+      home.href = '/';
+      cta.appendChild(home);
+      cta.appendChild(el('p', 'cta-hint', t.soon));
+    }
+    if (raw) cta.appendChild(el('p', 'cta-hint', t.hint));
+    return cta;
+  }
+
+  function renderMessage(title, body, raw, t) {
+    var frag = document.createDocumentFragment();
+    var intro = el('section', 'intro');
+    intro.appendChild(el('h1', null, title));
+    intro.appendChild(el('p', null, body));
+    frag.appendChild(intro);
+    frag.appendChild(ctaBlock(raw, t));
+    return frag;
+  }
+
+  function render() {
+    var t = T[lang];
+    document.documentElement.lang = lang;
+    document.title = lang === 'es' ? 'Chronos — Alarma compartida' : 'Chronos — Shared alarm';
+    var result = readPayload();
+    root.textContent = '';
+    if (result.status === 'ok') {
+      root.appendChild(renderAlarm(result.alarm, result.raw, t));
+    } else if (result.status === 'outdated') {
+      root.appendChild(renderMessage(t.outdatedTitle, t.outdatedBody, null, t));
+    } else if (result.status === 'empty') {
+      root.appendChild(renderMessage(t.emptyTitle, t.emptyBody, null, t));
+    } else {
+      root.appendChild(renderMessage(t.invalidTitle, t.invalidBody, null, t));
+    }
+  }
+
+  function setLang(next) {
+    lang = next === 'es' ? 'es' : 'en';
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+    try { window.localStorage.setItem('chronos-lang', lang); } catch (e) { /* private mode */ }
+    render();
+  }
+
+  function initialLang() {
+    try {
+      var saved = window.localStorage.getItem('chronos-lang');
+      if (saved === 'en' || saved === 'es') return saved;
+    } catch (e) { /* private mode */ }
+    return (navigator.language || 'en').toLowerCase().indexOf('es') === 0 ? 'es' : 'en';
+  }
+
+  document.getElementById('btn-en').addEventListener('click', function () { setLang('en'); });
+  document.getElementById('btn-es').addEventListener('click', function () { setLang('es'); });
+  // A second link opened while this page is already up only changes the
+  // fragment, which fires no navigation.
+  window.addEventListener('hashchange', render);
+  setLang(initialLang());
+})();
+</script>
+
+</body>
+</html>

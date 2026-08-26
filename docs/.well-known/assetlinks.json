@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.chronos.smartalarm",
+      "sha256_cert_fingerprints": [
+        "D3:38:B8:FA:87:63:6E:C7:B6:62:63:C6:27:65:74:0C:5C:35:0B:DD:CB:7F:09:AD:74:8C:F8:13:9D:78:2E:50"
+      ]
+    }
+  }
+]
