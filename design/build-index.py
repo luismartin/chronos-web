@@ -43,8 +43,6 @@ else:
     css += '    .btn-soon { background: var(--card); color: var(--text); cursor: default; gap: 9px; }\n    .btn-soon:hover { transform: none; }\n'
 body = body.replace('<a class="btn btn-primary" href="#"><span data-l="es">Abrir en Chronos</span><span data-l="en">Open in Chronos</span></a>',
                     '<span class="btn btn-primary" aria-hidden="true"><span data-l="es">Abrir en Chronos</span><span data-l="en">Open in Chronos</span></span>')
-body = re.sub(r'<div class="price"><span class="placeholder">.*?</span></span></div>',
-              '<div class="price" style="font-size: 1.35em; line-height: 1.3;"><span data-l="es">Mensual, anual o pago único</span><span data-l="en">Monthly, yearly or one-time</span></div><p style="margin: -8px 0 0; color: var(--muted); font-size: 0.9em;"><span data-l="es">Precios en la app. El plan anual incluye una prueba gratis.</span><span data-l="en">Prices shown in the app. The yearly plan includes a free trial.</span></p>', body)
 assert '{{' not in body and '[PRECIO]' not in body and 'ENLACE' not in body, 'quedan marcadores'
 
 head = '''<!DOCTYPE html>
