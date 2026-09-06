@@ -687,6 +687,19 @@ class Component extends DCLogic {
     window.addEventListener('resize', this._onScroll, { passive: true });
     window.addEventListener('mousemove', this._onMove, { passive: true });
     document.addEventListener('mousemove', this._onCard, { passive: true });
+    this._onClick = function (ev) {
+      var a = ev.target.closest && ev.target.closest('a[href^="#"]');
+      if (!a) return;
+      var id = a.getAttribute('href').slice(1);
+      var target = id ? document.getElementById(id) : null;
+      ev.preventDefault();
+      if (!id) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+      if (!target) return;
+      var top = target.getBoundingClientRect().top + (window.scrollY || doc.scrollTop || 0) - 68;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    };
+    var doc = document.documentElement;
+    document.addEventListener('click', this._onClick, true);
     this.frame();
   }
   componentDidUpdate() { this.frame(); }
@@ -695,6 +708,7 @@ class Component extends DCLogic {
     window.removeEventListener('resize', this._onScroll);
     window.removeEventListener('mousemove', this._onMove);
     document.removeEventListener('mousemove', this._onCard);
+    document.removeEventListener('click', this._onClick, true);
     if (this._raf) cancelAnimationFrame(this._raf);
     if (this._io) this._io.disconnect();
   }
