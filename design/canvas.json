@@ -1,0 +1,13 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Portada · escritorio", "x": 0, "y": 0, "w": 1440, "h": 5600, "expand": "fill" },
+    { "file": "Mobile.dc.html", "title": "Portada · móvil", "x": 1540, "y": 0, "w": 390, "h": 7400, "expand": "fill" },
+    { "file": "DireccionA.dc.html", "title": "Dirección A · Amanecer editorial", "x": 2050, "y": 0, "w": 720, "h": 960 },
+    { "file": "DireccionB.dc.html", "title": "Dirección B · Cinemático", "x": 2870, "y": 0, "w": 720, "h": 960 }
+  ],
+  "annotations": [
+    { "id": "nota-parallax", "x": 0, "y": -150, "w": 560, "text": "Abre la portada en vista ampliada para ver los efectos: capas del hero que se mueven con el scroll y el ratón, el sol que sale al bajar por «Cómo funciona», tarjetas que aparecen al entrar en pantalla, marquesina y luz que sigue al cursor.\nEl enlace de Google Play y el precio de Premium son marcadores por rellenar." },
+    { "id": "nota-direcciones", "x": 2050, "y": -110, "w": 520, "text": "Dos direcciones alternativas en boceto, por si prefieres un cambio más radical que el rediseño principal (que mantiene la identidad actual: morado, ámbar y fondo oscuro)." }
+  ],
+  "launch": { "view": "focused", "file": "Main.dc.html" }
+}

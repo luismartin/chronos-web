@@ -1,0 +1,732 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap">
+  <style>
+    :root {
+      --bg: #0b0912;
+      --bg2: #150f24;
+      --card: #191426;
+      --card-hover: #201933;
+      --border: #2b2340;
+      --text: #f4f1fb;
+      --muted: #a89ec3;
+      --accent: #8b6cf0;
+      --accent-light: color-mix(in srgb, var(--accent) 58%, #ffffff);
+      --accent-dim: color-mix(in srgb, var(--accent) 16%, transparent);
+      --warm: #ffb457;
+      --display: 'Outfit', 'Inter', -apple-system, "Segoe UI", Roboto, sans-serif;
+      --body: 'Inter', -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #0b0912; color: #f4f1fb; font-family: var(--body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent-light); text-decoration: none; }
+    a:hover { color: #ffffff; }
+    h1, h2, h3 { font-family: var(--display); letter-spacing: -0.02em; margin: 0; }
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 0 28px; position: relative; }
+
+    /* Reveal on scroll: only hidden once the logic has mounted (js), so the
+       static render never ships invisible content. */
+    .js .rv:not(.in) { opacity: 0; transform: translateY(26px); }
+    .rv { transition: opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1); transition-delay: var(--d, 0s); }
+
+    /* Header */
+    .top { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      background: rgba(11, 9, 18, 0.66); border-bottom: 1px solid transparent; transition: border-color .3s ease, background .3s ease; }
+    .top.scrolled { border-bottom-color: var(--border); background: rgba(11, 9, 18, 0.86); }
+    .nav { display: flex; gap: 28px; align-items: center; }
+    .nav a { color: var(--muted); font-size: 0.9em; font-weight: 500; transition: color .15s ease; }
+    .nav a:hover { color: var(--text); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 22px; border-radius: 14px;
+      font-weight: 700; font-size: 1em; border: 1px solid var(--border); font-family: var(--body); cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: var(--accent); color: #0b0912; border-color: var(--accent); box-shadow: 0 10px 30px color-mix(in srgb, var(--accent) 35%, transparent); }
+    .btn-primary:hover { color: #0b0912; box-shadow: 0 16px 40px color-mix(in srgb, var(--accent) 50%, transparent); }
+    .btn-secondary { background: var(--card); color: var(--text); }
+    .btn-secondary:hover { color: var(--text); background: var(--card-hover); border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+    .btn-sm { padding: 9px 16px; font-size: 0.88em; border-radius: 11px; }
+    .lang-switch button { background: none; border: none; color: var(--muted); border-radius: 6px; padding: 4px 12px; cursor: pointer; font-size: 0.83em; font-weight: 600; font-family: inherit; }
+    .lang-switch button.active { background: var(--accent); color: #0b0912; }
+
+    /* Hero layers */
+    .layer { position: absolute; pointer-events: none; will-change: transform; }
+    .stars { inset: -10% -5%; opacity: .7;
+      background-image:
+        radial-gradient(1.6px 1.6px at 12% 18%, rgba(255,255,255,.55), transparent 60%),
+        radial-gradient(1.2px 1.2px at 32% 64%, rgba(255,255,255,.45), transparent 60%),
+        radial-gradient(1.8px 1.8px at 58% 22%, rgba(195,179,251,.6), transparent 60%),
+        radial-gradient(1.2px 1.2px at 74% 78%, rgba(255,255,255,.4), transparent 60%),
+        radial-gradient(1.4px 1.4px at 88% 40%, rgba(255,180,87,.55), transparent 60%),
+        radial-gradient(1.1px 1.1px at 44% 88%, rgba(255,255,255,.35), transparent 60%),
+        radial-gradient(1.5px 1.5px at 66% 52%, rgba(255,255,255,.5), transparent 60%),
+        radial-gradient(1.2px 1.2px at 20% 92%, rgba(195,179,251,.5), transparent 60%);
+      background-size: 720px 520px; }
+    .glow-a { width: 760px; height: 560px; left: -220px; top: -120px; border-radius: 50%;
+      background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 34%, transparent), transparent 70%); filter: blur(10px); }
+    .glow-b { width: 620px; height: 620px; right: -160px; bottom: -260px; border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(255,180,87,.30), rgba(255,180,87,.06) 55%, transparent 72%); filter: blur(8px); }
+    .rings { right: -140px; top: 40px; width: 780px; height: 780px; opacity: .55; }
+    .rings circle { fill: none; stroke: var(--accent); stroke-opacity: .18; }
+    .grid-lines { inset: 0; opacity: .35;
+      background-image: linear-gradient(rgba(139,108,240,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(139,108,240,.08) 1px, transparent 1px);
+      background-size: 96px 96px; mask-image: radial-gradient(60% 60% at 50% 40%, #000 30%, transparent 100%); -webkit-mask-image: radial-gradient(60% 60% at 50% 40%, #000 30%, transparent 100%); }
+
+    .hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; padding: 72px 28px 96px; width: 100%; }
+    .hero-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 26px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; padding: 8px 16px; border-radius: 999px; background: var(--card); border: 1px solid var(--border); font-size: 0.86em; font-weight: 500; color: var(--text); }
+    .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--warm); flex: none; animation: pulse 2s infinite; }
+    .h1 { font-size: 72px; line-height: 1.02; font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, var(--accent-light)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .h1 .warm { background: linear-gradient(135deg, #ffd18a, var(--warm)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .tagline { color: var(--muted); font-size: 1.22em; max-width: 520px; }
+    .trust { display: flex; gap: 18px; color: var(--muted); font-size: 0.88em; flex-wrap: wrap; }
+    .trust span { display: inline-flex; align-items: center; gap: 7px; }
+    .trust svg { width: 16px; height: 16px; color: var(--accent-light); }
+
+    /* Phone */
+    .phone-wrap { position: relative; width: 300px; height: 610px; margin: 0 auto; }
+    .phone { width: 300px; height: 610px; border-radius: 44px; border: 1px solid var(--border); background: var(--bg2); padding: 26px 18px 18px;
+      box-shadow: 0 50px 100px rgba(0,0,0,.6), 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 0 70px color-mix(in srgb, var(--accent) 22%, transparent);
+      display: flex; flex-direction: column; gap: 14px; position: relative; overflow: hidden; }
+    .phone::before { content: ""; position: absolute; inset: 0; background: radial-gradient(360px 220px at 50% -10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%); pointer-events: none; }
+    .phone-time { font-family: var(--display); font-size: 58px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; }
+    .phone-next { color: var(--muted); font-size: 0.82em; }
+    .alarm { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .alarm.off { opacity: .55; }
+    .alarm .t { font-family: var(--display); font-size: 1.35em; font-weight: 700; line-height: 1.1; }
+    .alarm .n { font-size: 0.78em; color: var(--muted); }
+    .toggle { width: 38px; height: 22px; border-radius: 999px; background: var(--accent); position: relative; flex: none; }
+    .toggle::after { content: ""; position: absolute; top: 3px; right: 3px; width: 16px; height: 16px; border-radius: 50%; background: #0b0912; }
+    .toggle.off { background: var(--border); }
+    .toggle.off::after { right: auto; left: 3px; background: var(--muted); }
+    .days { display: flex; gap: 3px; margin-top: 6px; }
+    .days i { font-style: normal; font-size: 0.62em; font-weight: 700; width: 17px; height: 17px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--muted); background: var(--accent-dim); }
+    .days i.on { background: var(--accent); color: #0b0912; }
+    .chip { position: absolute; z-index: 3; }
+    .chip > div { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; background: rgba(25, 20, 38, .92); border: 1px solid var(--border);
+      font-size: 0.82em; font-weight: 600; white-space: nowrap; box-shadow: 0 14px 34px rgba(11,9,18,.55); backdrop-filter: blur(8px); animation: float 6s ease-in-out infinite; }
+    .chip svg { width: 16px; height: 16px; color: var(--warm); }
+    .chip.c1 { left: -228px; top: 58px; }
+    .chip.c2 { right: -150px; top: 176px; }
+    .chip.c2 > div { animation-delay: -2s; }
+    .chip.c3 { left: -208px; bottom: 170px; }
+    .chip.c3 > div { animation-delay: -4s; }
+    .chip.c4 { right: -120px; bottom: -8px; }
+    .chip.c4 > div { animation-delay: -1s; }
+    .scroll-hint { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); color: var(--muted); font-size: 0.78em; display: flex; flex-direction: column; align-items: center; gap: 4px; letter-spacing: .08em; text-transform: uppercase; }
+    .scroll-hint svg { width: 18px; height: 18px; animation: bob 1.8s ease-in-out infinite; }
+
+    /* Marquee */
+    .marquee { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg2); overflow: hidden; padding: 16px 0;
+      mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+    .track { display: flex; gap: 56px; width: max-content; animation: marquee 34s linear infinite; }
+    .track span { display: inline-flex; align-items: center; gap: 14px; white-space: nowrap; color: var(--muted); font-weight: 600; font-size: 0.92em; letter-spacing: .02em; }
+    .track b { width: 6px; height: 6px; border-radius: 50%; background: var(--warm); display: inline-block; }
+    .marquee:hover .track { animation-play-state: paused; }
+
+    /* Section basics */
+    .section { padding: 104px 0; position: relative; }
+    .kicker { color: var(--accent-light); font-weight: 700; font-size: 0.82em; letter-spacing: .12em; text-transform: uppercase; }
+    .h2 { font-size: 48px; line-height: 1.08; font-weight: 800; }
+    .lead { color: var(--muted); font-size: 1.12em; max-width: 620px; }
+
+    /* Night to dawn story */
+    #story { overflow: hidden; --p: 1; }
+    .sky { position: absolute; inset: 0; opacity: calc(var(--p) * 0.85); transition: opacity .2s linear;
+      background: linear-gradient(180deg, #0b0912 0%, #150f24 30%, #2a1e46 60%, #4a2f57 82%, #6b3f52 100%); }
+    .horizon { position: relative; height: 300px; overflow: hidden; border-bottom: 1px solid color-mix(in srgb, var(--warm) 45%, transparent); }
+    .sun { position: absolute; left: 50%; bottom: -120px; width: 240px; height: 240px; margin-left: -120px; border-radius: 50%;
+      background: radial-gradient(circle at 50% 40%, #ffe3b0, var(--warm) 55%, #f08a3c 100%);
+      box-shadow: 0 0 80px rgba(255,180,87,.55), 0 0 200px rgba(255,180,87,.28);
+      transform: translateY(calc((1 - var(--p)) * 280px)); transition: transform .15s linear; }
+    .sun-rays { position: absolute; left: 50%; bottom: -320px; width: 880px; height: 880px; margin-left: -440px; border-radius: 50%; opacity: calc(var(--p) * 0.9); transition: opacity .2s linear;
+      background: repeating-conic-gradient(from 0deg, rgba(255,180,87,.12) 0deg 4deg, transparent 4deg 14deg); mask-image: radial-gradient(circle, #000 20%, transparent 62%); -webkit-mask-image: radial-gradient(circle, #000 20%, transparent 62%);
+      animation: spin 120s linear infinite; }
+    .horizon-arc { position: absolute; left: 50%; bottom: -520px; width: 1600px; height: 1600px; margin-left: -800px; border-radius: 50%; border: 1px solid rgba(195,179,251,.14); }
+    .moon { position: absolute; right: 12%; top: 34px; width: 46px; height: 46px; border-radius: 50%; background: #f4f1fb; opacity: calc(1 - var(--p)); transition: opacity .2s linear;
+      box-shadow: inset -12px -6px 0 0 #2a1e46, 0 0 40px rgba(244,241,251,.35); }
+    .steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; margin-top: 48px; position: relative; }
+    .steps::before { content: ""; position: absolute; left: 0; right: 0; top: 11px; height: 1px; background: linear-gradient(90deg, var(--accent), var(--warm)); opacity: .6; }
+    .step { position: relative; padding-top: 30px; }
+    .step::before { content: ""; position: absolute; left: 0; top: 4px; width: 15px; height: 15px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); box-shadow: 0 0 0 4px var(--bg); }
+    .step.dawn::before { border-color: var(--warm); }
+    .step time { font-family: var(--display); font-weight: 700; font-size: 1.5em; letter-spacing: -0.02em; display: block; }
+    .step h3 { font-size: 1.05em; margin: 4px 0 6px; font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .step p { margin: 0; color: var(--muted); font-size: 0.92em; }
+    .premium-tag { font-size: 0.66em; font-weight: 800; letter-spacing: 0.03em; color: #2a1a00; background: linear-gradient(135deg, #ffd18a, var(--warm)); border-radius: 5px; padding: 2px 7px; text-transform: uppercase; font-family: var(--body); }
+
+    /* Bento */
+    .bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: 56px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 26px; position: relative; overflow: hidden;
+      transition: transform .25s ease, border-color .25s ease, background .25s ease, box-shadow .25s ease; }
+    .card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: var(--card-hover); box-shadow: 0 18px 44px rgba(11,9,18,.5); }
+    .card::after { content: ""; position: absolute; inset: 0; background: radial-gradient(420px 220px at var(--mx, 80%) var(--my, 0%), color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%); opacity: 0; transition: opacity .3s ease; pointer-events: none; }
+    .card:hover::after { opacity: 1; }
+    .icon-badge { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--accent-dim); color: var(--accent-light); }
+    .icon-badge svg { width: 22px; height: 22px; }
+    .icon-badge.warm { background: rgba(255,180,87,.14); color: var(--warm); }
+    .card h3 { margin: 16px 0 8px; font-size: 1.18em; font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.95em; }
+    .span-7 { grid-column: span 7; } .span-6 { grid-column: span 6; } .span-5 { grid-column: span 5; } .span-4 { grid-column: span 4; } .span-8 { grid-column: span 8; }
+    .card-big { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: center; }
+    .bell-viz { position: relative; height: 180px; display: flex; align-items: center; justify-content: center; }
+    .bell-viz .ring { position: absolute; width: 90px; height: 90px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--accent) 70%, transparent); animation: ripple 2.6s ease-out infinite; }
+    .bell-viz .ring:nth-child(2) { animation-delay: .85s; } .bell-viz .ring:nth-child(3) { animation-delay: 1.7s; }
+    .bell-viz .core { width: 90px; height: 90px; border-radius: 50%; background: var(--accent-dim); display: flex; align-items: center; justify-content: center; color: var(--accent-light); position: relative; }
+    .bell-viz .core svg { width: 36px; height: 36px; animation: swing 2.6s ease-in-out infinite; transform-origin: 50% 0; }
+    .mini-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .mini-chips span { padding: 6px 12px; border-radius: 999px; background: var(--accent-dim); border: 1px solid var(--border); color: var(--accent-light); font-size: 0.8em; font-weight: 600; }
+    .ramp { display: flex; align-items: flex-end; gap: 6px; height: 72px; margin-top: 12px; }
+    .ramp i { flex: 1; display: block; border-radius: 3px 3px 0 0; background: linear-gradient(180deg, var(--accent-light), var(--accent)); animation: ramp 3s ease-in-out infinite; transform-origin: bottom; }
+    .breath { width: 74px; height: 74px; border-radius: 50%; background: var(--accent-dim); border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent); animation: breathe 7s ease-in-out infinite; margin-top: 12px; }
+
+    /* Share */
+    .share-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .share-steps { display: flex; flex-direction: column; gap: 14px; margin-top: 28px; }
+    .share-steps div { display: flex; gap: 14px; align-items: flex-start; color: var(--muted); font-size: 0.98em; }
+    .share-steps b { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--accent-dim); color: var(--accent-light); display: inline-flex; align-items: center; justify-content: center; font-size: 0.82em; }
+    .link-card-wrap { position: relative; }
+    .urlbar { display: flex; align-items: center; gap: 10px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; font-size: 0.85em; color: var(--muted); margin-bottom: 14px; }
+    .urlbar svg { width: 16px; height: 16px; color: var(--accent-light); flex: none; }
+    .urlbar em { font-style: normal; color: var(--text); }
+    .link-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px 24px; text-align: center;
+      background-image: radial-gradient(420px 220px at 50% 0%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%);
+      box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+    .link-card .time { font-family: var(--display); font-size: 3.4em; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; }
+    .link-card .name { font-size: 1.15em; font-weight: 600; margin-top: 8px; }
+    .link-card .desc { color: var(--muted); font-size: 0.95em; margin-top: 2px; }
+    .link-days { display: flex; gap: 5px; justify-content: center; margin-top: 16px; }
+    .link-days span { flex: 1 1 0; padding: 4px 3px; border-radius: 999px; font-size: 0.75em; font-weight: 600; background: var(--accent-dim); border: 1px solid var(--border); color: var(--muted); }
+    .link-days span.on { background: var(--accent); border-color: var(--accent); color: #0b0912; }
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 18px; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 0.84em; background: color-mix(in srgb, var(--accent) 12%, transparent); border: 1px solid var(--border); color: var(--accent-light); }
+
+    /* Pricing */
+    .plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 48px; }
+    .plan { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 18px; }
+    .plan.premium { border: 1px solid transparent; background: linear-gradient(var(--card), var(--card)) padding-box, linear-gradient(135deg, var(--accent), var(--warm)) border-box; box-shadow: 0 30px 80px color-mix(in srgb, var(--accent) 22%, transparent); }
+    .plan h3 { font-size: 1.5em; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+    .price { font-family: var(--display); font-size: 2.6em; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+    .price small { font-family: var(--body); font-size: 0.36em; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+    .plan ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; color: var(--muted); font-size: 0.95em; }
+    .plan li { display: flex; gap: 10px; align-items: flex-start; }
+    .plan li svg { width: 18px; height: 18px; flex: none; color: var(--accent-light); margin-top: 3px; }
+    .plan.premium li svg { color: var(--warm); }
+    .placeholder { background: rgba(255,180,87,.14); border: 1px dashed var(--warm); border-radius: 6px; padding: 0 6px; color: var(--warm); }
+
+    /* Privacy */
+    .privacy { text-align: center; }
+    .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 44px; }
+    .fact { border: 1px solid var(--border); border-radius: 16px; padding: 22px; background: var(--card); }
+    .fact svg { width: 24px; height: 24px; color: var(--accent-light); }
+    .fact h3 { font-size: 1.02em; margin: 12px 0 4px; font-weight: 700; }
+    .fact p { margin: 0; color: var(--muted); font-size: 0.9em; }
+
+    /* Final CTA + footer */
+    .cta-final { position: relative; overflow: hidden; border-radius: 28px; padding: 80px 40px; text-align: center; border: 1px solid var(--border); background: var(--bg2); }
+    .cta-final .glow { position: absolute; inset: -40%; background: radial-gradient(40% 50% at 30% 50%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 70%), radial-gradient(35% 45% at 75% 55%, rgba(255,180,87,.22), transparent 70%); animation: drift 14s ease-in-out infinite alternate; }
+    footer { border-top: 1px solid var(--border); padding: 32px 0 44px; color: var(--muted); font-size: 0.9em; }
+
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,180,87,.55); } 70% { box-shadow: 0 0 0 7px rgba(255,180,87,0); } 100% { box-shadow: 0 0 0 0 rgba(255,180,87,0); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+    @keyframes bob { 0%, 100% { transform: translateY(0); opacity: .6; } 50% { transform: translateY(5px); opacity: 1; } }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes ripple { 0% { transform: scale(1); opacity: .8; } 100% { transform: scale(2.4); opacity: 0; } }
+    @keyframes swing { 0%, 100% { transform: rotate(-12deg); } 50% { transform: rotate(12deg); } }
+    @keyframes ramp { 0%, 100% { transform: scaleY(.25); } 60%, 80% { transform: scaleY(1); } }
+    @keyframes breathe { 0%, 100% { transform: scale(.7); opacity: .6; } 45%, 65% { transform: scale(1.15); opacity: 1; } }
+    @keyframes drift { from { transform: translate3d(-4%, -2%, 0) rotate(0deg); } to { transform: translate3d(4%, 3%, 0) rotate(8deg); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .track, .sun-rays, .chip > div, .bell-viz .ring, .ramp i, .breath, .cta-final .glow, .scroll-hint svg { animation: none; }
+    }
+    @media (max-width: 900px) {
+      .wrap { padding: 0 20px; }
+      .nav { display: none; }
+      .hero-grid { grid-template-columns: 1fr; gap: 56px; text-align: center; padding: 56px 20px 80px; }
+      .top .btn-sm { display: none; }
+      .cta-row { justify-content: center; }
+      .chip.c2, .chip.c3 { display: none; }
+      .hero-copy { align-items: center; }
+      .h1 { font-size: 44px; }
+      .tagline { font-size: 1.08em; }
+      .trust { justify-content: center; }
+      .phone-wrap { width: 260px; height: 540px; }
+      .phone { width: 260px; height: 540px; border-radius: 40px; }
+      .chip.c1 { left: -34px; top: -16px; } .chip.c2 { right: -40px; top: 112px; } .chip.c3 { left: -30px; bottom: 132px; } .chip.c4 { right: -26px; bottom: -14px; }
+      .chip > div { font-size: 0.74em; padding: 7px 11px; }
+      .scroll-hint { display: none; }
+      .section { padding: 80px 0; }
+      .h2 { font-size: 34px; }
+      .horizon { height: 220px; }
+      .sun { width: 180px; height: 180px; margin-left: -90px; bottom: -90px; }
+      .steps { grid-template-columns: 1fr; gap: 26px; margin-top: 36px; }
+      .steps::before { left: 7px; right: auto; top: 0; bottom: 0; width: 1px; height: auto; background: linear-gradient(180deg, var(--accent), var(--warm)); }
+      .step { padding-top: 0; padding-left: 32px; }
+      .bento > div { grid-column: span 12; }
+      .card-big { grid-template-columns: 1fr; }
+      .share-grid { grid-template-columns: 1fr; gap: 40px; }
+      .plans { grid-template-columns: 1fr; }
+      .facts { grid-template-columns: 1fr; }
+      .cta-final { padding: 56px 24px; border-radius: 20px; }
+      .foot-row { flex-direction: column; text-align: center; gap: 14px; }
+    }
+  </style>
+</helmet>
+
+<div class="page" style="--accent: {{accent}}; width: 100%; background: #0b0912; min-height: 100%;">
+
+  <!-- ===== Header ===== -->
+  <header id="top" class="top">
+    <div class="wrap" style="display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 68px;">
+      <a href="#" style="display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15em; color: #f4f1fb;">
+        <img src="logo.png" alt="Logo de Chronos" style="width: 34px; height: 34px; border-radius: 50%; display: block; box-shadow: 0 0 0 1px rgba(139,108,240,.5), 0 0 18px rgba(139,108,240,.45);">
+        <span>Chronos<span style="color: #ffb457;">.</span></span>
+      </a>
+      <nav class="nav">
+        <a href="#como">Cómo funciona</a>
+        <a href="#funciones">Funciones</a>
+        <a href="#compartir">Compartir</a>
+        <a href="#premium">Premium</a>
+        <a href="#privacidad">Privacidad</a>
+      </nav>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="lang-switch" style="display: flex; gap: 4px; background: #191426; border: 1px solid #2b2340; border-radius: 9px; padding: 3px;">
+          <button type="button">EN</button>
+          <button type="button" class="active">ES</button>
+        </div>
+        <a class="btn btn-primary btn-sm" href="[ENLACE DE GOOGLE PLAY]">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M5 3l14 9-14 9V3z"></path></svg>
+          Google Play
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section id="hero" style="position: relative; overflow: hidden; min-height: 860px; display: flex; align-items: center;">
+    <div class="layer stars" data-depth="0.05" data-mouse="6"></div>
+    <div class="layer grid-lines" data-depth="0.02"></div>
+    <div class="layer glow-a" data-depth="0.12" data-mouse="18"></div>
+    <div class="layer glow-b" data-depth="0.22" data-mouse="26"></div>
+    <svg class="layer rings" viewBox="0 0 780 780" data-depth="0.08" data-mouse="12" aria-hidden="true">
+      <circle cx="390" cy="390" r="380"></circle>
+      <circle cx="390" cy="390" r="300"></circle>
+      <circle cx="390" cy="390" r="220"></circle>
+      <circle cx="390" cy="390" r="140" style="stroke-opacity: .3;"></circle>
+    </svg>
+
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse" aria-hidden="true"></span>Despertador inteligente para Android</div>
+        <h1 class="h1">El despertador que se adapta a tu <span class="warm">vida real</span></h1>
+        <p class="tagline" style="margin: 0;">Alarmas que respetan festivos, suenan al amanecer y se aseguran de que te despiertas de verdad.</p>
+        <div class="cta-row" style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <a class="btn btn-primary" href="[ENLACE DE GOOGLE PLAY]">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px;"><path d="M5 3l14 9-14 9V3z"></path></svg>
+            Consíguelo en Google Play
+          </a>
+          <a class="btn btn-secondary" href="#como">Ver cómo funciona</a>
+        </div>
+        <div class="trust">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Sin cuenta</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Sin anuncios</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Sin rastreo por defecto</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>9 idiomas</span>
+        </div>
+      </div>
+
+      <div class="phone-wrap">
+        <div class="chip c1" data-mouse="-22" data-depth="0.06"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>Mañana es festivo: silenciada</div></div>
+        <div class="chip c2" data-mouse="24" data-depth="0.1"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M17 18a5 5 0 0 0-10 0M12 2v7M4.22 10.22l1.42 1.42M1 18h2M21 18h2M18.36 11.64l1.42-1.42M23 22H1M8 6l4-4 4 4"></path></svg>Amanecer 07:12</div></div>
+        <div class="chip c3" data-mouse="-16" data-depth="0.14"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 12a9 9 0 1 1-2.64-6.36"></path><path d="M21 3v6h-6"></path></svg>Comprobación en 5 min</div></div>
+        <div class="chip c4" data-mouse="18" data-depth="0.04"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>Solo si estás en casa</div></div>
+
+        <div data-mouse="-10" style="position: relative; z-index: 2;">
+          <div class="phone">
+            <div style="display: flex; justify-content: space-between; align-items: center; color: #a89ec3; font-size: 0.78em; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; position: relative;">
+              <span>Alarmas</span><span style="color: #ffb457;">Mar 12</span>
+            </div>
+            <div style="position: relative;">
+              <div class="phone-time">07:00</div>
+              <div class="phone-next">Próxima alarma en 6 h 40 min</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px; position: relative;">
+              <div class="alarm">
+                <div><div class="t">07:00</div><div class="n">Trabajo · salta festivos</div><div class="days"><i class="on">L</i><i class="on">M</i><i class="on">X</i><i class="on">J</i><i class="on">V</i><i>S</i><i>D</i></div></div>
+                <div class="toggle"></div>
+              </div>
+              <div class="alarm">
+                <div><div class="t" style="white-space: nowrap;">Amanecer <span style="font-size: .6em; color: #ffb457;">+15 min</span></div><div class="n">Alarma solar · hoy 07:27</div><div class="days"><i class="on">L</i><i class="on">M</i><i class="on">X</i><i class="on">J</i><i class="on">V</i><i class="on">S</i><i class="on">D</i></div></div>
+                <div class="toggle"></div>
+              </div>
+              <div class="alarm off">
+                <div><div class="t">09:30</div><div class="n">Fin de semana</div><div class="days"><i>L</i><i>M</i><i>X</i><i>J</i><i>V</i><i class="on">S</i><i class="on">D</i></div></div>
+                <div class="toggle off"></div>
+              </div>
+            </div>
+            <div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; background: #191426; border: 1px solid #2b2340; border-radius: 14px; padding: 10px 14px; position: relative;">
+              <div style="font-size: .78em; color: #a89ec3;">Hora de dormir<br><b style="color: #f4f1fb; font-size: 1.15em;">23:00</b> · 8 h de sueño</div>
+              <div style="width: 30px; height: 30px; border-radius: 50%; background: rgba(139,108,240,.16); display: flex; align-items: center; justify-content: center; color: #c3b3fb;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width: 16px; height: 16px; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-hint" aria-hidden="true"><span>Desliza</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M6 9l6 6 6-6"></path></svg></div>
+  </section>
+
+  <!-- ===== Marquee ===== -->
+  <div class="marquee" aria-hidden="true">
+    <div class="track">
+      <span><b></b>Sin cuenta</span><span><b></b>Sin anuncios</span><span><b></b>Sin rastreo por defecto</span><span><b></b>Funciona sin conexión</span><span><b></b>Suena con No molestar</span><span><b></b>Sobrevive a reinicios</span><span><b></b>9 idiomas</span><span><b></b>Comparte alarmas con un enlace</span>
+      <span><b></b>Sin cuenta</span><span><b></b>Sin anuncios</span><span><b></b>Sin rastreo por defecto</span><span><b></b>Funciona sin conexión</span><span><b></b>Suena con No molestar</span><span><b></b>Sobrevive a reinicios</span><span><b></b>9 idiomas</span><span><b></b>Comparte alarmas con un enlace</span>
+    </div>
+  </div>
+
+  <!-- ===== Night to dawn ===== -->
+  <section id="story" class="section">
+    <div id="como" style="position: absolute; top: -60px;"></div>
+    <div class="sky" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="rv" style="display: flex; flex-direction: column; gap: 14px; max-width: 640px;">
+        <div class="kicker">Cómo funciona</div>
+        <h2 class="h2">De la noche al amanecer, Chronos te acompaña</h2>
+        <p class="lead" style="margin: 0;">No es solo la alarma. Es todo lo que pasa desde que decides irte a dormir hasta que estás de pie de verdad.</p>
+      </div>
+      <div class="horizon rv" style="--d: .15s; margin-top: 40px;" aria-hidden="true">
+        <div class="horizon-arc"></div>
+        <div class="sun-rays"></div>
+        <div class="moon"></div>
+        <div class="sun"></div>
+      </div>
+      <div class="steps">
+        <div class="step rv" style="--d: 0s;">
+          <time>22:30</time>
+          <h3>Rutina de relajación</h3>
+          <p>Respiración guiada 4-7-8 o cuadrada, con sonido sincronizado, y una checklist de higiene del sueño.</p>
+        </div>
+        <div class="step rv" style="--d: .1s;">
+          <time>23:00</time>
+          <h3>Hora de dormir</h3>
+          <p>Un recordatorio calculado hacia atrás desde tu alarma según las horas de sueño que quieres.</p>
+        </div>
+        <div class="step rv dawn" style="--d: .2s;">
+          <time>06:50</time>
+          <h3>Pre-alarma suave <span class="premium-tag">Premium</span></h3>
+          <p>Un tono tenue con sonido ambiente unos minutos antes, para que el cuerpo vaya saliendo del sueño profundo.</p>
+        </div>
+        <div class="step rv dawn" style="--d: .3s;">
+          <time>07:00</time>
+          <h3>La alarma</h3>
+          <p>Empieza audible pero no brusca y sube hasta el máximo. Para apagarla, resuelves un desafío.</p>
+        </div>
+        <div class="step rv dawn" style="--d: .4s;">
+          <time>07:05</time>
+          <h3>Comprobación <span class="premium-tag">Premium</span></h3>
+          <p>Vuelve a sonar unos minutos después, por si te has vuelto a dormir. Si no respondes, insiste.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Features bento ===== -->
+  <section id="funciones" class="section" style="background: linear-gradient(180deg, #0b0912, #150f24 50%, #0b0912);">
+    <div class="wrap">
+      <div class="rv" style="display: flex; flex-direction: column; gap: 14px; max-width: 640px;">
+        <div class="kicker">Funciones</div>
+        <h2 class="h2">Pensado para las mañanas difíciles</h2>
+        <p class="lead" style="margin: 0;">Cada función existe porque una mañana real la necesitaba.</p>
+      </div>
+      <div class="bento">
+        <div class="card card-big span-7 rv" style="--d: 0s;">
+          <div>
+            <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10 21a2 2 0 0 0 4 0"></path></svg></div>
+            <h3>Fiable ante todo</h3>
+            <p>Suena a la hora exacta: sobre la pantalla de bloqueo, con No molestar y tras reiniciar. Si una alarma queda sin respuesta, se silencia y vuelve a sonar sola: perderla nunca significa quedarte dormido.</p>
+          </div>
+          <div class="bell-viz" aria-hidden="true"><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="core"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10 21a2 2 0 0 0 4 0"></path></svg></div></div>
+        </div>
+        <div class="card span-5 rv" style="--d: .08s;">
+          <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path><path d="M10 14.5l4 4M14 14.5l-4 4"></path></svg></div>
+          <h3>Salta los festivos</h3>
+          <p>Tu alarma del trabajo se queda callada en festivos y en los días libres que marques. Los calendarios de festivos se sincronizan solos.</p>
+          <div class="mini-chips"><span>Lun 1 May · festivo</span><span>Vie 24 · día libre</span></div>
+        </div>
+        <div class="card span-4 rv" style="--d: .16s;">
+          <div class="icon-badge warm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M17 18a5 5 0 0 0-10 0M12 2v7M4.22 10.22l1.42 1.42M1 18h2M21 18h2M18.36 11.64l1.42-1.42M23 22H1M8 6l4-4 4 4"></path></svg></div>
+          <h3>Alarmas solares <span class="premium-tag">Premium</span></h3>
+          <p>Ancla alarmas al amanecer, atardecer o crepúsculo, con desfase opcional. Calculado sin conexión, en tu móvil.</p>
+        </div>
+        <div class="card span-4 rv" style="--d: .24s;">
+          <div class="icon-badge warm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+          <h3>Según tu ubicación <span class="premium-tag">Premium</span></h3>
+          <p>Haz que una alarma suene solo si estás dentro (o fuera) de una zona que elijas.</p>
+        </div>
+        <div class="card span-4 rv" style="--d: .32s;">
+          <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><path d="M17.5 14v7M14 17.5h7"></path></svg></div>
+          <h3>Desafíos para despertar</h3>
+          <p>Apaga la alarma resolviendo algo, no pulsando un botón medio dormido.</p>
+          <div class="mini-chips"><span>Operación</span><span>Número</span><span>Patrón</span><span>Emojis</span><span>Código de barras</span></div>
+        </div>
+        <div class="card span-6 rv" style="--d: .1s;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;">
+            <div>
+              <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 19v-3M9 19v-7M14 19v-11M19 19v-15"></path></svg></div>
+              <h3>Despertar suave</h3>
+              <p>Empieza a un volumen audible pero no brusco y sube hasta el máximo, en vez de saltar al 100% de golpe. Premium añade una pre-alarma con sonido ambiente.</p>
+            </div>
+            <div class="ramp" style="width: 140px; flex: none;" aria-hidden="true"><i style="height: 14px; animation-delay: 0s;"></i><i style="height: 26px; animation-delay: .2s;"></i><i style="height: 38px; animation-delay: .4s;"></i><i style="height: 50px; animation-delay: .6s;"></i><i style="height: 61px; animation-delay: .8s;"></i><i style="height: 72px; animation-delay: 1s;"></i></div>
+          </div>
+        </div>
+        <div class="card span-6 rv" style="--d: .18s;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;">
+            <div>
+              <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></div>
+              <h3>Rutina de relajación</h3>
+              <p>Respiración guiada (4-7-8 o cuadrada), con sonido de respiración sincronizado opcional, y una checklist de higiene del sueño para desconectar antes de dormir.</p>
+            </div>
+            <div class="breath" style="flex: none;" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="card span-4 rv" style="--d: .26s;">
+          <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M2 20v-9a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v9"></path><path d="M2 16h20M6 9V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"></path></svg></div>
+          <h3>Planificación del sueño</h3>
+          <p>Define tus horas de sueño objetivo y recibe un recordatorio de hora de dormir calculado desde tu alarma, con acceso directo a la rutina.</p>
+        </div>
+        <div class="card span-4 rv" style="--d: .34s;">
+          <div class="icon-badge warm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 12a9 9 0 1 1-2.64-6.36"></path><path d="M21 3v6h-6"></path></svg></div>
+          <h3>Comprobación <span class="premium-tag">Premium</span></h3>
+          <p>Una comprobación que vuelve a sonar unos minutos después de apagar la alarma, por si te has vuelto a dormir.</p>
+        </div>
+        <div class="card span-4 rv" style="--d: .42s;">
+          <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg></div>
+          <h3>Privado por diseño</h3>
+          <p>Sin cuenta, sin anuncios, sin rastreo por defecto. 9 idiomas. Tus datos se quedan en tu dispositivo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Share (new) ===== -->
+  <section id="compartir" class="section" style="overflow: hidden;">
+    <div class="layer glow-a" data-depth="0.1" style="left: auto; right: -300px; top: 0; opacity: .7;"></div>
+    <div class="wrap share-grid">
+      <div class="rv">
+        <div class="kicker" style="display: inline-flex; align-items: center; gap: 10px;">Nuevo <span style="width: 6px; height: 6px; border-radius: 50%; background: #ffb457; display: inline-block;"></span> Compartir</div>
+        <h2 class="h2" style="margin-top: 14px;">Comparte una alarma con un enlace</h2>
+        <p class="lead" style="margin: 16px 0 0;">Envía la alarma del entreno, de la excursión o del vuelo a quien quieras. Si tiene Chronos, se abre directamente en la app; si no, ve una vista previa y puede instalarla.</p>
+        <div class="share-steps">
+          <div><b>1</b><span>Mantén pulsada una alarma y elige <strong style="color: #f4f1fb;">Compartir</strong>.</span></div>
+          <div><b>2</b><span>Se genera un enlace con la hora, los días y la configuración.</span></div>
+          <div><b>3</b><span>La alarma viaja dentro del propio enlace: nunca pasa por nuestros servidores ni queda registrada.</span></div>
+        </div>
+      </div>
+      <div class="link-card-wrap rv" style="--d: .15s;">
+        <div class="urlbar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg><span><em>chronosintelligentalarm.com/a</em>#…</span></div>
+        <div class="link-card">
+          <div class="time">07:00</div>
+          <div class="name">Entreno de mañana</div>
+          <div class="desc">Salir a correr antes del trabajo</div>
+          <div class="link-days"><span class="on">L</span><span class="on">M</span><span class="on">X</span><span class="on">J</span><span class="on">V</span><span>S</span><span>D</span></div>
+          <div class="badges"><span class="badge">Salta festivos</span><span class="badge">Despertar suave</span><span class="badge">Desafío: operación</span></div>
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 22px;">
+            <a class="btn btn-primary" href="#">Abrir en Chronos</a>
+            <a class="btn btn-secondary" href="[ENLACE DE GOOGLE PLAY]">Instalar Chronos</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Pricing ===== -->
+  <section id="premium" class="section" style="background: linear-gradient(180deg, #0b0912, #150f24 50%, #0b0912);">
+    <div class="wrap">
+      <div class="rv" style="display: flex; flex-direction: column; gap: 14px; max-width: 640px; text-align: center; margin: 0 auto; align-items: center;">
+        <div class="kicker">Gratis y Premium</div>
+        <h2 class="h2">Gratis para empezar, Premium cuando lo necesites</h2>
+        <p class="lead" style="margin: 0;">Sin suscripciones escondidas ni funciones que desaparecen. Lo gratis es gratis de verdad.</p>
+      </div>
+      <div class="plans">
+        <div class="plan rv" style="--d: 0s;">
+          <h3>Gratis</h3>
+          <div class="price">0 €<small> para siempre</small></div>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Hasta 3 alarmas</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Salta festivos y días libres</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Desafíos de despertar esenciales</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Despertar suave con volumen progresivo</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Rutina de relajación completa y planificación del sueño</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Compartir alarmas con un enlace</li>
+          </ul>
+          <a class="btn btn-secondary" href="[ENLACE DE GOOGLE PLAY]" style="margin-top: auto;">Descargar gratis</a>
+        </div>
+        <div class="plan premium rv" style="--d: .12s;">
+          <h3>Premium <span class="premium-tag">Pago único</span></h3>
+          <div class="price"><span class="placeholder">[PRECIO]</span><small> una sola vez</small></div>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Alarmas ilimitadas</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Alarmas solares: amanecer, atardecer y crepúsculo</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Alarmas según tu ubicación</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Desafíos avanzados y comprobación de despertar</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Pre-alarma suave con sonido ambiente</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Todo lo del plan gratis</li>
+          </ul>
+          <a class="btn btn-primary" href="[ENLACE DE GOOGLE PLAY]" style="margin-top: auto;">Empezar gratis y mejorar después</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Privacy ===== -->
+  <section id="privacidad" class="section privacy">
+    <div class="wrap">
+      <div class="rv" style="display: flex; flex-direction: column; gap: 14px; max-width: 720px; margin: 0 auto; align-items: center;">
+        <div class="kicker">Privacidad</div>
+        <h2 class="h2">Funciona en tu móvil. Y se queda ahí.</h2>
+        <p class="lead" style="margin: 0;">No requiere cuenta, no muestra anuncios y no incluye SDKs de publicidad. Usa un servicio de informes de errores que puedes desactivar, y una analítica anónima opcional que está apagada hasta que tú decidas encenderla.</p>
+      </div>
+      <div class="facts">
+        <div class="fact rv" style="--d: 0s;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle><path d="M3 3l18 18"></path></svg>
+          <h3>Sin cuenta</h3>
+          <p>Instalas y listo. No hay registro, ni correo, ni contraseña que recordar.</p>
+        </div>
+        <div class="fact rv" style="--d: .1s;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
+          <h3>Tus datos, en tu dispositivo</h3>
+          <p>Alarmas, ubicaciones y rutinas se guardan en el móvil. Los enlaces compartidos tampoco pasan por ningún servidor.</p>
+        </div>
+        <div class="fact rv" style="--d: .2s;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><rect x="2" y="7" width="20" height="10" rx="5"></rect><circle cx="8" cy="12" r="3"></circle></svg>
+          <h3>Tú decides qué se comparte</h3>
+          <p>La analítica anónima está desactivada por defecto. Los informes de errores se pueden apagar.</p>
+        </div>
+      </div>
+      <p class="rv" style="margin: 28px 0 0; color: #a89ec3; --d: .3s;">Todos los detalles en la <a href="https://legal.chronosintelligentalarm.com/">Política de privacidad</a>.</p>
+    </div>
+  </section>
+
+  <!-- ===== Final CTA ===== -->
+  <section class="section" style="padding-top: 20px;">
+    <div class="wrap">
+      <div class="cta-final rv">
+        <div class="glow" aria-hidden="true"></div>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 22px;">
+          <img src="logo.png" alt="" style="width: 84px; height: 84px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(139,108,240,.55), 0 18px 50px rgba(139,108,240,.35);">
+          <h2 class="h2" style="max-width: 560px;">Mañana, despierta como querías</h2>
+          <p class="lead" style="margin: 0; text-align: center;">Gratis, sin cuenta y en tu idioma. Solo para Android.</p>
+          <a class="btn btn-primary" href="[ENLACE DE GOOGLE PLAY]">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px;"><path d="M5 3l14 9-14 9V3z"></path></svg>
+            Consíguelo en Google Play
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot-row" style="display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.05em; color: #f4f1fb;">
+        <img src="logo.png" alt="" style="width: 28px; height: 28px; border-radius: 50%;">
+        <span>Chronos<span style="color: #ffb457;">.</span></span>
+      </div>
+      <div style="display: flex; gap: 22px; flex-wrap: wrap; justify-content: center;">
+        <a href="https://legal.chronosintelligentalarm.com/">Política de privacidad</a>
+        <a href="mailto:chronosintelligentalarm@gmail.com">chronosintelligentalarm@gmail.com</a>
+      </div>
+      <div>© 2026 Luis Martín. Chronos es una app para Android.</div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#8b6cf0","options":["#8b6cf0","#5b8cf5","#e06fb4","#3fc5b5"],"section":"Marca"},"motion":{"editor":"boolean","default":true,"section":"Movimiento"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#8b6cf0' };
+  }
+  componentDidMount() {
+    var self = this;
+    document.documentElement.classList.add('js');
+    this._reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this._io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); self._io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.rv').forEach(function (el) { self._io.observe(el); });
+    this._onScroll = function () {
+      if (self._raf) return;
+      self._raf = requestAnimationFrame(function () { self._raf = 0; self.frame(); });
+    };
+    this._onMove = function (ev) {
+      self._mx = ev.clientX / Math.max(1, window.innerWidth) - 0.5;
+      self._my = ev.clientY / Math.max(1, window.innerHeight) - 0.5;
+      self._onScroll();
+    };
+    this._onCard = function (ev) {
+      var card = ev.target.closest && ev.target.closest('.card');
+      if (!card) return;
+      var r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((ev.clientX - r.left) / r.width * 100) + '%');
+      card.style.setProperty('--my', ((ev.clientY - r.top) / r.height * 100) + '%');
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    window.addEventListener('resize', this._onScroll, { passive: true });
+    window.addEventListener('mousemove', this._onMove, { passive: true });
+    document.addEventListener('mousemove', this._onCard, { passive: true });
+    this.frame();
+  }
+  componentDidUpdate() { this.frame(); }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('resize', this._onScroll);
+    window.removeEventListener('mousemove', this._onMove);
+    document.removeEventListener('mousemove', this._onCard);
+    if (this._io) this._io.disconnect();
+  }
+  frame() {
+    var doc = document.documentElement;
+    var scrollable = doc.scrollHeight > window.innerHeight + 4;
+    var motion = (this.props.motion ?? true) && !this._reduce && scrollable;
+    var y = window.scrollY || doc.scrollTop || 0;
+    var vh = window.innerHeight || 1;
+    var mx = this._mx || 0, my = this._my || 0;
+    document.querySelectorAll('[data-depth], [data-mouse]').forEach(function (el) {
+      if (!motion) { el.style.transform = ''; return; }
+      var d = parseFloat(el.getAttribute('data-depth')) || 0;
+      var m = parseFloat(el.getAttribute('data-mouse')) || 0;
+      var sec = el.closest('section');
+      var rel = 0;
+      if (sec) { var r = sec.getBoundingClientRect(); rel = (r.top + r.height / 2) - vh / 2; }
+      var ty = Math.max(-260, Math.min(260, -rel * d)) + my * m;
+      var tx = mx * m;
+      el.style.transform = 'translate3d(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px,0)';
+    });
+    var story = document.getElementById('story');
+    if (story) {
+      var sr = story.getBoundingClientRect();
+      var p = (vh * 0.9 - sr.top) / (sr.height * 0.7);
+      p = Math.max(0, Math.min(1, p));
+      story.style.setProperty('--p', motion ? p.toFixed(3) : '1');
+    }
+    var top = document.getElementById('top');
+    if (top) top.classList.toggle('scrolled', y > 24);
+  }
+}
+</script>
+</body>
+</html>

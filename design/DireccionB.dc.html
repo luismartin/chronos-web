@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; background: #050308; color: #f4f1fb; font-family: 'Inter', -apple-system, "Segoe UI", sans-serif; line-height: 1.5; }
+    a { color: #c3b3fb; } a:hover { color: #ffffff; }
+    .grot { font-family: 'Space Grotesk', 'Inter', sans-serif; font-weight: 700; letter-spacing: -0.04em; }
+    .box { border: 1.5px dashed #3a3050; border-radius: 10px; color: #a89ec3; font-size: 12px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; }
+  </style>
+</helmet>
+<div style="width: 720px; min-height: 960px; background: #050308; padding: 28px 36px 40px; display: flex; flex-direction: column; gap: 22px; position: relative; overflow: hidden;">
+  <div class="grot" style="position: absolute; right: -30px; top: 110px; font-size: 300px; line-height: 1; color: transparent; -webkit-text-stroke: 1px rgba(139,108,240,.35); pointer-events: none;">07:00</div>
+  <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #a89ec3; position: relative;">
+    <span style="font-weight: 600; color: #f4f1fb;">Dirección B · Cinemático a pantalla completa</span>
+    <span>negro · tipografía gigante · scroll-snap</span>
+  </div>
+  <div style="display: flex; justify-content: space-between; align-items: center; position: relative;">
+    <span class="grot" style="font-size: 20px;">CHRONOS</span>
+    <span style="font-size: 12px; letter-spacing: .14em; color: #a89ec3;">MENÚ ≡</span>
+  </div>
+  <div style="position: relative; padding-top: 80px; display: flex; flex-direction: column; gap: 16px;">
+    <h1 class="grot" style="margin: 0; font-size: 84px; line-height: 0.9; max-width: 560px;">LEVÁN<br>TATE<br><span style="color: #ffb457;">DE VERDAD.</span></h1>
+    <p style="margin: 0; color: #a89ec3; max-width: 360px; font-size: 15px;">Cada sección ocupa la pantalla entera. El scroll encaja de una a otra como una presentación.</p>
+    <div style="display: flex; gap: 10px;"><span style="background: #8b6cf0; color: #0b0912; padding: 12px 20px; border-radius: 4px; font-weight: 700; font-size: 14px;">GOOGLE PLAY</span></div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 30px; position: relative;">
+    <div class="box" style="height: 150px; background: #150f24; border-color: transparent;">Pantalla 2<br>Festivos<br>(vídeo/loop)</div>
+    <div class="box" style="height: 150px; background: #150f24; border-color: transparent;">Pantalla 3<br>Amanecer<br>(sol animado)</div>
+    <div class="box" style="height: 150px; background: #150f24; border-color: transparent;">Pantalla 4<br>Desafíos<br>(demo táctil)</div>
+    <div class="box" style="height: 150px; background: #150f24; border-color: transparent;">Pantalla 5<br>Comprobación<br>(contador)</div>
+  </div>
+  <div class="box" style="height: 70px; position: relative;">Cursor personalizado + números que cuentan al entrar en pantalla + ruido de grano sobre todo</div>
+  <div style="margin-top: auto; padding: 16px 18px; background: #150f24; border-radius: 12px; font-size: 13px; color: #a89ec3; line-height: 1.55; position: relative;">
+    <strong style="color: #f4f1fb;">Por qué:</strong> impacto máximo; cada función tiene su “escena” y el parallax es el protagonista.<br>
+    <strong style="color: #f4f1fb;">Coste:</strong> mucho texto cabe mal, necesita capturas o vídeo reales de la app, y el scroll-snap incomoda a parte de la gente.
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
