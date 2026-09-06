@@ -32,6 +32,7 @@
     h1, h2, h3 { font-family: var(--display); letter-spacing: -0.02em; margin: 0; }
     .wrap { max-width: 1160px; margin: 0 auto; padding: 0 28px; position: relative; }
 
+    .page[data-lang="es"] [data-l="en"], .page[data-lang="en"] [data-l="es"] { display: none !important; }
     /* Reveal on scroll: only hidden once the logic has mounted (js), so the
        static render never ships invisible content. */
     .js .rv:not(.in) { opacity: 0; transform: translateY(26px); }
@@ -283,7 +284,7 @@
   </style>
 </helmet>
 
-<div class="page" style="--accent: {{accent}}; width: 100%; background: #0b0912; min-height: 100%;">
+<div class="page" data-lang="{{lang}}" style="--accent: {{accent}}; width: 100%; background: #0b0912; min-height: 100%;">
 
   <!-- ===== Header ===== -->
   <header id="top" class="top">
@@ -293,16 +294,16 @@
         <span>Chronos<span style="color: #ffb457;">.</span></span>
       </a>
       <nav class="nav">
-        <a href="#como">Cómo funciona</a>
-        <a href="#funciones">Funciones</a>
-        <a href="#compartir">Compartir</a>
+        <a href="#como"><span data-l="es">Cómo funciona</span><span data-l="en">How it works</span></a>
+        <a href="#funciones"><span data-l="es">Funciones</span><span data-l="en">Features</span></a>
+        <a href="#compartir"><span data-l="es">Compartir</span><span data-l="en">Share</span></a>
         <a href="#premium">Premium</a>
-        <a href="#privacidad">Privacidad</a>
+        <a href="#privacidad"><span data-l="es">Privacidad</span><span data-l="en">Privacy</span></a>
       </nav>
       <div style="display: flex; align-items: center; gap: 12px;">
         <div class="lang-switch" style="display: flex; gap: 4px; background: #191426; border: 1px solid #2b2340; border-radius: 9px; padding: 3px;">
-          <button type="button">EN</button>
-          <button type="button" class="active">ES</button>
+          <button type="button" class="{{enClass}}" onClick="{{setEn}}">EN</button>
+          <button type="button" class="{{esClass}}" onClick="{{setEs}}">ES</button>
         </div>
         <a class="btn btn-primary btn-sm" href="[ENLACE DE GOOGLE PLAY]">
           <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M5 3l14 9-14 9V3z"></path></svg>
@@ -327,55 +328,55 @@
 
     <div class="wrap hero-grid">
       <div class="hero-copy">
-        <div class="eyebrow"><span class="pulse" aria-hidden="true"></span>Despertador inteligente para Android</div>
-        <h1 class="h1">El despertador que se adapta a tu <span class="warm">vida real</span></h1>
-        <p class="tagline" style="margin: 0;">Alarmas que respetan festivos, suenan al amanecer y se aseguran de que te despiertes de verdad.</p>
+        <div class="eyebrow"><span class="pulse" aria-hidden="true"></span><span data-l="es">Despertador inteligente para Android</span><span data-l="en">Smart alarm clock for Android</span></div>
+        <h1 class="h1"><span data-l="es">El despertador que se adapta a tu <span class="warm">vida real</span></span><span data-l="en">The alarm clock that adapts to your <span class="warm">real life</span></span></h1>
+        <p class="tagline" style="margin: 0;"><span data-l="es">Alarmas que respetan festivos, suenan al amanecer y se aseguran de que te despiertes de verdad.</span><span data-l="en">Alarms that skip holidays, ring at sunrise, and make sure you actually wake up.</span></p>
         <div class="cta-row" style="display: flex; gap: 12px; flex-wrap: wrap;">
           <a class="btn btn-primary" href="[ENLACE DE GOOGLE PLAY]">
             <svg viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px;"><path d="M5 3l14 9-14 9V3z"></path></svg>
-            Consíguelo en Google Play
+            <span data-l="es">Consíguelo en Google Play</span><span data-l="en">Get it on Google Play</span>
           </a>
-          <a class="btn btn-secondary" href="#como">Ver cómo funciona</a>
+          <a class="btn btn-secondary" href="#como"><span data-l="es">Ver cómo funciona</span><span data-l="en">See how it works</span></a>
         </div>
         <div class="trust">
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Cuenta opcional</span>
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Sin anuncios</span>
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Sin rastreo por defecto</span>
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>9 idiomas</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Cuenta opcional</span><span data-l="en">Optional account</span></span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Sin anuncios</span><span data-l="en">No ads</span></span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Sin rastreo por defecto</span><span data-l="en">No tracking by default</span></span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">9 idiomas</span><span data-l="en">9 languages</span></span>
         </div>
       </div>
 
       <div class="phone-wrap">
-        <div class="chip c1" data-mouse="-22" data-depth="0.06"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>Mañana es festivo: silenciada</div></div>
-        <div class="chip c2" data-mouse="24" data-depth="0.1"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M17 18a5 5 0 0 0-10 0M12 2v7M4.22 10.22l1.42 1.42M1 18h2M21 18h2M18.36 11.64l1.42-1.42M23 22H1M8 6l4-4 4 4"></path></svg>Amanecer 07:12</div></div>
-        <div class="chip c3" data-mouse="-16" data-depth="0.14"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 12a9 9 0 1 1-2.64-6.36"></path><path d="M21 3v6h-6"></path></svg>Comprobación en 5 min</div></div>
-        <div class="chip c4" data-mouse="18" data-depth="0.04"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>Solo si estás en casa</div></div>
+        <div class="chip c1" data-mouse="-22" data-depth="0.06"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg><span data-l="es">Mañana es festivo: silenciada</span><span data-l="en">Tomorrow is a holiday: muted</span></div></div>
+        <div class="chip c2" data-mouse="24" data-depth="0.1"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M17 18a5 5 0 0 0-10 0M12 2v7M4.22 10.22l1.42 1.42M1 18h2M21 18h2M18.36 11.64l1.42-1.42M23 22H1M8 6l4-4 4 4"></path></svg><span data-l="es">Amanecer 07:12</span><span data-l="en">Sunrise 07:12</span></div></div>
+        <div class="chip c3" data-mouse="-16" data-depth="0.14"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 12a9 9 0 1 1-2.64-6.36"></path><path d="M21 3v6h-6"></path></svg><span data-l="es">Comprobación en 5 min</span><span data-l="en">Wake-up check in 5 min</span></div></div>
+        <div class="chip c4" data-mouse="18" data-depth="0.04"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span data-l="es">Solo si estás en casa</span><span data-l="en">Only if you are at home</span></div></div>
 
         <div data-mouse="-10" style="position: relative; z-index: 2;">
           <div class="phone">
             <div style="display: flex; justify-content: space-between; align-items: center; color: #a89ec3; font-size: 0.78em; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; position: relative;">
-              <span>Alarmas</span><span style="color: #ffb457;">Hoy</span>
+              <span><span data-l="es">Alarmas</span><span data-l="en">Alarms</span></span><span style="color: #ffb457;"><span data-l="es">Hoy</span><span data-l="en">Today</span></span>
             </div>
             <div style="position: relative;">
               <div class="phone-time">07:00</div>
-              <div class="phone-next">Próxima alarma en 6 h 40 min</div>
+              <div class="phone-next"><span data-l="es">Próxima alarma en 6 h 40 min</span><span data-l="en">Next alarm in 6 h 40 min</span></div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 10px; position: relative;">
               <div class="alarm">
-                <div><div class="t">07:00</div><div class="n">Trabajo · salta festivos</div><div class="days"><i class="on">L</i><i class="on">M</i><i class="on">X</i><i class="on">J</i><i class="on">V</i><i>S</i><i>D</i></div></div>
+                <div><div class="t">07:00</div><div class="n"><span data-l="es">Trabajo · salta festivos</span><span data-l="en">Work · skips holidays</span></div><div class="days"><i class="on"><span data-l="es">L</span><span data-l="en">M</span></i><i class="on"><span data-l="es">M</span><span data-l="en">T</span></i><i class="on"><span data-l="es">X</span><span data-l="en">W</span></i><i class="on"><span data-l="es">J</span><span data-l="en">T</span></i><i class="on"><span data-l="es">V</span><span data-l="en">F</span></i><i><span data-l="es">S</span><span data-l="en">S</span></i><i><span data-l="es">D</span><span data-l="en">S</span></i></div></div>
                 <div class="toggle"></div>
               </div>
               <div class="alarm">
-                <div><div class="t" style="white-space: nowrap;">Amanecer <span style="font-size: .6em; color: #ffb457;">+15 min</span></div><div class="n">Alarma solar · hoy 07:27</div><div class="days"><i class="on">L</i><i class="on">M</i><i class="on">X</i><i class="on">J</i><i class="on">V</i><i class="on">S</i><i class="on">D</i></div></div>
+                <div><div class="t" style="white-space: nowrap;"><span data-l="es">Amanecer</span><span data-l="en">Sunrise</span> <span style="font-size: .6em; color: #ffb457;">+15 min</span></div><div class="n"><span data-l="es">Alarma solar · hoy 07:27</span><span data-l="en">Solar alarm · today 07:27</span></div><div class="days"><i class="on"><span data-l="es">L</span><span data-l="en">M</span></i><i class="on"><span data-l="es">M</span><span data-l="en">T</span></i><i class="on"><span data-l="es">X</span><span data-l="en">W</span></i><i class="on"><span data-l="es">J</span><span data-l="en">T</span></i><i class="on"><span data-l="es">V</span><span data-l="en">F</span></i><i class="on"><span data-l="es">S</span><span data-l="en">S</span></i><i class="on"><span data-l="es">D</span><span data-l="en">S</span></i></div></div>
                 <div class="toggle"></div>
               </div>
               <div class="alarm off">
-                <div><div class="t">09:30</div><div class="n">Fin de semana</div><div class="days"><i>L</i><i>M</i><i>X</i><i>J</i><i>V</i><i class="on">S</i><i class="on">D</i></div></div>
+                <div><div class="t">09:30</div><div class="n"><span data-l="es">Fin de semana</span><span data-l="en">Weekend</span></div><div class="days"><i><span data-l="es">L</span><span data-l="en">M</span></i><i><span data-l="es">M</span><span data-l="en">T</span></i><i><span data-l="es">X</span><span data-l="en">W</span></i><i><span data-l="es">J</span><span data-l="en">T</span></i><i><span data-l="es">V</span><span data-l="en">F</span></i><i class="on"><span data-l="es">S</span><span data-l="en">S</span></i><i class="on"><span data-l="es">D</span><span data-l="en">S</span></i></div></div>
                 <div class="toggle off"></div>
               </div>
             </div>
             <div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; background: #191426; border: 1px solid #2b2340; border-radius: 14px; padding: 10px 14px; position: relative;">
-              <div style="font-size: .78em; color: #a89ec3;">Hora de dormir<br><b style="color: #f4f1fb; font-size: 1.15em;">23:00</b> · 8 h de sueño</div>
+              <div style="font-size: .78em; color: #a89ec3;"><span data-l="es">Hora de dormir</span><span data-l="en">Bedtime</span><br><b style="color: #f4f1fb; font-size: 1.15em;">23:00</b> <span data-l="es">· 8 h de sueño</span><span data-l="en">· 8 h of sleep</span></div>
               <div style="width: 30px; height: 30px; border-radius: 50%; background: rgba(139,108,240,.16); display: flex; align-items: center; justify-content: center; color: #c3b3fb;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width: 16px; height: 16px; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
               </div>
@@ -385,14 +386,14 @@
       </div>
     </div>
 
-    <div class="scroll-hint" aria-hidden="true"><span>Desliza</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M6 9l6 6 6-6"></path></svg></div>
+    <div class="scroll-hint" aria-hidden="true"><span><span data-l="es">Desliza</span><span data-l="en">Scroll</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M6 9l6 6 6-6"></path></svg></div>
   </section>
 
   <!-- ===== Marquee ===== -->
   <div class="marquee" aria-hidden="true">
     <div class="track">
-      <span><b></b>Cuenta opcional</span><span><b></b>Sin anuncios</span><span><b></b>Sin rastreo por defecto</span><span><b></b>Funciona sin conexión</span><span><b></b>Suena con No molestar</span><span><b></b>Sobrevive a reinicios</span><span><b></b>9 idiomas</span><span><b></b>Comparte alarmas con un enlace</span>
-      <span><b></b>Cuenta opcional</span><span><b></b>Sin anuncios</span><span><b></b>Sin rastreo por defecto</span><span><b></b>Funciona sin conexión</span><span><b></b>Suena con No molestar</span><span><b></b>Sobrevive a reinicios</span><span><b></b>9 idiomas</span><span><b></b>Comparte alarmas con un enlace</span>
+      <span><b></b><span data-l="es">Cuenta opcional</span><span data-l="en">Optional account</span></span><span><b></b><span data-l="es">Sin anuncios</span><span data-l="en">No ads</span></span><span><b></b><span data-l="es">Sin rastreo por defecto</span><span data-l="en">No tracking by default</span></span><span><b></b><span data-l="es">Funciona sin conexión</span><span data-l="en">Works offline</span></span><span><b></b><span data-l="es">Suena con No molestar</span><span data-l="en">Rings through Do Not Disturb</span></span><span><b></b><span data-l="es">Sobrevive a reinicios</span><span data-l="en">Survives reboots</span></span><span><b></b><span data-l="es">9 idiomas</span><span data-l="en">9 languages</span></span><span><b></b><span data-l="es">Comparte alarmas con un enlace</span><span data-l="en">Share alarms with a link</span></span>
+      <span><b></b><span data-l="es">Cuenta opcional</span><span data-l="en">Optional account</span></span><span><b></b><span data-l="es">Sin anuncios</span><span data-l="en">No ads</span></span><span><b></b><span data-l="es">Sin rastreo por defecto</span><span data-l="en">No tracking by default</span></span><span><b></b><span data-l="es">Funciona sin conexión</span><span data-l="en">Works offline</span></span><span><b></b><span data-l="es">Suena con No molestar</span><span data-l="en">Rings through Do Not Disturb</span></span><span><b></b><span data-l="es">Sobrevive a reinicios</span><span data-l="en">Survives reboots</span></span><span><b></b><span data-l="es">9 idiomas</span><span data-l="en">9 languages</span></span><span><b></b><span data-l="es">Comparte alarmas con un enlace</span><span data-l="en">Share alarms with a link</span></span>
     </div>
   </div>
 
@@ -402,9 +403,9 @@
     <div class="sky" aria-hidden="true"></div>
     <div class="wrap">
       <div class="rv" style="display: flex; flex-direction: column; gap: 14px; max-width: 640px;">
-        <div class="kicker">Cómo funciona</div>
-        <h2 class="h2">De la noche al amanecer, Chronos te acompaña</h2>
-        <p class="lead" style="margin: 0;">No es solo la alarma. Es todo lo que pasa desde que decides irte a dormir hasta que estés de pie de verdad.</p>
+        <div class="kicker"><span data-l="es">Cómo funciona</span><span data-l="en">How it works</span></div>
+        <h2 class="h2"><span data-l="es">De la noche al amanecer, Chronos te acompaña</span><span data-l="en">From night to sunrise, Chronos stays with you</span></h2>
+        <p class="lead" style="margin: 0;"><span data-l="es">No es solo la alarma. Es todo lo que pasa desde que decides irte a dormir hasta que estés de pie de verdad.</span><span data-l="en">It is not just the alarm. It is everything that happens from the moment you decide to go to bed until you are truly up.</span></p>
       </div>
       <div class="horizon rv" style="--d: .15s; margin-top: 40px;" aria-hidden="true">
         <div class="horizon-arc"></div>
@@ -415,28 +416,28 @@
       <div class="steps">
         <div class="step rv" style="--d: 0s;">
           <time>22:30</time>
-          <h3>Rutina de relajación</h3>
-          <p>Respiración guiada 4-7-8 o cuadrada, con sonido sincronizado, y una checklist de higiene del sueño.</p>
+          <h3><span data-l="es">Rutina de relajación</span><span data-l="en">Wind-down routine</span></h3>
+          <p><span data-l="es">Respiración guiada 4-7-8 o cuadrada, con sonido sincronizado, y una checklist de higiene del sueño.</span><span data-l="en">Guided 4-7-8 or box breathing, with a synced sound, plus a sleep hygiene checklist.</span></p>
         </div>
         <div class="step rv" style="--d: .1s;">
           <time>23:00</time>
-          <h3>Hora de dormir</h3>
-          <p>Un recordatorio calculado hacia atrás desde tu alarma según las horas de sueño que quieres.</p>
+          <h3><span data-l="es">Hora de dormir</span><span data-l="en">Bedtime</span></h3>
+          <p><span data-l="es">Un recordatorio calculado hacia atrás desde tu alarma según las horas de sueño que quieres.</span><span data-l="en">A reminder calculated backward from your alarm, based on how many hours of sleep you want.</span></p>
         </div>
         <div class="step rv dawn" style="--d: .2s;">
           <time>06:50</time>
-          <h3>Pre-alarma suave <span class="premium-tag">Premium</span></h3>
-          <p>Un tono tenue con sonido ambiente unos minutos antes, para que el cuerpo vaya saliendo del sueño profundo.</p>
+          <h3><span data-l="es">Pre-alarma suave</span><span data-l="en">Soft pre-alarm</span> <span class="premium-tag">Premium</span></h3>
+          <p><span data-l="es">Un tono tenue con sonido ambiente unos minutos antes, para que el cuerpo vaya saliendo del sueño profundo.</span><span data-l="en">A faint tone with ambient sound a few minutes before, so your body eases out of deep sleep.</span></p>
         </div>
         <div class="step rv dawn" style="--d: .3s;">
           <time>07:00</time>
-          <h3>La alarma</h3>
-          <p>Empieza audible pero no brusca y sube hasta el máximo. Para apagarla, resuelves un desafío.</p>
+          <h3><span data-l="es">La alarma</span><span data-l="en">The alarm</span></h3>
+          <p><span data-l="es">Empieza audible pero no brusca y sube hasta el máximo. Para apagarla, resuelves un desafío.</span><span data-l="en">Starts audible but not jarring and ramps up to full volume. To dismiss it, you solve a challenge.</span></p>
         </div>
         <div class="step rv dawn" style="--d: .4s;">
           <time>07:05</time>
-          <h3>Comprobación <span class="premium-tag">Premium</span></h3>
-          <p>Vuelve a sonar unos minutos después, por si te has vuelto a dormir.</p>
+          <h3><span data-l="es">Comprobación</span><span data-l="en">Wake-up check</span> <span class="premium-tag">Premium</span></h3>
+          <p><span data-l="es">Vuelve a sonar unos minutos después, por si te has vuelto a dormir.</span><span data-l="en">Rings again a few minutes later, in case you fell back asleep.</span></p>
         </div>
       </div>
     </div>
@@ -446,47 +447,47 @@
   <section id="funciones" class="section" style="background: linear-gradient(180deg, #0b0912, #150f24 50%, #0b0912);">
     <div class="wrap">
       <div class="rv" style="display: flex; flex-direction: column; gap: 14px; max-width: 640px;">
-        <div class="kicker">Funciones</div>
-        <h2 class="h2">Pensado para las mañanas difíciles</h2>
-        <p class="lead" style="margin: 0;">Cada función existe porque una mañana real la necesitaba.</p>
+        <div class="kicker"><span data-l="es">Funciones</span><span data-l="en">Features</span></div>
+        <h2 class="h2"><span data-l="es">Pensado para las mañanas difíciles</span><span data-l="en">Built for the hard mornings</span></h2>
+        <p class="lead" style="margin: 0;"><span data-l="es">Cada función existe porque una mañana real la necesitaba.</span><span data-l="en">Every feature exists because a real morning needed it.</span></p>
       </div>
       <div class="bento">
         <div class="card card-big span-7 rv" style="--d: 0s;">
           <div>
             <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10 21a2 2 0 0 0 4 0"></path></svg></div>
-            <h3>Fiable ante todo</h3>
-            <p>Suena a la hora exacta: sobre la pantalla de bloqueo, con No molestar y tras reiniciar. Si una alarma queda sin respuesta, se silencia y vuelve a sonar sola: perderla no significa que te quedes dormido.</p>
+            <h3><span data-l="es">Fiable ante todo</span><span data-l="en">Reliable above all</span></h3>
+            <p><span data-l="es">Suena a la hora exacta: sobre la pantalla de bloqueo, con No molestar y tras reiniciar. Si una alarma queda sin respuesta, se silencia y vuelve a sonar sola: perderla no significa que te quedes dormido.</span><span data-l="en">Rings at the exact time: over the lock screen, through Do Not Disturb, and after reboots. If an alarm goes unanswered, it quiets down and rings again on its own, so missing it never means oversleeping.</span></p>
           </div>
           <div class="bell-viz" aria-hidden="true"><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="core"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10 21a2 2 0 0 0 4 0"></path></svg></div></div>
         </div>
         <div class="card span-5 rv" style="--d: .08s;">
           <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path><path d="M10 14.5l4 4M14 14.5l-4 4"></path></svg></div>
-          <h3>Salta los festivos</h3>
-          <p>Tu alarma del trabajo se queda callada en festivos y en los días libres que marques. Los calendarios de festivos se sincronizan solos.</p>
-          <div class="mini-chips"><span>Vie 1 may · festivo</span><span>Vie 24 · día libre</span></div>
+          <h3><span data-l="es">Salta los festivos</span><span data-l="en">Skips holidays</span></h3>
+          <p><span data-l="es">Tu alarma del trabajo se queda callada en festivos y en los días libres que marques. Los calendarios de festivos se sincronizan solos.</span><span data-l="en">Your work alarm stays quiet on public holidays and the free days you mark. Holiday calendars sync automatically.</span></p>
+          <div class="mini-chips"><span><span data-l="es">Vie 1 may · festivo</span><span data-l="en">Fri 1 May · holiday</span></span><span><span data-l="es">Vie 24 · día libre</span><span data-l="en">Fri 24 · day off</span></span></div>
         </div>
         <div class="card span-4 rv" style="--d: .16s;">
           <div class="icon-badge warm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M17 18a5 5 0 0 0-10 0M12 2v7M4.22 10.22l1.42 1.42M1 18h2M21 18h2M18.36 11.64l1.42-1.42M23 22H1M8 6l4-4 4 4"></path></svg></div>
-          <h3>Alarmas solares <span class="premium-tag">Premium</span></h3>
-          <p>Ancla alarmas al amanecer, atardecer o crepúsculo, con desfase opcional. Calculado sin conexión, en tu móvil.</p>
+          <h3><span data-l="es">Alarmas solares</span><span data-l="en">Solar alarms</span> <span class="premium-tag">Premium</span></h3>
+          <p><span data-l="es">Ancla alarmas al amanecer, atardecer o crepúsculo, con desfase opcional. Calculado sin conexión, en tu móvil.</span><span data-l="en">Anchor alarms to sunrise, sunset, or twilight, with an optional offset. Computed offline, on your device.</span></p>
         </div>
         <div class="card span-4 rv" style="--d: .24s;">
           <div class="icon-badge warm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
-          <h3>Según tu ubicación <span class="premium-tag">Premium</span></h3>
-          <p>Haz que una alarma suene solo si estás dentro (o fuera) de una zona que elijas.</p>
+          <h3><span data-l="es">Según tu ubicación</span><span data-l="en">Location-aware</span> <span class="premium-tag">Premium</span></h3>
+          <p><span data-l="es">Haz que una alarma suene solo si estás dentro (o fuera) de una zona que elijas.</span><span data-l="en">Make an alarm ring only if you are inside (or outside) a zone you choose.</span></p>
         </div>
         <div class="card span-4 rv" style="--d: .32s;">
           <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><path d="M17.5 14v7M14 17.5h7"></path></svg></div>
-          <h3>Desafíos para despertar</h3>
-          <p>Apaga la alarma resolviendo algo, no pulsando un botón medio dormido.</p>
-          <div class="mini-chips"><span>Operación</span><span>Número</span><span>Patrón</span><span>Emojis</span><span>Código de barras</span></div>
+          <h3><span data-l="es">Desafíos para despertar</span><span data-l="en">Wake-up challenges</span></h3>
+          <p><span data-l="es">Apaga la alarma resolviendo algo, no pulsando un botón medio dormido.</span><span data-l="en">Dismiss the alarm by solving something, not by tapping a button half asleep.</span></p>
+          <div class="mini-chips"><span><span data-l="es">Operación</span><span data-l="en">Math</span></span><span><span data-l="es">Número</span><span data-l="en">Number</span></span><span><span data-l="es">Patrón</span><span data-l="en">Pattern</span></span><span>Emojis</span><span><span data-l="es">Código de barras</span><span data-l="en">Barcode</span></span></div>
         </div>
         <div class="card span-6 rv" style="--d: .1s;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;">
             <div>
               <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 19v-3M9 19v-7M14 19v-11M19 19v-15"></path></svg></div>
-              <h3>Despertar suave</h3>
-              <p>Empieza a un volumen audible pero no brusco y sube hasta el máximo, en vez de saltar al 100% de golpe. Premium añade una pre-alarma con sonido ambiente.</p>
+              <h3><span data-l="es">Despertar suave</span><span data-l="en">Gentle Wake</span></h3>
+              <p><span data-l="es">Empieza a un volumen audible pero no brusco y sube hasta el máximo, en vez de saltar al 100% de golpe. Premium añade una pre-alarma con sonido ambiente.</span><span data-l="en">Starts audible but not jarring and ramps up to full volume, instead of blasting at 100% instantly. Premium adds a soft pre-alarm with ambient sound.</span></p>
             </div>
             <div class="ramp" style="width: 140px; flex: none;" aria-hidden="true"><i style="height: 14px; animation-delay: 0s;"></i><i style="height: 26px; animation-delay: .2s;"></i><i style="height: 38px; animation-delay: .4s;"></i><i style="height: 50px; animation-delay: .6s;"></i><i style="height: 61px; animation-delay: .8s;"></i><i style="height: 72px; animation-delay: 1s;"></i></div>
           </div>
@@ -495,26 +496,26 @@
           <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;">
             <div>
               <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></div>
-              <h3>Rutina de relajación</h3>
-              <p>Respiración guiada (4-7-8 o cuadrada), con sonido de respiración sincronizado opcional, y una checklist de higiene del sueño para desconectar antes de dormir.</p>
+              <h3><span data-l="es">Rutina de relajación</span><span data-l="en">Wind-down routine</span></h3>
+              <p><span data-l="es">Respiración guiada (4-7-8 o cuadrada), con sonido de respiración sincronizado opcional, y una checklist de higiene del sueño para desconectar antes de dormir.</span><span data-l="en">Guided breathing (4-7-8 or box), with an optional synced breath sound, plus a sleep hygiene checklist to unwind before bed.</span></p>
             </div>
             <div class="breath" style="flex: none;" aria-hidden="true"></div>
           </div>
         </div>
         <div class="card span-4 rv" style="--d: .26s;">
           <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M2 20v-9a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v9"></path><path d="M2 16h20M6 9V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"></path></svg></div>
-          <h3>Planificación del sueño</h3>
-          <p>Define tus horas de sueño objetivo y recibe un recordatorio de hora de dormir calculado desde tu alarma, con acceso directo a la rutina.</p>
+          <h3><span data-l="es">Planificación del sueño</span><span data-l="en">Sleep planning</span></h3>
+          <p><span data-l="es">Define tus horas de sueño objetivo y recibe un recordatorio de hora de dormir calculado desde tu alarma, con acceso directo a la rutina.</span><span data-l="en">Set your target sleep time and get a bedtime reminder calculated from your alarm, with a shortcut into the routine.</span></p>
         </div>
         <div class="card span-4 rv" style="--d: .34s;">
           <div class="icon-badge warm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 12a9 9 0 1 1-2.64-6.36"></path><path d="M21 3v6h-6"></path></svg></div>
-          <h3>Comprobación <span class="premium-tag">Premium</span></h3>
-          <p>Una comprobación que vuelve a sonar unos minutos después de apagar la alarma, por si te has vuelto a dormir.</p>
+          <h3><span data-l="es">Comprobación</span><span data-l="en">Wake-up check</span> <span class="premium-tag">Premium</span></h3>
+          <p><span data-l="es">Una comprobación que vuelve a sonar unos minutos después de apagar la alarma, por si te has vuelto a dormir.</span><span data-l="en">A follow-up ring a few minutes after you dismiss the alarm, in case you fall back asleep.</span></p>
         </div>
         <div class="card span-4 rv" style="--d: .42s;">
           <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg></div>
-          <h3>Privado por diseño</h3>
-          <p>Funciona al 100 % sin cuenta; si creas una, es solo para no perder tus alarmas al reinstalar o cambiar de móvil. Sin anuncios, sin rastreo por defecto. 9 idiomas.</p>
+          <h3><span data-l="es">Privado por diseño</span><span data-l="en">Private by design</span></h3>
+          <p><span data-l="es">Funciona al 100 % sin cuenta; si creas una, es solo para no perder tus alarmas al reinstalar o cambiar de móvil. Sin anuncios, sin rastreo por defecto. 9 idiomas.</span><span data-l="en">Works 100% without an account; an optional account only keeps your alarms when you reinstall or switch phones. No ads, no tracking by default. 9 languages.</span></p>
         </div>
       </div>
     </div>
@@ -525,26 +526,26 @@
     <div class="layer glow-a" data-depth="0.1" style="left: auto; right: -300px; top: 0; opacity: .7;"></div>
     <div class="wrap share-grid">
       <div class="rv">
-        <div class="kicker" style="display: inline-flex; align-items: center; gap: 10px;">Nuevo <span style="width: 6px; height: 6px; border-radius: 50%; background: #ffb457; display: inline-block;"></span> Compartir</div>
-        <h2 class="h2" style="margin-top: 14px;">Comparte una alarma con un enlace</h2>
-        <p class="lead" style="margin: 16px 0 0;">Envía la alarma del entreno, de la excursión o del vuelo a quien quieras. Si tiene Chronos, se abre directamente en la app; si no, verá una vista previa y podrá instalar la app.</p>
+        <div class="kicker" style="display: inline-flex; align-items: center; gap: 10px;"><span data-l="es">Nuevo</span><span data-l="en">New</span> <span style="width: 6px; height: 6px; border-radius: 50%; background: #ffb457; display: inline-block;"></span> <span data-l="es">Compartir</span><span data-l="en">Share</span></div>
+        <h2 class="h2" style="margin-top: 14px;"><span data-l="es">Comparte una alarma con un enlace</span><span data-l="en">Share an alarm with a link</span></h2>
+        <p class="lead" style="margin: 16px 0 0;"><span data-l="es">Envía la alarma del entreno, de la excursión o del vuelo a quien quieras. Si tiene Chronos, se abre directamente en la app; si no, verá una vista previa y podrá instalar la app.</span><span data-l="en">Send the alarm for the workout, the hike or the flight to anyone. If they have Chronos, it opens right in the app; if not, they see a preview and can install it.</span></p>
         <div class="share-steps">
-          <div><b>1</b><span>Mantén pulsada una alarma y elige <strong style="color: #f4f1fb;">Compartir</strong>.</span></div>
-          <div><b>2</b><span>Se genera un enlace con la hora, los días y la configuración.</span></div>
-          <div><b>3</b><span>La alarma viaja dentro del propio enlace: nunca pasa por nuestros servidores ni queda registrada.</span></div>
+          <div><b>1</b><span data-l="es">Mantén pulsada una alarma y elige <strong style="color: #f4f1fb;"><span data-l="es">Compartir</span><span data-l="en">Share</span></strong>.</span><span data-l="en">Long-press an alarm and choose <strong style="color: #f4f1fb;">Share</strong>.</span></div>
+          <div><b>2</b><span><span data-l="es">Se genera un enlace con la hora, los días y la configuración.</span><span data-l="en">A link is generated with the time, the days and the settings.</span></span></div>
+          <div><b>3</b><span><span data-l="es">La alarma viaja dentro del propio enlace: nunca pasa por nuestros servidores ni queda registrada.</span><span data-l="en">The alarm travels inside the link itself: it never goes through our servers and is never logged.</span></span></div>
         </div>
       </div>
       <div class="link-card-wrap rv" style="--d: .15s;">
         <div class="urlbar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg><span><em>chronosintelligentalarm.com/a</em>#…</span></div>
         <div class="link-card">
           <div class="time">07:00</div>
-          <div class="name">Entreno de mañana</div>
-          <div class="desc">Salir a correr antes del trabajo</div>
-          <div class="link-days"><span class="on">L</span><span class="on">M</span><span class="on">X</span><span class="on">J</span><span class="on">V</span><span>S</span><span>D</span></div>
-          <div class="badges"><span class="badge">Salta festivos</span><span class="badge">Despertar suave</span><span class="badge">Desafío: operación</span></div>
+          <div class="name"><span data-l="es">Entreno de mañana</span><span data-l="en">Morning workout</span></div>
+          <div class="desc"><span data-l="es">Salir a correr antes del trabajo</span><span data-l="en">Go for a run before work</span></div>
+          <div class="link-days"><span class="on"><span data-l="es">L</span><span data-l="en">M</span></span><span class="on"><span data-l="es">M</span><span data-l="en">T</span></span><span class="on"><span data-l="es">X</span><span data-l="en">W</span></span><span class="on"><span data-l="es">J</span><span data-l="en">T</span></span><span class="on"><span data-l="es">V</span><span data-l="en">F</span></span><span><span data-l="es">S</span><span data-l="en">S</span></span><span><span data-l="es">D</span><span data-l="en">S</span></span></div>
+          <div class="badges"><span class="badge"><span data-l="es">Salta festivos</span><span data-l="en">Skips holidays</span></span><span class="badge"><span data-l="es">Despertar suave</span><span data-l="en">Gentle Wake</span></span><span class="badge"><span data-l="es">Desafío: operación</span><span data-l="en">Challenge: math</span></span></div>
           <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 22px;">
-            <a class="btn btn-primary" href="#">Abrir en Chronos</a>
-            <a class="btn btn-secondary" href="[ENLACE DE GOOGLE PLAY]">Instalar Chronos</a>
+            <a class="btn btn-primary" href="#"><span data-l="es">Abrir en Chronos</span><span data-l="en">Open in Chronos</span></a>
+            <a class="btn btn-secondary" href="[ENLACE DE GOOGLE PLAY]"><span data-l="es">Instalar Chronos</span><span data-l="en">Install Chronos</span></a>
           </div>
         </div>
       </div>
@@ -555,35 +556,35 @@
   <section id="premium" class="section" style="background: linear-gradient(180deg, #0b0912, #150f24 50%, #0b0912);">
     <div class="wrap">
       <div class="rv" style="display: flex; flex-direction: column; gap: 14px; max-width: 640px; text-align: center; margin: 0 auto; align-items: center;">
-        <div class="kicker">Gratis y Premium</div>
-        <h2 class="h2">Gratis para empezar, Premium cuando lo necesites</h2>
-        <p class="lead" style="margin: 0;">Sin suscripciones escondidas ni funciones que desaparecen. Lo gratis es gratis de verdad.</p>
+        <div class="kicker"><span data-l="es">Gratis y Premium</span><span data-l="en">Free and Premium</span></div>
+        <h2 class="h2"><span data-l="es">Gratis para empezar, Premium cuando lo necesites</span><span data-l="en">Free to start, Premium when you need it</span></h2>
+        <p class="lead" style="margin: 0;"><span data-l="es">Sin suscripciones escondidas ni funciones que desaparecen. Lo gratis es gratis de verdad.</span><span data-l="en">No hidden subscriptions and no features that vanish. Free really means free.</span></p>
       </div>
       <div class="plans">
         <div class="plan rv" style="--d: 0s;">
-          <h3>Gratis</h3>
+          <h3><span data-l="es">Gratis</span><span data-l="en">Free</span></h3>
           <div class="price">0 €</div>
           <ul>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Hasta 3 alarmas</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Salta festivos y días libres</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Desafíos de despertar esenciales</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Despertar suave con volumen progresivo</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Rutina de relajación completa y planificación del sueño</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Hasta 3 alarmas</span><span data-l="en">Up to 3 alarms</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Salta festivos y días libres</span><span data-l="en">Skips holidays and days off</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Desafíos de despertar esenciales</span><span data-l="en">Core wake-up challenges</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Despertar suave con volumen progresivo</span><span data-l="en">Gentle Wake with progressive volume</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Rutina de relajación completa y planificación del sueño</span><span data-l="en">Full wind-down routine and sleep planning</span></li>
           </ul>
-          <a class="btn btn-secondary" href="[ENLACE DE GOOGLE PLAY]" style="margin-top: auto;">Descargar gratis</a>
+          <a class="btn btn-secondary" href="[ENLACE DE GOOGLE PLAY]" style="margin-top: auto;"><span data-l="es">Descargar gratis</span><span data-l="en">Download for free</span></a>
         </div>
         <div class="plan premium rv" style="--d: .12s;">
           <h3>Premium</h3>
-          <div class="price"><span class="placeholder">[PRECIO]</span></div>
+          <div class="price"><span class="placeholder"><span data-l="es">[PRECIO]</span><span data-l="en">[PRICE]</span></span></div>
           <ul>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Alarmas ilimitadas</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Alarmas solares: amanecer, atardecer y crepúsculo</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Alarmas según tu ubicación</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Desafíos avanzados y comprobación de despertar</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Pre-alarma suave con sonido ambiente</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg>Todo lo del plan gratis</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Alarmas ilimitadas</span><span data-l="en">Unlimited alarms</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Alarmas solares: amanecer, atardecer y crepúsculo</span><span data-l="en">Solar alarms: sunrise, sunset and twilight</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Alarmas según tu ubicación</span><span data-l="en">Location-aware alarms</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Desafíos avanzados y comprobación de despertar</span><span data-l="en">Advanced challenges and Wake-up check</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Pre-alarma suave con sonido ambiente</span><span data-l="en">Soft pre-alarm with ambient sound</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 6L9 17l-5-5"></path></svg><span data-l="es">Todo lo del plan gratis</span><span data-l="en">Everything in the free plan</span></li>
           </ul>
-          <a class="btn btn-primary" href="[ENLACE DE GOOGLE PLAY]" style="margin-top: auto;">Empezar gratis y pasar a Premium después</a>
+          <a class="btn btn-primary" href="[ENLACE DE GOOGLE PLAY]" style="margin-top: auto;"><span data-l="es">Empezar gratis y pasar a Premium después</span><span data-l="en">Start free and go Premium later</span></a>
         </div>
       </div>
     </div>
@@ -593,28 +594,28 @@
   <section id="privacidad" class="section privacy">
     <div class="wrap">
       <div class="rv" style="display: flex; flex-direction: column; gap: 14px; max-width: 720px; margin: 0 auto; align-items: center;">
-        <div class="kicker">Privacidad</div>
-        <h2 class="h2">Funciona en tu móvil. Y se queda ahí.</h2>
-        <p class="lead" style="margin: 0;">No requiere cuenta: funciona al 100 % sin ella. La cuenta es opcional y solo sirve para no perder tus datos al reinstalar la app o cambiar de dispositivo. No muestra anuncios ni incluye SDKs de publicidad. Usa un servicio de informes de errores que puedes desactivar, y una analítica anónima opcional que está apagada hasta que tú decidas encenderla.</p>
+        <div class="kicker"><span data-l="es">Privacidad</span><span data-l="en">Privacy</span></div>
+        <h2 class="h2"><span data-l="es">Funciona en tu móvil. Y se queda ahí.</span><span data-l="en">Runs on your phone. And stays there.</span></h2>
+        <p class="lead" style="margin: 0;"><span data-l="es">No requiere cuenta: funciona al 100 % sin ella. La cuenta es opcional y solo sirve para no perder tus datos al reinstalar la app o cambiar de dispositivo. No muestra anuncios ni incluye SDKs de publicidad. Usa un servicio de informes de errores que puedes desactivar, y una analítica anónima opcional que está apagada hasta que tú decidas encenderla.</span><span data-l="en">No account required: Chronos works fully without one. An account is optional and only exists so you do not lose your data when reinstalling the app or changing devices. No ads shown, no advertising SDKs. It uses a crash-reporting service you can turn off, and an optional anonymous analytics service that stays off until you decide to enable it.</span></p>
       </div>
       <div class="facts">
         <div class="fact rv" style="--d: 0s;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          <h3>Cuenta opcional</h3>
-          <p>Instalas y listo, sin registro. Si quieres, creas una cuenta para conservar tus alarmas al reinstalar o cambiar de móvil.</p>
+          <h3><span data-l="es">Cuenta opcional</span><span data-l="en">Optional account</span></h3>
+          <p><span data-l="es">Instalas y listo, sin registro. Si quieres, creas una cuenta para conservar tus alarmas al reinstalar o cambiar de móvil.</span><span data-l="en">Install and go, no sign-up. If you want, create an account to keep your alarms when you reinstall or switch phones.</span></p>
         </div>
         <div class="fact rv" style="--d: .1s;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
-          <h3>Tus datos, en tu dispositivo</h3>
-          <p>Sin cuenta, alarmas, ubicaciones y rutinas se guardan solo en el móvil. Los enlaces compartidos tampoco pasan por ningún servidor.</p>
+          <h3><span data-l="es">Tus datos, en tu dispositivo</span><span data-l="en">Your data, on your device</span></h3>
+          <p><span data-l="es">Sin cuenta, alarmas, ubicaciones y rutinas se guardan solo en el móvil. Los enlaces compartidos tampoco pasan por ningún servidor.</span><span data-l="en">Without an account, alarms, locations and routines are stored only on your phone. Shared links never go through a server either.</span></p>
         </div>
         <div class="fact rv" style="--d: .2s;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><rect x="2" y="7" width="20" height="10" rx="5"></rect><circle cx="8" cy="12" r="3"></circle></svg>
-          <h3>Tú decides qué se comparte</h3>
-          <p>La analítica anónima está desactivada por defecto. Los informes de errores se pueden apagar.</p>
+          <h3><span data-l="es">Tú decides qué se comparte</span><span data-l="en">You decide what is shared</span></h3>
+          <p><span data-l="es">La analítica anónima está desactivada por defecto. Los informes de errores se pueden apagar.</span><span data-l="en">Anonymous analytics is off by default. Crash reports can be turned off.</span></p>
         </div>
       </div>
-      <p class="rv" style="margin: 28px 0 0; color: #a89ec3; --d: .3s;">Todos los detalles en la <a href="https://legal.chronosintelligentalarm.com/">Política de privacidad</a>.</p>
+      <p class="rv" style="margin: 28px 0 0; color: #a89ec3; --d: .3s;"><span data-l="es">Todos los detalles en la <a href="https://legal.chronosintelligentalarm.com/">Política de privacidad</a>.</span><span data-l="en">All the details in the <a href="https://legal.chronosintelligentalarm.com/">Privacy Policy</a>.</span></p>
     </div>
   </section>
 
@@ -625,11 +626,11 @@
         <div class="glow" aria-hidden="true"></div>
         <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 22px;">
           <img src="logo.png" alt="" style="width: 84px; height: 84px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(139,108,240,.55), 0 18px 50px rgba(139,108,240,.35);">
-          <h2 class="h2" style="max-width: 560px;">Mañana, despierta como querías</h2>
-          <p class="lead" style="margin: 0; text-align: center;">Gratis, sin cuenta obligatoria y en tu idioma. Solo para Android.</p>
+          <h2 class="h2" style="max-width: 560px;"><span data-l="es">Mañana, despierta como querías</span><span data-l="en">Tomorrow, wake up the way you wanted</span></h2>
+          <p class="lead" style="margin: 0; text-align: center;"><span data-l="es">Gratis, sin cuenta obligatoria y en tu idioma. Solo para Android.</span><span data-l="en">Free, no account required, in your language. Android only.</span></p>
           <a class="btn btn-primary" href="[ENLACE DE GOOGLE PLAY]">
             <svg viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px;"><path d="M5 3l14 9-14 9V3z"></path></svg>
-            Consíguelo en Google Play
+            <span data-l="es">Consíguelo en Google Play</span><span data-l="en">Get it on Google Play</span>
           </a>
         </div>
       </div>
@@ -643,19 +644,32 @@
         <span>Chronos<span style="color: #ffb457;">.</span></span>
       </div>
       <div style="display: flex; gap: 22px; flex-wrap: wrap; justify-content: center;">
-        <a href="https://legal.chronosintelligentalarm.com/">Política de privacidad</a>
+        <a href="https://legal.chronosintelligentalarm.com/"><span data-l="es">Política de privacidad</span><span data-l="en">Privacy Policy</span></a>
         <a href="mailto:chronosintelligentalarm@gmail.com">chronosintelligentalarm@gmail.com</a>
       </div>
-      <div>© 2026 Luis Martín. Chronos es una app para Android.</div>
+      <div><span data-l="es">© 2026 Luis Martín. Chronos es una app para Android.</span><span data-l="en">© 2026 Luis Martín. Chronos is an Android app.</span></div>
     </div>
   </footer>
 
 </div>
 </x-dc>
-<script data-dc-script data-props='{"accent":{"editor":"color","default":"#8b6cf0","options":["#8b6cf0","#5b8cf5","#e06fb4","#3fc5b5"],"section":"Marca"},"motion":{"editor":"boolean","default":true,"section":"Movimiento"},"$preview":{"width":1440,"height":900}}'>
+<script data-dc-script data-props='{"lang":{"editor":"enum","options":["es","en"],"default":"es","section":"Idioma"},"accent":{"editor":"color","default":"#8b6cf0","options":["#8b6cf0","#5b8cf5","#e06fb4","#3fc5b5"],"section":"Marca"},"motion":{"editor":"boolean","default":true,"section":"Movimiento"},"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { lang: (props && props.lang) || 'es' };
+  }
   renderVals() {
-    return { accent: this.props.accent ?? '#8b6cf0' };
+    var self = this;
+    var lang = this.state.lang || 'es';
+    return {
+      accent: this.props.accent ?? '#8b6cf0',
+      lang: lang,
+      esClass: lang === 'es' ? 'active' : '',
+      enClass: lang === 'en' ? 'active' : '',
+      setEs: function () { self.setState({ lang: 'es' }); },
+      setEn: function () { self.setState({ lang: 'en' }); }
+    };
   }
   componentDidMount() {
     var self = this;
@@ -702,7 +716,12 @@ class Component extends DCLogic {
     document.addEventListener('click', this._onClick, true);
     this.frame();
   }
-  componentDidUpdate() { this.frame(); }
+  componentDidUpdate(prevProps) {
+    if (prevProps && prevProps.lang !== this.props.lang && this.props.lang && this.props.lang !== this.state.lang) {
+      this.setState({ lang: this.props.lang });
+    }
+    this.frame();
+  }
   componentWillUnmount() {
     window.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('resize', this._onScroll);
