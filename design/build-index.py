@@ -11,6 +11,10 @@ import re, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 src = (ROOT / 'design' / 'Main.dc.html').read_text(encoding='utf-8')
 PLAY_URL = 'https://play.google.com/store/apps/details?id=com.chronos.smartalarm'
+# La ficha pública de Play devuelve 404 mientras la app esté en prueba cerrada (roadmap del repo
+# de la app, ítem sobre «Prueba cerrada»). Hasta el paso a producción no se enlaza: los botones se
+# convierten en la píldora «Muy pronto en Google Play». Cambiar a True al publicar.
+PLAY_LIVE = False
 
 css = re.search(r'<helmet>.*?<style>(.*?)</style>', src, re.S).group(1)
 css = css.replace('.page[data-lang="es"] [data-l="en"], .page[data-lang="en"] [data-l="es"]',
@@ -25,11 +29,22 @@ body = body.replace('<button type="button" class="{{enClass}}" onClick="{{setEn}
 body = body.replace('<button type="button" class="{{esClass}}" onClick="{{setEs}}">ES</button>',
                     '<button type="button" id="btn-es" onclick="setLang(\'es\')">ES</button>')
 body = body.replace('src="logo.png"', 'src="assets/logo.png"')
-body = body.replace('href="[ENLACE DE GOOGLE PLAY]"', 'href="%s"' % PLAY_URL)
+if PLAY_LIVE:
+    body = body.replace('href="[ENLACE DE GOOGLE PLAY]"', 'href="%s"' % PLAY_URL)
+else:
+    SOON = ('<span class="pulse" aria-hidden="true"></span><span data-l="es">Muy pronto en Google Play</span>'
+            '<span data-l="en">Coming soon to Google Play</span>')
+    def soon(m):
+        cls = m.group(1)
+        small = ' btn-sm' if 'btn-sm' in cls else ''
+        return '<span class="btn btn-soon%s"%s>%s</span>' % (small, m.group(2), SOON)
+    body, n = re.subn(r'<a class="btn ([^"]*)" href="\[ENLACE DE GOOGLE PLAY\]"((?: style="[^"]*")?)>.*?</a>', soon, body, flags=re.S)
+    assert n == 6, n
+    css += '    .btn-soon { background: var(--card); color: var(--text); cursor: default; gap: 9px; }\n    .btn-soon:hover { transform: none; }\n'
 body = body.replace('<a class="btn btn-primary" href="#"><span data-l="es">Abrir en Chronos</span><span data-l="en">Open in Chronos</span></a>',
                     '<span class="btn btn-primary" aria-hidden="true"><span data-l="es">Abrir en Chronos</span><span data-l="en">Open in Chronos</span></span>')
 body = re.sub(r'<div class="price"><span class="placeholder">.*?</span></span></div>',
-              '<div class="price" style="font-size: 1.35em; line-height: 1.3;"><span data-l="es">Precio en la app</span><span data-l="en">Price shown in the app</span></div>', body)
+              '<div class="price" style="font-size: 1.35em; line-height: 1.3;"><span data-l="es">Mensual, anual o pago único</span><span data-l="en">Monthly, yearly or one-time</span></div><p style="margin: -8px 0 0; color: var(--muted); font-size: 0.9em;"><span data-l="es">Precios en la app. El plan anual incluye una prueba gratis.</span><span data-l="en">Prices shown in the app. The yearly plan includes a free trial.</span></p>', body)
 assert '{{' not in body and '[PRECIO]' not in body and 'ENLACE' not in body, 'quedan marcadores'
 
 head = '''<!DOCTYPE html>
