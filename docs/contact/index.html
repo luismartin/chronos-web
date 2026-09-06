@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chronos — Contact</title>
+<meta name="description" content="Contact Chronos: report a bug, ask us to delete your account, or get in touch.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b0912">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="canonical" href="https://chronosintelligentalarm.com/contact">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0912;
+    --card: #191426;
+    --border: #2b2340;
+    --text: #f4f1fb;
+    --muted: #a89ec3;
+    --accent: #8b6cf0;
+    --accent-light: #c3b3fb;
+    --warm: #ffb457;
+    --error: #ff8080;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+    margin: 0; color: var(--text); line-height: 1.6;
+    background: var(--bg);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 22px; }
+
+  header {
+    padding: 16px 0; display: flex; justify-content: space-between; align-items: center;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15em; }
+  .brand img { width: 34px; height: 34px; border-radius: 50%; display: block; }
+  .brand .dot { color: var(--warm); }
+  .lang-switch { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 9px; padding: 3px; }
+  .lang-switch button {
+    background: none; border: none; color: var(--muted);
+    border-radius: 6px; padding: 4px 12px; cursor: pointer; font-size: 0.83em; font-weight: 600;
+    font-family: inherit; transition: background 0.15s ease, color 0.15s ease;
+  }
+  .lang-switch button:hover { color: var(--text); }
+  .lang-switch button.active { background: var(--accent); color: #0b0912; }
+
+  main { padding: 28px 0 60px; }
+  h1 { font-size: 1.6em; margin: 0 0 8px; font-weight: 800; }
+  .subtitle { color: var(--muted); margin: 0 0 28px; }
+
+  form { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 26px; }
+  label { display: block; font-weight: 600; font-size: 0.92em; margin: 0 0 6px; }
+  .field { margin-bottom: 18px; }
+  select, input[type="email"], textarea {
+    width: 100%; padding: 11px 13px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); font-family: inherit; font-size: 0.95em;
+  }
+  select:focus, input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  textarea { resize: vertical; min-height: 120px; }
+
+  /* Honeypot: visually and semantically hidden from real visitors and
+     screen readers, but present in the DOM for bots that fill every field. */
+  .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  button[type="submit"] {
+    width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
+    background: var(--accent); color: #0b0912; font-family: inherit; font-weight: 700; font-size: 0.98em;
+    transition: opacity 0.15s ease;
+  }
+  button[type="submit"]:disabled { opacity: 0.6; cursor: default; }
+
+  .field-error { display: none; color: var(--error); font-size: 0.85em; margin-top: 6px; }
+  .field-error.show { display: block; }
+
+  .char-counter { margin-top: 6px; font-size: 0.82em; color: var(--muted); text-align: right; }
+  .char-counter.warn { color: var(--warm); }
+  .char-counter.limit { color: var(--error); }
+
+  .deletion-warning {
+    display: none; margin-top: 10px; padding: 12px 14px; border-radius: 10px;
+    background: rgba(255, 128, 128, 0.1); border: 1px solid rgba(255, 128, 128, 0.35);
+  }
+  .deletion-warning.show { display: block; }
+  .deletion-warning p { margin: 0 0 10px; font-size: 0.9em; color: var(--text); }
+  .checkbox-label { display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 0.92em; cursor: pointer; }
+  .checkbox-label input { margin: 0; width: 16px; height: 16px; flex: none; }
+
+  .status { margin-top: 16px; padding: 12px 14px; border-radius: 10px; font-size: 0.92em; display: none; }
+  .status.show { display: block; }
+  .status.success { background: rgba(139, 108, 240, 0.16); color: var(--accent-light); }
+  .status.error { background: rgba(255, 128, 128, 0.14); color: var(--error); }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 24px 0 40px; text-align: center;
+    color: var(--muted); font-size: 0.88em;
+  }
+  footer a { color: var(--accent-light); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  [data-l]:not(.show) { display: none; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <img src="../assets/logo.png" alt="Chronos logo">
+      <span>Chronos<span class="dot">.</span></span>
+    </div>
+    <div class="lang-switch">
+      <button id="btn-en" type="button" onclick="setLang('en')">EN</button>
+      <button id="btn-es" type="button" onclick="setLang('es')">ES</button>
+    </div>
+  </header>
+
+  <main>
+    <h1 data-l="en">Contact us</h1>
+    <h1 data-l="es">Contáctanos</h1>
+    <p class="subtitle" data-l="en">We read every message and reply from a real inbox — you'll get a confirmation as soon as we receive it.</p>
+    <p class="subtitle" data-l="es">Leemos todos los mensajes y respondemos desde una bandeja real — recibirás una confirmación en cuanto lo recibamos.</p>
+
+    <form id="contact-form" novalidate>
+      <div class="field">
+        <label for="category" data-l="en">What is this about?</label>
+        <label for="category" data-l="es">¿Sobre qué es tu mensaje?</label>
+        <select id="category" name="category" required>
+          <option value="bug" data-en="Report a bug" data-es="Reportar un error">Report a bug</option>
+          <option value="deletion" data-en="Delete my account" data-es="Eliminar mi cuenta">Delete my account</option>
+          <option value="other" data-en="Other" data-es="Otro">Other</option>
+        </select>
+        <div class="deletion-warning" id="deletion-warning">
+          <p data-l="en">This asks us to permanently delete your account and its data.</p>
+          <p data-l="es">Esto nos pide eliminar permanentemente tu cuenta y tus datos.</p>
+          <label class="checkbox-label">
+            <input type="checkbox" id="deletion-confirm-checkbox">
+            <span data-l="en">Yes, I want to delete my account</span>
+            <span data-l="es">Sí, quiero eliminar mi cuenta</span>
+          </label>
+          <div class="field-error" id="deletion-confirm-error">
+            <span data-l="en">Please confirm you want to delete your account.</span>
+            <span data-l="es">Confirma que quieres eliminar tu cuenta.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email" data-l="en">Your email</label>
+        <label for="email" data-l="es">Tu email</label>
+        <input type="email" id="email" name="email" required maxlength="254" autocomplete="email">
+      </div>
+
+      <div class="field">
+        <label for="email-confirm" data-l="en">Confirm your email</label>
+        <label for="email-confirm" data-l="es">Confirma tu email</label>
+        <input type="email" id="email-confirm" name="email-confirm" required maxlength="254" autocomplete="email">
+        <div class="field-error" id="email-mismatch-error">
+          <span data-l="en">Emails don't match.</span>
+          <span data-l="es">Los emails no coinciden.</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="message" data-l="en">Message</label>
+        <label for="message" data-l="es">Mensaje</label>
+        <textarea id="message" name="message" required maxlength="5000"></textarea>
+        <div class="char-counter" id="char-counter"></div>
+      </div>
+
+      <!-- Honeypot field: real users never see or fill this. -->
+      <div class="field hp-field" aria-hidden="true">
+        <label for="website">Website</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <button type="submit" id="submit-btn">
+        <span data-l="en">Send message</span>
+        <span data-l="es">Enviar mensaje</span>
+      </button>
+
+      <div class="status" id="status"></div>
+    </form>
+  </main>
+
+  <footer>
+    <div data-l="en">Prefer not to use a form? See our <a href="https://legal.chronosintelligentalarm.com/">Privacy Policy</a> for how we handle your data.</div>
+    <div data-l="es">¿Prefieres no usar un formulario? Consulta nuestra <a href="https://legal.chronosintelligentalarm.com/">Política de privacidad</a> para saber cómo tratamos tus datos.</div>
+  </footer>
+</div>
+
+<script>
+  var FUNCTION_URL = 'https://chronos-contact.netlify.app/.netlify/functions/contact';
+
+  function setLang(lang) {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-l]').forEach(function (el) {
+      el.classList.toggle('show', el.getAttribute('data-l') === lang);
+    });
+    document.querySelectorAll('#category option').forEach(function (opt) {
+      opt.textContent = lang === 'es' ? opt.getAttribute('data-es') : opt.getAttribute('data-en');
+    });
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+    try { localStorage.setItem('chronos-lang', lang); } catch (e) {}
+    updateCharCounter();
+  }
+
+  // Looks up its own elements each time rather than closing over outer vars,
+  // so it's safe to call from setLang() before the rest of the script below
+  // has run.
+  function updateCharCounter() {
+    var textarea = document.getElementById('message');
+    var counter = document.getElementById('char-counter');
+    if (!textarea || !counter) return;
+    var max = textarea.maxLength;
+    var remaining = max - textarea.value.length;
+    var lang = document.documentElement.lang;
+    counter.textContent = lang === 'es'
+      ? remaining + ' caracteres restantes'
+      : remaining + ' characters remaining';
+    counter.classList.toggle('warn', remaining <= 200 && remaining > 20);
+    counter.classList.toggle('limit', remaining <= 20);
+  }
+
+  var saved = null;
+  try { saved = localStorage.getItem('chronos-lang'); } catch (e) {}
+  var initialLang = saved || ((navigator.language || 'en').toLowerCase().startsWith('es') ? 'es' : 'en');
+  setLang(initialLang);
+
+  // Preselect the category when linked from a specific context, e.g.
+  // /contact?category=deletion from chronos-legal's delete-account page.
+  var categorySelect = document.getElementById('category');
+  var deletionWarning = document.getElementById('deletion-warning');
+  var deletionCheckbox = document.getElementById('deletion-confirm-checkbox');
+  var deletionError = document.getElementById('deletion-confirm-error');
+  (function preselectCategory() {
+    var params = new URLSearchParams(window.location.search);
+    var wanted = params.get('category');
+    if (wanted && ['bug', 'deletion', 'other'].indexOf(wanted) !== -1) {
+      categorySelect.value = wanted;
+    }
+    updateDeletionWarning();
+  })();
+
+  // Selecting "Delete my account" reveals an inline warning that requires an
+  // explicit checkbox before the form can be submitted, so the request can't
+  // go out by mistake. (A native confirm() was tried first, but browsers
+  // inconsistently suppress dialogs fired from a <select>'s own 'change'
+  // event, which made the option effectively unselectable - this inline
+  // panel avoids that entirely.) Switching away and back resets the checkbox.
+  function updateDeletionWarning() {
+    var isDeletion = categorySelect.value === 'deletion';
+    deletionWarning.classList.toggle('show', isDeletion);
+    if (!isDeletion) {
+      deletionCheckbox.checked = false;
+      deletionError.classList.remove('show');
+    }
+  }
+  categorySelect.addEventListener('change', updateDeletionWarning);
+  deletionCheckbox.addEventListener('change', function () {
+    if (deletionCheckbox.checked) deletionError.classList.remove('show');
+  });
+
+  var formLoadedAt = Date.now();
+  var form = document.getElementById('contact-form');
+  var statusEl = document.getElementById('status');
+  var submitBtn = document.getElementById('submit-btn');
+  var emailInput = document.getElementById('email');
+  var emailConfirmInput = document.getElementById('email-confirm');
+  var mismatchError = document.getElementById('email-mismatch-error');
+  var messageInput = document.getElementById('message');
+
+  messageInput.addEventListener('input', updateCharCounter);
+  updateCharCounter();
+
+  // Block pasting (clipboard or dragging selected text) into the
+  // confirmation field, so a mistyped address can't just be copied over
+  // instead of retyped. Browser autofill is unaffected - it doesn't fire
+  // paste/drop events.
+  ['paste', 'drop'].forEach(function (evt) {
+    emailConfirmInput.addEventListener(evt, function (e) { e.preventDefault(); });
+  });
+  emailConfirmInput.addEventListener('input', function () {
+    mismatchError.classList.remove('show');
+  });
+
+  function showStatus(kind, textEn, textEs) {
+    statusEl.className = 'status show ' + kind;
+    statusEl.textContent = document.documentElement.lang === 'es' ? textEs : textEn;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    if (categorySelect.value === 'deletion' && !deletionCheckbox.checked) {
+      deletionError.classList.add('show');
+      deletionCheckbox.focus();
+      return;
+    }
+
+    var email = emailInput.value.trim();
+    var emailConfirm = emailConfirmInput.value.trim();
+    if (email.toLowerCase() !== emailConfirm.toLowerCase()) {
+      mismatchError.classList.add('show');
+      emailConfirmInput.focus();
+      return;
+    }
+    mismatchError.classList.remove('show');
+
+    submitBtn.disabled = true;
+    statusEl.className = 'status';
+
+    var payload = {
+      category: document.getElementById('category').value,
+      email: email,
+      message: document.getElementById('message').value.trim(),
+      website: document.getElementById('website').value, // honeypot
+      ts: formLoadedAt,
+      lang: document.documentElement.lang
+    };
+
+    fetch(FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+      .then(function (result) {
+        if (result.ok && result.data && result.data.ok) {
+          showStatus(
+            'success',
+            "Thanks — we've received your message and sent a confirmation to your email.",
+            'Gracias — hemos recibido tu mensaje y enviado una confirmación a tu email.'
+          );
+          form.reset();
+          formLoadedAt = Date.now();
+          updateCharCounter();
+          updateDeletionWarning();
+        } else {
+          showStatus(
+            'error',
+            'Something went wrong. Please try again in a moment.',
+            'Algo ha ido mal. Inténtalo de nuevo en un momento.'
+          );
+          submitBtn.disabled = false;
+        }
+      })
+      .catch(function () {
+        showStatus(
+          'error',
+          'Something went wrong. Please try again in a moment.',
+          'Algo ha ido mal. Inténtalo de nuevo en un momento.'
+        );
+        submitBtn.disabled = false;
+      });
+  });
+</script>
+
+</body>
+</html>
