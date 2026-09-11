@@ -131,6 +131,7 @@
         <label for="category" data-l="es">¿Sobre qué es tu mensaje?</label>
         <select id="category" name="category" required>
           <option value="bug" data-en="Report a bug" data-es="Reportar un error">Report a bug</option>
+          <option value="feedback" data-en="App feedback" data-es="Feedback de la app">App feedback</option>
           <option value="deletion" data-en="Delete my account" data-es="Eliminar mi cuenta">Delete my account</option>
           <option value="other" data-en="Other" data-es="Otro">Other</option>
         </select>
@@ -241,10 +242,15 @@
   (function preselectCategory() {
     var params = new URLSearchParams(window.location.search);
     var wanted = params.get('category');
-    if (wanted && ['bug', 'deletion', 'other'].indexOf(wanted) !== -1) {
+    if (wanted && ['bug', 'feedback', 'deletion', 'other'].indexOf(wanted) !== -1) {
       categorySelect.value = wanted;
     }
     updateDeletionWarning();
+    var wantedMessage = params.get('message');
+    if (wantedMessage) {
+      document.getElementById('message').value = wantedMessage;
+      updateCharCounter();
+    }
   })();
 
   // Selecting "Delete my account" reveals an inline warning that requires an
