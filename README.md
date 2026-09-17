@@ -65,6 +65,36 @@ adb shell pm get-app-links com.chronos.smartalarm      # want: verified
 `docs/.nojekyll` is what keeps Pages from dropping the `.well-known` directory —
 folders starting with a dot are silently skipped without it.
 
+## Contact form (`/contact`)
+
+The page is static like the rest of the site, but its submit handler POSTs to a
+**Netlify Function** (`netlify/functions/contact.js`, deployed at
+`https://chronos-contact.netlify.app`) because GitHub Pages cannot run server
+code. Netlify hosts nothing else: it builds `netlify/functions` from this same
+repo on every push to `main`, and `RESEND_API_KEY` lives in its site settings.
+So the site has two deploy targets, on two different clocks - a change to the
+form's HTML and a change to the function do not go live together.
+
+**The category list exists in three places and MUST stay in sync**: the
+`<option value>`s in `docs/contact/index.html`, the query-param allowlist in
+that same file's JS, and `CATEGORY_LABELS` in the function. A value the form can
+send but the function does not know is rejected as `invalid_category`, and the
+page reports only its generic "Something went wrong" - the failure looks like an
+outage, not a mismatch. The app links here too (`StoreReviewService`'s
+`buildFeedbackFormUrl` sends `category=feedback`), so a fourth copy lives in the
+app repo.
+
+Probe the endpoint without sending mail by using a deliberately invalid address:
+category is validated before email, so `invalid_email` back means the category
+was accepted and `invalid_category` means it was not.
+
+```
+curl -s -X POST https://chronos-contact.netlify.app/.netlify/functions/contact   -H 'Content-Type: application/json'   -d '{"category":"feedback","email":"x","message":"probe","ts":1,"lang":"es"}'
+```
+
+(`ts` must be at least 2 s in the past - the form's bot time-trap silently
+answers `{"ok":true}` to anything faster.)
+
 ## Related
 
 The privacy policy lives in the separate

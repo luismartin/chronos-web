@@ -19,8 +19,15 @@ const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // per hour, per IP
 const MIN_SUBMIT_MS = 2000; // time-trap: real humans take longer than this to fill the form
 const MAX_MESSAGE_LEN = 5000;
 
+// MUST stay in sync with the <option value> list in docs/contact/index.html
+// (and with the categories the app links to, e.g. StoreReviewService's
+// buildFeedbackFormUrl). A value the form can send but this map lacks is
+// rejected as `invalid_category`, and the page shows only its generic
+// "Something went wrong" - which is how `feedback` stayed broken after the
+// option was added to the form alone.
 const CATEGORY_LABELS = {
   bug: { en: 'Bug report', es: 'Reportar un error' },
+  feedback: { en: 'App feedback', es: 'Feedback de la app' },
   deletion: { en: 'Account deletion', es: 'Eliminación de cuenta' },
   other: { en: 'Other', es: 'Otro' },
 };
