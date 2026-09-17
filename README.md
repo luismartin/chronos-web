@@ -84,6 +84,11 @@ outage, not a mismatch. The app links here too (`StoreReviewService`'s
 `buildFeedbackFormUrl` sends `category=feedback`), so a fourth copy lives in the
 app repo.
 
+`npm test` runs a contract test (`test/contact-contract.js`, plain node, no
+framework, no install needed) over both files: it fails if the category lists
+drift apart again, if an error code the function can return has no message on
+the page, or if an email address reappears in the page.
+
 Probe the endpoint without sending mail by using a deliberately invalid address:
 category is validated before email, so `invalid_email` back means the category
 was accepted and `invalid_category` means it was not.

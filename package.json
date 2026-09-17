@@ -2,7 +2,10 @@
   "name": "chronos-web-functions",
   "private": true,
   "version": "1.0.0",
-  "description": "Netlify Functions backend for the chronos-web contact form. The site itself is static and served by GitHub Pages (see README.md) - this package only exists for netlify/functions.",
+  "description": "Netlify Functions backend for the chronos-web contact form. The site itself is static and served by GitHub Pages (see README.md) - this package holds netlify/functions and the contract test that keeps the two sides of the form in agreement.",
+  "scripts": {
+    "test": "node test/contact-contract.js"
+  },
   "dependencies": {
     "resend": "^6.0.0",
     "@netlify/blobs": "^10.0.0"

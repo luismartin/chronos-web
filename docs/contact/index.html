@@ -295,6 +295,46 @@
     mismatchError.classList.remove('show');
   });
 
+  // Why a submission failed decides what the visitor should do about it, and
+  // the answers are not interchangeable: "wait an hour", "check your address"
+  // and "this one is our fault" are three different instructions. Collapsing
+  // them into one generic line is how an `invalid_category` - the App feedback
+  // option existed in this form before the function knew it - read as an
+  // outage instead of a mismatch. Codes come from netlify/functions/contact.js.
+  var GENERIC_ERROR = [
+    'Something went wrong. Please try again in a moment.',
+    'Algo ha ido mal. Inténtalo de nuevo en un momento.'
+  ];
+
+  // Our bug, not theirs: the page sent something the function rejects outright.
+  // Repeating the same submission cannot work, so do not invite a retry - and
+  // do not offer an address to write to instead, since keeping the inbox off
+  // the page is the whole reason this form exists.
+  var CONFIG_ERROR = [
+    "This option isn't working right now - that's on our side, not yours. " +
+      'Please try a different category, or come back in a little while.',
+    'Esta opción no funciona ahora mismo; el fallo es nuestro, no tuyo. ' +
+      'Prueba con otra categoría o vuelve a intentarlo más tarde.'
+  ];
+
+  var ERROR_MESSAGES = {
+    rate_limited: [
+      "You've sent several messages in a short time. Please try again in an hour.",
+      'Has enviado varios mensajes en poco tiempo. Vuelve a intentarlo dentro de una hora.'
+    ],
+    invalid_email: [
+      "That email address doesn't look valid. Please check it and try again.",
+      'Esa dirección de email no parece válida. Revísala e inténtalo de nuevo.'
+    ],
+    invalid_message: [
+      'Your message is empty or too long (5,000 characters maximum).',
+      'Tu mensaje está vacío o es demasiado largo (5.000 caracteres como máximo).'
+    ],
+    invalid_category: CONFIG_ERROR,
+    invalid_json: CONFIG_ERROR,
+    method_not_allowed: CONFIG_ERROR
+  };
+
   function showStatus(kind, textEn, textEs) {
     statusEl.className = 'status show ' + kind;
     statusEl.textContent = document.documentElement.lang === 'es' ? textEs : textEn;
@@ -348,20 +388,22 @@
           updateCharCounter();
           updateDeletionWarning();
         } else {
-          showStatus(
-            'error',
-            'Something went wrong. Please try again in a moment.',
-            'Algo ha ido mal. Inténtalo de nuevo en un momento.'
-          );
+          // Also logged: the on-screen text is deliberately free of codes, but
+          // whoever debugs a report needs the real one.
+          var code = (result.data && result.data.error) || 'unknown';
+          if (window.console && console.error) {
+            console.error('contact_error', code);
+          }
+          var msg = ERROR_MESSAGES[code] || GENERIC_ERROR;
+          showStatus('error', msg[0], msg[1]);
           submitBtn.disabled = false;
         }
       })
       .catch(function () {
-        showStatus(
-          'error',
-          'Something went wrong. Please try again in a moment.',
-          'Algo ha ido mal. Inténtalo de nuevo en un momento.'
-        );
+        // No response at all (offline, DNS, the function cold-starting past
+        // the browser's patience). Nothing to distinguish, so say the generic
+        // thing - but say it from the one place that owns the wording.
+        showStatus('error', GENERIC_ERROR[0], GENERIC_ERROR[1]);
         submitBtn.disabled = false;
       });
   });
