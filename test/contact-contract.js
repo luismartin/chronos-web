@@ -28,7 +28,14 @@ const check = (ok, what) => {
 // (A fourth lives in the app repo: StoreReviewService.buildFeedbackFormUrl
 // sends `category=feedback`. Nothing here can see it, hence case 2 below.)
 
-const options = [...page.matchAll(/<option value="([a-z_]+)"/g)].map((m) => m[1]);
+// Scoped to the #category <select> specifically: the page also has a 34-language
+// <select id="lang-select"> whose <option value="en"> etc. would otherwise be
+// mistaken for category values by a page-wide match.
+const categorySelect = page.match(/<select id="category"[\s\S]*?<\/select>/);
+check(!!categorySelect, 'the page declares a #category select');
+const options = categorySelect
+  ? [...categorySelect[0].matchAll(/<option value="([a-z_]+)"/g)].map((m) => m[1])
+  : [];
 const labels = fn.match(/const CATEGORY_LABELS = \{[\s\S]*?\n\};/);
 const allowlist = page.match(/\[((?:\s*'[a-z_]+',?)+)\]\.indexOf\(wanted\)/);
 
@@ -57,9 +64,13 @@ if (labels && allowlist) {
 
 // --- 3. Error codes reach a message the visitor can act on ------------------
 
-const table = page.match(/  var GENERIC_ERROR = \[[\s\S]*?method_not_allowed: CONFIG_ERROR\n  \};/);
+// GENERIC_ERROR/ERROR_MESSAGES moved from 2-element [en, es] arrays to
+// lang-keyed { en, es, fr, ... } objects when the page grew from an EN/ES
+// toggle to the 34-language selector shared with the rest of the site (an
+// object with an `en` fallback scales to that; a positional array does not).
+const table = page.match(/  var GENERIC_ERROR = \{[\s\S]*?method_not_allowed: CONFIG_ERROR\n  \};/);
 const dispatch = page.match(
-  /          var code = \(result\.data[\s\S]*?var msg = ERROR_MESSAGES\[code\] \|\| GENERIC_ERROR;/
+  /          var code = \(result\.data[\s\S]*?console\.error\('contact_error', code\);\n {10}\}/
 );
 check(!!table && !!dispatch, 'the page still maps error codes to messages');
 
@@ -67,7 +78,7 @@ if (table && dispatch) {
   const logged = [];
   const win = { console: { error: (...a) => logged.push(a.join(' ')) } };
   const resolve = new Function('result', 'window', 'console',
-    `${table[0]}\n${dispatch[0]}\nreturn msg;`);
+    `${table[0]}\n${dispatch[0]}\nreturn ERROR_MESSAGES[code] || GENERIC_ERROR;`);
 
   // Every code the function can return, plus the two shapes the page must
   // survive unaided: a body with no `error`, and a code from a future backend.
@@ -78,16 +89,16 @@ if (table && dispatch) {
   let allBilingual = true;
   for (const code of cases) {
     const msg = resolve({ ok: false, data: code ? { error: code } : {} }, win, win.console);
-    if (!Array.isArray(msg) || msg.length !== 2 || !msg[0] || !msg[1]) allUsable = false;
-    else if (msg[0] === msg[1]) allBilingual = false;
+    if (!msg || typeof msg !== 'object' || !msg.en || !msg.es) allUsable = false;
+    else if (msg.en === msg.es) allBilingual = false;
   }
-  check(allUsable, `all ${cases.length} error cases resolve to a message`);
-  check(allBilingual, 'no error message is the same text in both languages');
+  check(allUsable, `all ${cases.length} error cases resolve to a message with at least en/es`);
+  check(allBilingual, 'no error message is the same text in English and Spanish');
   check(logged.length === cases.length,
     'every failed submission logs its code for debugging');
 
   // The distinctions that exist only to give different advice.
-  const es = (code) => resolve({ ok: false, data: { error: code } }, win, win.console)[1];
+  const es = (code) => resolve({ ok: false, data: { error: code } }, win, win.console).es;
   check(es('rate_limited') !== es('send_failed'),
     'rate limiting does not read as a transient failure');
   check(es('invalid_category') !== es('send_failed'),

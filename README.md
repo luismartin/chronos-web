@@ -1,6 +1,9 @@
 # Chronos — Website
 
-Public landing page for the Chronos Android app (EN/ES toggle).
+Public landing page for the Chronos Android app, in the same 34 languages the
+app itself supports (a single `<select>` language switcher, matching
+`lib/l10n/supported_languages.dart` in the app repo — never hardcode a count
+here).
 
 - **Live**: https://chronosintelligentalarm.com/
   (the old https://luismartin.github.io/chronos-web/ still resolves)

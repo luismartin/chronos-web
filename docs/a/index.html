@@ -48,9 +48,10 @@
   .wrap { max-width: 560px; margin: 0 auto; padding: 0 22px 56px; }
   header {
     padding: 16px 0; display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px 16px;
   }
   .brand {
-    display: flex; align-items: center; gap: 10px;
+    display: flex; align-items: center; gap: 10px; flex: none;
     font-weight: 800; font-size: 1.15em; color: inherit; text-decoration: none;
   }
   .brand img {
@@ -65,6 +66,17 @@
     font-family: inherit;
   }
   .lang-switch button.active { background: var(--accent); color: #0b0912; }
+  .lang-select { background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 9px;
+    padding: 7px 30px 7px 12px; font-size: 0.83em; font-weight: 600; font-family: inherit; cursor: pointer;
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a89ec3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center; background-size: 14px; }
+  .lang-select:hover { border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+  .lang-select option { background: var(--card); color: var(--text); }
+  html[dir="rtl"] .lang-select { padding: 7px 12px 7px 30px; background-position: left 8px center; }
+  @media (max-width: 420px) {
+    .lang-select { max-width: 44vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  }
 
   .intro { text-align: center; padding: 28px 0 22px; }
   .intro h1 { font-size: 1.5em; margin: 0 0 8px; font-weight: 800; }
@@ -130,10 +142,42 @@
       <img src="../assets/logo.png" alt="Chronos logo">
       <span>Chronos<span class="dot">.</span></span>
     </a>
-    <div class="lang-switch">
-      <button id="btn-en" type="button">EN</button>
-      <button id="btn-es" type="button">ES</button>
-    </div>
+    <select class="lang-select" id="lang-select" aria-label="Language / Idioma">
+      <option value="en">English</option>
+      <option value="es">Español</option>
+      <option value="fr">Français</option>
+      <option value="de">Deutsch</option>
+      <option value="pt">Português</option>
+      <option value="it">Italiano</option>
+      <option value="zh">中文</option>
+      <option value="ja">日本語</option>
+      <option value="ko">한국어</option>
+      <option value="nl">Nederlands</option>
+      <option value="id">Bahasa Indonesia</option>
+      <option value="el">Ελληνικά</option>
+      <option value="fil">Filipino</option>
+      <option value="sv">Svenska</option>
+      <option value="da">Dansk</option>
+      <option value="nb">Norsk</option>
+      <option value="fi">Suomi</option>
+      <option value="pl">Polski</option>
+      <option value="cs">Čeština</option>
+      <option value="hu">Magyar</option>
+      <option value="tr">Türkçe</option>
+      <option value="ru">Русский</option>
+      <option value="uk">Українська</option>
+      <option value="hi">हिन्दी</option>
+      <option value="th">ไทย</option>
+      <option value="ar">العربية</option>
+      <option value="fa">فارسی</option>
+      <option value="ur">اردو</option>
+      <option value="ca">Català</option>
+      <option value="ms">Bahasa Melayu</option>
+      <option value="ro">Română</option>
+      <option value="vi">Tiếng Việt</option>
+      <option value="he">עברית</option>
+      <option value="bn">বাংলা</option>
+    </select>
   </header>
 
   <main id="root"></main>
@@ -171,6 +215,19 @@
   var VERSION = 1;
   var lang = 'en';
   var root = document.getElementById('root');
+
+  var CHRONOS_LANGS = ['en', 'es', 'fr', 'de', 'pt', 'it', 'zh', 'ja', 'ko', 'nl', 'id', 'el',
+    'fil', 'sv', 'da', 'nb', 'fi', 'pl', 'cs', 'hu', 'tr', 'ru', 'uk', 'hi', 'th', 'ar', 'fa',
+    'ur', 'ca', 'ms', 'ro', 'vi', 'he', 'bn'];
+  var CHRONOS_RTL = ['ar', 'fa', 'ur', 'he'];
+  var CHRONOS_LANG_ALIASES = { 'in': 'id', 'tl': 'fil', 'no': 'nb', 'iw': 'he' };
+  function chronosResolveLang(code) {
+    code = (code || '').toLowerCase();
+    var primary = code.split('-')[0];
+    if (CHRONOS_LANGS.indexOf(primary) !== -1) return primary;
+    if (CHRONOS_LANG_ALIASES[primary]) return CHRONOS_LANG_ALIASES[primary];
+    return null;
+  }
 
   var T = {
     en: {
@@ -217,7 +274,11 @@
         emoji: 'Dismiss: find the emojis',
         shake: 'Dismiss: shake the phone',
         steps: 'Dismiss: walk some steps',
-        scan_item: 'Dismiss: scan an everyday object'
+        scan_item: 'Dismiss: scan an everyday object',
+        troll: 'Dismiss: whack the trolls',
+        mosquito: 'Dismiss: swat the mosquitoes',
+        maze: 'Dismiss: tilt through the maze',
+        pairs: 'Dismiss: match the pairs'
       },
       omitted: {
         geo: 'The location condition (the sender’s coordinates are never shared)',
@@ -272,7 +333,11 @@
         emoji: 'Para apagarla: encontrar los emojis',
         shake: 'Para apagarla: agitar el móvil',
         steps: 'Para apagarla: dar unos pasos',
-        scan_item: 'Para apagarla: escanear un objeto cotidiano'
+        scan_item: 'Para apagarla: escanear un objeto cotidiano',
+        troll: 'Para apagarla: atizar a los trolls',
+        mosquito: 'Para apagarla: aplastar los mosquitos',
+        maze: 'Para apagarla: cruzar el laberinto inclinando el móvil',
+        pairs: 'Para apagarla: encontrar las parejas'
       },
       omitted: {
         geo: 'La condición de ubicación (las coordenadas de quien la comparte nunca viajan)',
@@ -282,6 +347,2150 @@
         bar: 'La misión de código QR o de barras',
         act: 'La acción que se ejecuta al apagarla'
       }
+    },
+    fr: {
+          "title": "Quelqu'un a partagé une alarme avec toi",
+          "subtitle": "Ouvre-la dans Chronos pour l'ajouter. Rien n'est ajouté tant que tu ne confirmes pas dans l'app.",
+          "invalidTitle": "Ce lien d'alarme n'est pas valide",
+          "invalidBody": "Le lien a peut-être été tronqué par l'application par laquelle il a été envoyé. Redemande-le, et assure-toi que le lien entier est copié — y compris tout ce qui suit le signe #.",
+          "outdatedTitle": "Ce lien nécessite une version plus récente de Chronos",
+          "outdatedBody": "Il a été créé avec une version plus récente de l'app. Mets à jour Chronos et rouvre le lien.",
+          "emptyTitle": "Rien à voir ici",
+          "emptyBody": "Cette page affiche une alarme que quelqu'un a partagée avec toi. Ouvre le lien qu'on t'a envoyé pour la voir.",
+          "open": "Ouvrir dans Chronos",
+          "get": "Obtenir Chronos sur Google Play",
+          "soon": "Bientôt disponible sur Google Play",
+          "home": "Visite chronosintelligentalarm.com",
+          "hint": "Tu as déjà Chronos ? Le bouton l'ouvre directement sur l'alarme.",
+          "caveats": "Bon à savoir",
+          "privacy": "Cette alarme a été décodée dans ton navigateur. La partie du lien après le # n'est jamais envoyée à notre serveur — personne à part toi et la personne qui l'a envoyée ne l'a vue.",
+          "days": [
+                "L",
+                "M",
+                "M",
+                "J",
+                "V",
+                "S",
+                "D"
+          ],
+          "everyDay": "Tous les jours",
+          "onceOnly": "Une seule fois",
+          "yearly": "Chaque année",
+          "monthly": "Chaque mois",
+          "noRepeat": "Ne se répète pas",
+          "inactive": "Arrive désactivée",
+          "smart": "Saute les jours fériés",
+          "gentle": "Réveil doux",
+          "gentleLead": function (n) { return "Réveil doux " + n + " min avant"; },
+          "briefing": "Annonce vocale",
+          "sleep": "Planification du sommeil",
+          "wakeCheck": function (n) { return "Rappel de réveil après " + n + " min"; },
+          "snooze": function (n) { return "Rappel de " + n + " min"; },
+          "maxSnoozes": function (n) { return "Max " + n + " rappels"; },
+          "background": "Fond d'écran",
+          "solar": {
+                "sunrise": "Sonne au lever du soleil",
+                "sunset": "Sonne au coucher du soleil",
+                "civilDawn": "Sonne aux premières lueurs du jour"
+          },
+          "dismiss": {
+                "math": "Pour éteindre : résoudre un calcul",
+                "retype": "Pour éteindre : retaper un numéro",
+                "pattern": "Pour éteindre : reproduire un motif",
+                "emoji": "Pour éteindre : trouver les émojis",
+                "shake": "Pour éteindre : secouer le téléphone",
+                "steps": "Pour éteindre : marcher quelques pas",
+                "scan_item": "Pour éteindre : scanner un objet du quotidien",
+                "troll": "Pour éteindre : frapper les trolls",
+                "mosquito": "Pour éteindre : écraser les moustiques",
+                "maze": "Pour éteindre : incliner pour traverser le labyrinthe",
+                "pairs": "Pour éteindre : associer les paires"
+          },
+          "omitted": {
+                "geo": "La condition de localisation (les coordonnées de l'expéditeur ne sont jamais partagées)",
+                "snd": "La sonnerie, qui appartient à l'appareil de l'expéditeur",
+                "bgf": "Son image de fond personnalisée",
+                "pho": "La mission photo",
+                "bar": "La mission code QR ou code-barres",
+                "act": "L'action qui s'exécute après l'extinction de l'alarme"
+          }
+    },
+    de: {
+          "title": "Jemand hat einen Wecker mit dir geteilt",
+          "subtitle": "Öffne ihn in Chronos, um ihn hinzuzufügen. Es wird nichts hinzugefügt, bis du es in der App bestätigst.",
+          "invalidTitle": "Dieser Wecker-Link ist ungültig",
+          "invalidBody": "Der Link wurde möglicherweise von der App, über die er gesendet wurde, gekürzt. Bitte erneut darum und stelle sicher, dass der gesamte Link kopiert wird — einschließlich allem nach dem #-Zeichen.",
+          "outdatedTitle": "Dieser Link braucht eine neuere Chronos-Version",
+          "outdatedBody": "Er wurde mit einer neueren Version der App erstellt. Aktualisiere Chronos und öffne den Link erneut.",
+          "emptyTitle": "Hier gibt es nichts zu sehen",
+          "emptyBody": "Diese Seite zeigt einen Wecker, den jemand mit dir geteilt hat. Öffne den Link, den du bekommen hast, um ihn zu sehen.",
+          "open": "In Chronos öffnen",
+          "get": "Chronos bei Google Play holen",
+          "soon": "Bald auf Google Play verfügbar",
+          "home": "Besuche chronosintelligentalarm.com",
+          "hint": "Hast du Chronos schon? Der Button öffnet die App direkt beim Wecker.",
+          "caveats": "Wissenswert",
+          "privacy": "Dieser Wecker wurde in deinem Browser entschlüsselt. Der Teil des Links nach dem # wird nie an unseren Server gesendet — niemand außer dir und der Person, die ihn geschickt hat, hat ihn gesehen.",
+          "days": [
+                "M",
+                "D",
+                "M",
+                "D",
+                "F",
+                "S",
+                "S"
+          ],
+          "everyDay": "Jeden Tag",
+          "onceOnly": "Nur einmal",
+          "yearly": "Jedes Jahr",
+          "monthly": "Jeden Monat",
+          "noRepeat": "Wiederholt sich nicht",
+          "inactive": "Kommt ausgeschaltet an",
+          "smart": "Überspringt Feiertage",
+          "gentle": "Sanftes Aufwachen",
+          "gentleLead": function (n) { return "Sanftes Aufwachen " + n + " Min. vorher"; },
+          "briefing": "Sprachansage",
+          "sleep": "Schlafplanung",
+          "wakeCheck": function (n) { return "Weck-Erinnerung nach " + n + " Min."; },
+          "snooze": function (n) { return "" + n + " Min. Snooze"; },
+          "maxSnoozes": function (n) { return "Max. " + n + " Snoozes"; },
+          "background": "Hintergrundbild",
+          "solar": {
+                "sunrise": "Klingelt bei Sonnenaufgang",
+                "sunset": "Klingelt bei Sonnenuntergang",
+                "civilDawn": "Klingelt in der Morgendämmerung"
+          },
+          "dismiss": {
+                "math": "Ausschalten: eine Rechenaufgabe lösen",
+                "retype": "Ausschalten: eine Zahl erneut eingeben",
+                "pattern": "Ausschalten: ein Muster nachzeichnen",
+                "emoji": "Ausschalten: die Emojis finden",
+                "shake": "Ausschalten: das Handy schütteln",
+                "steps": "Ausschalten: ein paar Schritte gehen",
+                "scan_item": "Ausschalten: einen Alltagsgegenstand scannen",
+                "troll": "Ausschalten: die Trolle hauen",
+                "mosquito": "Ausschalten: die Mücken erschlagen",
+                "maze": "Ausschalten: durch das Labyrinth kippen",
+                "pairs": "Ausschalten: die Paare finden"
+          },
+          "omitted": {
+                "geo": "Die Standortbedingung (die Koordinaten der absendenden Person werden nie geteilt)",
+                "snd": "Der Klingelton, der zum Gerät der absendenden Person gehört",
+                "bgf": "Ihr individuelles Hintergrundbild",
+                "pho": "Die Foto-Aufgabe",
+                "bar": "Die QR- oder Barcode-Aufgabe",
+                "act": "Die Aktion, die ausgeführt wird, nachdem der Alarm ausgeschaltet wurde"
+          }
+    },
+    pt: {
+          "title": "Alguém compartilhou um alarme com você",
+          "subtitle": "Abra no Chronos para adicioná-lo. Nada é adicionado até você confirmar no app.",
+          "invalidTitle": "Este link de alarme não é válido",
+          "invalidBody": "O link pode ter sido cortado pelo app pelo qual foi enviado. Peça de novo e garanta que o link inteiro seja copiado — incluindo tudo depois do sinal #.",
+          "outdatedTitle": "Este link precisa de uma versão mais recente do Chronos",
+          "outdatedBody": "Ele foi criado com uma versão mais recente do app. Atualize o Chronos e abra o link de novo.",
+          "emptyTitle": "Nada para ver aqui",
+          "emptyBody": "Esta página mostra um alarme que alguém compartilhou com você. Abra o link que te enviaram para vê-lo.",
+          "open": "Abrir no Chronos",
+          "get": "Baixar o Chronos no Google Play",
+          "soon": "Em breve no Google Play",
+          "home": "Visite chronosintelligentalarm.com",
+          "hint": "Já tem o Chronos? O botão abre direto no alarme.",
+          "caveats": "Vale saber",
+          "privacy": "Este alarme foi decodificado no seu navegador. A parte do link depois do # nunca é enviada ao nosso servidor — ninguém além de você e de quem enviou o viu.",
+          "days": [
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "S",
+                "D"
+          ],
+          "everyDay": "Todos os dias",
+          "onceOnly": "Só uma vez",
+          "yearly": "Todo ano",
+          "monthly": "Todo mês",
+          "noRepeat": "Não se repete",
+          "inactive": "Chega desligado",
+          "smart": "Pula feriados",
+          "gentle": "Despertar suave",
+          "gentleLead": function (n) { return "Despertar suave " + n + " min antes"; },
+          "briefing": "Aviso falado",
+          "sleep": "Planejamento do sono",
+          "wakeCheck": function (n) { return "Lembrete de despertar após " + n + " min"; },
+          "snooze": function (n) { return "Soneca de " + n + " min"; },
+          "maxSnoozes": function (n) { return "Máximo de " + n + " sonecas"; },
+          "background": "Papel de parede",
+          "solar": {
+                "sunrise": "Toca ao nascer do sol",
+                "sunset": "Toca ao pôr do sol",
+                "civilDawn": "Toca ao amanhecer"
+          },
+          "dismiss": {
+                "math": "Para desligar: resolver uma conta de matemática",
+                "retype": "Para desligar: reescrever um número",
+                "pattern": "Para desligar: repetir um padrão",
+                "emoji": "Para desligar: encontrar os emojis",
+                "shake": "Para desligar: agitar o celular",
+                "steps": "Para desligar: caminhar alguns passos",
+                "scan_item": "Para desligar: escanear um objeto do dia a dia",
+                "troll": "Para desligar: bater nos trolls",
+                "mosquito": "Para desligar: matar os mosquitos",
+                "maze": "Para desligar: inclinar para atravessar o labirinto",
+                "pairs": "Para desligar: combinar os pares"
+          },
+          "omitted": {
+                "geo": "A condição de localização (as coordenadas de quem enviou nunca são compartilhadas)",
+                "snd": "O toque, que pertence ao próprio aparelho de quem enviou",
+                "bgf": "A imagem de fundo personalizada da pessoa",
+                "pho": "A missão de foto",
+                "bar": "A missão de QR code ou código de barras",
+                "act": "A ação que roda depois que o alarme é desligado"
+          }
+    },
+    it: {
+          "title": "Qualcuno ha condiviso una sveglia con te",
+          "subtitle": "Aprila in Chronos per aggiungerla. Non viene aggiunto nulla finché non confermi nell'app.",
+          "invalidTitle": "Questo link della sveglia non è valido",
+          "invalidBody": "Il link potrebbe essere stato troncato dall'app con cui è stato inviato. Richiedilo di nuovo e assicurati di copiare il link intero — incluso tutto ciò che segue il simbolo #.",
+          "outdatedTitle": "Questo link richiede una versione più recente di Chronos",
+          "outdatedBody": "È stato creato con una versione più recente dell'app. Aggiorna Chronos e riapri il link.",
+          "emptyTitle": "Niente da vedere qui",
+          "emptyBody": "Questa pagina mostra una sveglia che qualcuno ha condiviso con te. Apri il link che ti hanno mandato per vederla.",
+          "open": "Apri in Chronos",
+          "get": "Scarica Chronos su Google Play",
+          "soon": "Presto su Google Play",
+          "home": "Visita chronosintelligentalarm.com",
+          "hint": "Hai già Chronos? Il pulsante lo apre direttamente sulla sveglia.",
+          "caveats": "Da sapere",
+          "privacy": "Questa sveglia è stata decodificata nel tuo browser. La parte del link dopo il # non viene mai inviata al nostro server — nessuno tranne te e chi l'ha mandata l'ha vista.",
+          "days": [
+                "L",
+                "M",
+                "M",
+                "G",
+                "V",
+                "S",
+                "D"
+          ],
+          "everyDay": "Ogni giorno",
+          "onceOnly": "Una sola volta",
+          "yearly": "Ogni anno",
+          "monthly": "Ogni mese",
+          "noRepeat": "Non si ripete",
+          "inactive": "Arriva disattivata",
+          "smart": "Salta i giorni festivi",
+          "gentle": "Sveglia delicata",
+          "gentleLead": function (n) { return "Sveglia delicata " + n + " min prima"; },
+          "briefing": "Annuncio vocale",
+          "sleep": "Pianificazione del sonno",
+          "wakeCheck": function (n) { return "Promemoria di risveglio dopo " + n + " min"; },
+          "snooze": function (n) { return "Snooze di " + n + " min"; },
+          "maxSnoozes": function (n) { return "Massimo " + n + " snooze"; },
+          "background": "Sfondo",
+          "solar": {
+                "sunrise": "Suona all'alba",
+                "sunset": "Suona al tramonto",
+                "civilDawn": "Suona al primo chiarore del giorno"
+          },
+          "dismiss": {
+                "math": "Per spegnere: risolvere un calcolo",
+                "retype": "Per spegnere: riscrivere un numero",
+                "pattern": "Per spegnere: ripetere uno schema",
+                "emoji": "Per spegnere: trovare le emoji",
+                "shake": "Per spegnere: agitare il telefono",
+                "steps": "Per spegnere: fare qualche passo",
+                "scan_item": "Per spegnere: scansionare un oggetto di uso quotidiano",
+                "troll": "Per spegnere: colpire i troll",
+                "mosquito": "Per spegnere: schiacciare le zanzare",
+                "maze": "Per spegnere: inclinare per attraversare il labirinto",
+                "pairs": "Per spegnere: abbinare le coppie"
+          },
+          "omitted": {
+                "geo": "La condizione di posizione (le coordinate di chi l'ha inviata non vengono mai condivise)",
+                "snd": "La suoneria, che appartiene al dispositivo di chi l'ha inviata",
+                "bgf": "La sua immagine di sfondo personalizzata",
+                "pho": "La missione foto",
+                "bar": "La missione QR o codice a barre",
+                "act": "L'azione che parte dopo che la sveglia viene spenta"
+          }
+    },
+    zh: {
+          "title": "有人与你分享了一个闹钟",
+          "subtitle": "在 Chronos 中打开即可添加。在你于应用内确认之前，不会添加任何内容。",
+          "invalidTitle": "此闹钟链接无效",
+          "invalidBody": "链接可能被发送它的应用截断了。请重新索要一次，并确保完整复制整个链接——包括 # 符号后面的所有内容。",
+          "outdatedTitle": "此链接需要更新版本的 Chronos",
+          "outdatedBody": "它是用更新版本的应用创建的。请更新 Chronos，然后重新打开链接。",
+          "emptyTitle": "这里暂时没有内容",
+          "emptyBody": "此页面用于展示他人与你分享的闹钟。请打开对方发给你的链接来查看。",
+          "open": "在 Chronos 中打开",
+          "get": "在 Google Play 获取 Chronos",
+          "soon": "即将登陆 Google Play",
+          "home": "访问 chronosintelligentalarm.com",
+          "hint": "已经安装了 Chronos？点击按钮即可直接跳转到该闹钟。",
+          "caveats": "需要注意",
+          "privacy": "此闹钟是在你的浏览器中解码的。链接中 # 符号后面的部分永远不会发送到我们的服务器——除了你和发送者，没有其他人看过它。",
+          "days": [
+                "一",
+                "二",
+                "三",
+                "四",
+                "五",
+                "六",
+                "日"
+          ],
+          "everyDay": "每天",
+          "onceOnly": "仅一次",
+          "yearly": "每年",
+          "monthly": "每月",
+          "noRepeat": "不重复",
+          "inactive": "收到时处于关闭状态",
+          "smart": "跳过节假日",
+          "gentle": "温柔唤醒",
+          "gentleLead": function (n) { return "提前 " + n + " 分钟温柔唤醒"; },
+          "briefing": "语音播报",
+          "sleep": "睡眠规划",
+          "wakeCheck": function (n) { return "" + n + " 分钟后唤醒检查"; },
+          "snooze": function (n) { return "" + n + " 分钟贪睡"; },
+          "maxSnoozes": function (n) { return "最多贪睡 " + n + " 次"; },
+          "background": "壁纸",
+          "solar": {
+                "sunrise": "日出时响铃",
+                "sunset": "日落时响铃",
+                "civilDawn": "天蒙蒙亮时响铃"
+          },
+          "dismiss": {
+                "math": "解除方式：解答一道数学题",
+                "retype": "解除方式：重新输入一个数字",
+                "pattern": "解除方式：重复一个图案",
+                "emoji": "解除方式：找出表情符号",
+                "shake": "解除方式：摇晃手机",
+                "steps": "解除方式：走几步路",
+                "scan_item": "解除方式：扫描一件日常物品",
+                "troll": "解除方式：敲打巨魔",
+                "mosquito": "解除方式：拍打蚊子",
+                "maze": "解除方式：倾斜手机走出迷宫",
+                "pairs": "解除方式：配对相同图案"
+          },
+          "omitted": {
+                "geo": "位置条件（发送者的坐标绝不会被分享）",
+                "snd": "铃声（属于发送者自己的设备）",
+                "bgf": "对方自定义的背景图片",
+                "pho": "拍照任务",
+                "bar": "二维码或条形码任务",
+                "act": "闹钟关闭后执行的操作"
+          }
+    },
+    ja: {
+          "title": "誰かがアラームを共有しました",
+          "subtitle": "Chronosで開いて追加してください。アプリ内で確認するまでは何も追加されません。",
+          "invalidTitle": "このアラームリンクは無効です",
+          "invalidBody": "リンクは送信に使われたアプリによって途中で切れている可能性があります。もう一度送ってもらい、# 記号以降を含め、リンク全体がコピーされていることを確認してください。",
+          "outdatedTitle": "このリンクには新しいバージョンのChronosが必要です",
+          "outdatedBody": "これは新しいバージョンのアプリで作成されました。Chronosを更新してから、もう一度リンクを開いてください。",
+          "emptyTitle": "ここには何もありません",
+          "emptyBody": "このページは、誰かがあなたと共有したアラームを表示するためのものです。送られてきたリンクを開いてご確認ください。",
+          "open": "Chronosで開く",
+          "get": "Google PlayでChronosを入手",
+          "soon": "Google Playに近日公開",
+          "home": "chronosintelligentalarm.com にアクセス",
+          "hint": "すでにChronosをお持ちですか？ボタンをタップすると、そのままアラームが開きます。",
+          "caveats": "知っておきたいこと",
+          "privacy": "このアラームはあなたのブラウザ内でデコードされました。リンクの # 以降の部分は当社のサーバーに送信されることはありません——あなたと送信者以外は誰も見ていません。",
+          "days": [
+                "月",
+                "火",
+                "水",
+                "木",
+                "金",
+                "土",
+                "日"
+          ],
+          "everyDay": "毎日",
+          "onceOnly": "一回のみ",
+          "yearly": "毎年",
+          "monthly": "毎月",
+          "noRepeat": "繰り返さない",
+          "inactive": "オフの状態で届きます",
+          "smart": "祝日はスキップ",
+          "gentle": "優しい目覚め",
+          "gentleLead": function (n) { return "" + n + "分前から優しい目覚め"; },
+          "briefing": "音声アナウンス",
+          "sleep": "睡眠プラン",
+          "wakeCheck": function (n) { return "" + n + "分後に起床確認"; },
+          "snooze": function (n) { return "" + n + "分スヌーズ"; },
+          "maxSnoozes": function (n) { return "最大" + n + "回までスヌーズ"; },
+          "background": "壁紙",
+          "solar": {
+                "sunrise": "日の出に鳴る",
+                "sunset": "日の入りに鳴る",
+                "civilDawn": "夜明けに鳴る"
+          },
+          "dismiss": {
+                "math": "解除方法：計算問題を解く",
+                "retype": "解除方法：数字を入力し直す",
+                "pattern": "解除方法：パターンを再現する",
+                "emoji": "解除方法：絵文字を見つける",
+                "shake": "解除方法：スマホを振る",
+                "steps": "解除方法：数歩歩く",
+                "scan_item": "解除方法：身の回りの物をスキャンする",
+                "troll": "解除方法：トロールを叩く",
+                "mosquito": "解除方法：蚊を叩く",
+                "maze": "解除方法：端末を傾けて迷路を進む",
+                "pairs": "解除方法：ペアを揃える"
+          },
+          "omitted": {
+                "geo": "位置条件（送信者の座標は共有されません）",
+                "snd": "着信音（送信者自身の端末のものです）",
+                "bgf": "相手が設定したカスタム背景画像",
+                "pho": "写真ミッション",
+                "bar": "QRコードまたはバーコードのミッション",
+                "act": "アラームを止めた後に実行されるアクション"
+          }
+    },
+    ko: {
+          "title": "누군가 알람을 공유했어요",
+          "subtitle": "Chronos에서 열어 추가하세요. 앱에서 확인하기 전까지는 아무것도 추가되지 않아요.",
+          "invalidTitle": "이 알람 링크는 유효하지 않아요",
+          "invalidBody": "링크를 보낸 앱 때문에 링크 일부가 잘렸을 수 있어요. 다시 요청해서 # 기호 뒤의 내용을 포함해 링크 전체가 복사됐는지 확인하세요.",
+          "outdatedTitle": "이 링크를 열려면 더 새로운 버전의 Chronos가 필요해요",
+          "outdatedBody": "이 링크는 더 새로운 버전의 앱에서 만들어졌어요. Chronos를 업데이트한 후 링크를 다시 열어보세요.",
+          "emptyTitle": "여기에는 아무것도 없어요",
+          "emptyBody": "이 페이지는 누군가 당신과 공유한 알람을 보여줘요. 보내준 링크를 열어 확인해 보세요.",
+          "open": "Chronos에서 열기",
+          "get": "Google Play에서 Chronos 받기",
+          "soon": "Google Play에 곧 출시",
+          "home": "chronosintelligentalarm.com 방문하기",
+          "hint": "이미 Chronos가 있나요? 버튼을 누르면 바로 해당 알람으로 이동해요.",
+          "caveats": "알아두면 좋아요",
+          "privacy": "이 알람은 당신의 브라우저에서 해독됐어요. 링크의 # 뒤에 있는 부분은 저희 서버로 전송되지 않아요. 당신과 보낸 사람 외에는 아무도 본 적이 없어요.",
+          "days": [
+                "월",
+                "화",
+                "수",
+                "목",
+                "금",
+                "토",
+                "일"
+          ],
+          "everyDay": "매일",
+          "onceOnly": "한 번만",
+          "yearly": "매년",
+          "monthly": "매월",
+          "noRepeat": "반복 안 함",
+          "inactive": "꺼진 상태로 도착해요",
+          "smart": "공휴일은 건너뛰기",
+          "gentle": "부드러운 기상",
+          "gentleLead": function (n) { return "" + n + "분 전부터 부드러운 기상"; },
+          "briefing": "음성 안내",
+          "sleep": "수면 계획",
+          "wakeCheck": function (n) { return "" + n + "분 후 기상 확인"; },
+          "snooze": function (n) { return "" + n + "분 스누즈"; },
+          "maxSnoozes": function (n) { return "최대 " + n + "회 스누즈"; },
+          "background": "배경화면",
+          "solar": {
+                "sunrise": "일출에 울려요",
+                "sunset": "일몰에 울려요",
+                "civilDawn": "여명에 울려요"
+          },
+          "dismiss": {
+                "math": "해제 방법: 수학 문제 풀기",
+                "retype": "해제 방법: 숫자 다시 입력하기",
+                "pattern": "해제 방법: 패턴 따라 하기",
+                "emoji": "해제 방법: 이모지 찾기",
+                "shake": "해제 방법: 휴대폰 흔들기",
+                "steps": "해제 방법: 몇 걸음 걷기",
+                "scan_item": "해제 방법: 주변 물건 스캔하기",
+                "troll": "해제 방법: 트롤 두드리기",
+                "mosquito": "해제 방법: 모기 잡기",
+                "maze": "해제 방법: 기기를 기울여 미로 통과하기",
+                "pairs": "해제 방법: 짝 맞추기"
+          },
+          "omitted": {
+                "geo": "위치 조건(보낸 사람의 좌표는 절대 공유되지 않아요)",
+                "snd": "벨소리(보낸 사람의 기기에 있는 것이에요)",
+                "bgf": "상대방이 설정한 사용자 지정 배경 이미지",
+                "pho": "사진 미션",
+                "bar": "QR 코드 또는 바코드 미션",
+                "act": "알람을 끈 후 실행되는 동작"
+          }
+    },
+    nl: {
+          "title": "Iemand heeft een wekker met je gedeeld",
+          "subtitle": "Open het in Chronos om toe te voegen. Er wordt niets toegevoegd totdat je het in de app bevestigt.",
+          "invalidTitle": "Deze wekkerlink is niet geldig",
+          "invalidBody": "De link is mogelijk afgekapt door de app waarmee hij is verstuurd. Vraag hem opnieuw en zorg dat de hele link is gekopieerd — inclusief alles na het #-teken.",
+          "outdatedTitle": "Deze link heeft een nieuwere versie van Chronos nodig",
+          "outdatedBody": "Deze is gemaakt met een nieuwere versie van de app. Werk Chronos bij en open de link opnieuw.",
+          "emptyTitle": "Hier is niets te zien",
+          "emptyBody": "Deze pagina toont een wekker die iemand met je heeft gedeeld. Open de link die je hebt gekregen om hem te zien.",
+          "open": "Openen in Chronos",
+          "get": "Haal Chronos op Google Play",
+          "soon": "Binnenkort op Google Play",
+          "home": "Bezoek chronosintelligentalarm.com",
+          "hint": "Heb je Chronos al? De knop opent hem direct bij de wekker.",
+          "caveats": "Goed om te weten",
+          "privacy": "Deze wekker is in jouw browser gedecodeerd. Het deel van de link na het # wordt nooit naar onze server gestuurd — niemand behalve jij en wie hem heeft verstuurd, heeft het gezien.",
+          "days": [
+                "M",
+                "D",
+                "W",
+                "D",
+                "V",
+                "Z",
+                "Z"
+          ],
+          "everyDay": "Elke dag",
+          "onceOnly": "Eenmalig",
+          "yearly": "Elk jaar",
+          "monthly": "Elke maand",
+          "noRepeat": "Herhaalt niet",
+          "inactive": "Komt uitgeschakeld aan",
+          "smart": "Slaat feestdagen over",
+          "gentle": "Zacht wekken",
+          "gentleLead": function (n) { return "Zacht wekken " + n + " min van tevoren"; },
+          "briefing": "Gesproken briefing",
+          "sleep": "Slaapplanning",
+          "wakeCheck": function (n) { return "Wekcontrole na " + n + " min"; },
+          "snooze": function (n) { return "" + n + " min sluimeren"; },
+          "maxSnoozes": function (n) { return "Max. " + n + " keer sluimeren"; },
+          "background": "Achtergrond",
+          "solar": {
+                "sunrise": "Gaat af bij zonsopgang",
+                "sunset": "Gaat af bij zonsondergang",
+                "civilDawn": "Gaat af bij het eerste licht"
+          },
+          "dismiss": {
+                "math": "Uitzetten: los een rekensom op",
+                "retype": "Uitzetten: typ een getal opnieuw",
+                "pattern": "Uitzetten: herhaal een patroon",
+                "emoji": "Uitzetten: zoek de emoji's",
+                "shake": "Uitzetten: schud de telefoon",
+                "steps": "Uitzetten: loop een paar stappen",
+                "scan_item": "Uitzetten: scan een alledaags voorwerp",
+                "troll": "Uitzetten: sla de trollen",
+                "mosquito": "Uitzetten: sla de muggen",
+                "maze": "Uitzetten: kantel door het doolhof",
+                "pairs": "Uitzetten: vind de paren in Memory"
+          },
+          "omitted": {
+                "geo": "De locatievoorwaarde (de coördinaten van de afzender worden nooit gedeeld)",
+                "snd": "De beltoon, die van het toestel van de afzender zelf is",
+                "bgf": "Hun aangepaste achtergrondafbeelding",
+                "pho": "De fotomissie",
+                "bar": "De QR- of barcodemissie",
+                "act": "De actie die wordt uitgevoerd nadat het alarm is uitgezet"
+          }
+    },
+    id: {
+          "title": "Seseorang membagikan alarm kepadamu",
+          "subtitle": "Buka di Chronos untuk menambahkannya. Tidak ada yang ditambahkan sampai kamu mengonfirmasi di aplikasi.",
+          "invalidTitle": "Tautan alarm ini tidak valid",
+          "invalidBody": "Tautan ini mungkin terpotong oleh aplikasi tempat tautan itu dikirim. Minta lagi, dan pastikan seluruh tautan disalin — termasuk semua yang ada setelah tanda #.",
+          "outdatedTitle": "Tautan ini membutuhkan Chronos versi lebih baru",
+          "outdatedBody": "Tautan ini dibuat dengan versi aplikasi yang lebih baru. Perbarui Chronos dan buka tautannya lagi.",
+          "emptyTitle": "Tidak ada apa-apa di sini",
+          "emptyBody": "Halaman ini menampilkan alarm yang dibagikan seseorang kepadamu. Buka tautan yang mereka kirimkan untuk melihatnya.",
+          "open": "Buka di Chronos",
+          "get": "Dapatkan Chronos di Google Play",
+          "soon": "Segera hadir di Google Play",
+          "home": "Kunjungi chronosintelligentalarm.com",
+          "hint": "Sudah punya Chronos? Tombol ini akan langsung membuka alarmnya.",
+          "caveats": "Perlu diketahui",
+          "privacy": "Alarm ini diuraikan langsung di browsermu. Bagian tautan setelah tanda # tidak pernah dikirim ke server kami — tidak ada yang melihatnya selain kamu dan siapa pun yang mengirimkannya.",
+          "days": [
+                "Sen",
+                "Sel",
+                "Rab",
+                "Kam",
+                "Jum",
+                "Sab",
+                "Min"
+          ],
+          "everyDay": "Setiap hari",
+          "onceOnly": "Hanya sekali",
+          "yearly": "Setiap tahun",
+          "monthly": "Setiap bulan",
+          "noRepeat": "Tidak berulang",
+          "inactive": "Tiba dalam keadaan mati",
+          "smart": "Melewati hari libur",
+          "gentle": "Bangun Lembut",
+          "gentleLead": function (n) { return "Bangun Lembut " + n + " menit sebelumnya"; },
+          "briefing": "Info Suara",
+          "sleep": "Perencanaan tidur",
+          "wakeCheck": function (n) { return "Cek Bangun setelah " + n + " menit"; },
+          "snooze": function (n) { return "Tunda " + n + " menit"; },
+          "maxSnoozes": function (n) { return "Maks " + n + " kali tunda"; },
+          "background": "Wallpaper",
+          "solar": {
+                "sunrise": "Berbunyi saat matahari terbit",
+                "sunset": "Berbunyi saat matahari terbenam",
+                "civilDawn": "Berbunyi saat fajar"
+          },
+          "dismiss": {
+                "math": "Matikan: selesaikan soal matematika",
+                "retype": "Matikan: ketik ulang angka",
+                "pattern": "Matikan: ulangi pola",
+                "emoji": "Matikan: temukan emoji",
+                "shake": "Matikan: goyangkan ponsel",
+                "steps": "Matikan: berjalan beberapa langkah",
+                "scan_item": "Matikan: pindai benda sehari-hari",
+                "troll": "Matikan: pukul para troll",
+                "mosquito": "Matikan: tepuk nyamuk",
+                "maze": "Matikan: miringkan ponsel melewati labirin",
+                "pairs": "Matikan: cocokkan pasangan"
+          },
+          "omitted": {
+                "geo": "Kondisi lokasi (koordinat pengirim tidak pernah dibagikan)",
+                "snd": "Nada dering, yang merupakan milik perangkat pengirim sendiri",
+                "bgf": "Gambar latar khusus mereka",
+                "pho": "Misi foto",
+                "bar": "Misi kode QR atau barcode",
+                "act": "Tindakan yang dijalankan setelah alarm dimatikan"
+          }
+    },
+    el: {
+          "title": "Κάποιος μοιράστηκε ένα ξυπνητήρι μαζί σου",
+          "subtitle": "Άνοιξέ το στο Chronos για να το προσθέσεις. Δεν προστίθεται τίποτα μέχρι να το επιβεβαιώσεις στην εφαρμογή.",
+          "invalidTitle": "Αυτός ο σύνδεσμος ξυπνητηριού δεν είναι έγκυρος",
+          "invalidBody": "Ο σύνδεσμος μπορεί να κόπηκε από την εφαρμογή μέσω της οποίας στάλθηκε. Ζήτησέ τον ξανά και βεβαιώσου ότι έχεις αντιγράψει ολόκληρο τον σύνδεσμο — συμπεριλαμβανομένων όλων όσων βρίσκονται μετά το σύμβολο #.",
+          "outdatedTitle": "Αυτός ο σύνδεσμος χρειάζεται νεότερη έκδοση Chronos",
+          "outdatedBody": "Δημιουργήθηκε με νεότερη έκδοση της εφαρμογής. Ενημέρωσε το Chronos και άνοιξε ξανά τον σύνδεσμο.",
+          "emptyTitle": "Δεν υπάρχει τίποτα εδώ",
+          "emptyBody": "Αυτή η σελίδα εμφανίζει ένα ξυπνητήρι που μοιράστηκε κάποιος μαζί σου. Άνοιξε τον σύνδεσμο που σου έστειλε για να το δεις.",
+          "open": "Άνοιγμα στο Chronos",
+          "get": "Απόκτησε το Chronos στο Google Play",
+          "soon": "Έρχεται σύντομα στο Google Play",
+          "home": "Επισκέψου το chronosintelligentalarm.com",
+          "hint": "Έχεις ήδη το Chronos; Το κουμπί το ανοίγει κατευθείαν στο ξυπνητήρι.",
+          "caveats": "Αξίζει να ξέρεις",
+          "privacy": "Αυτό το ξυπνητήρι αποκωδικοποιήθηκε στο πρόγραμμα περιήγησής σου. Το τμήμα του συνδέσμου μετά το # δεν στέλνεται ποτέ στον διακομιστή μας — κανείς εκτός από εσένα και όποιον το έστειλε δεν το έχει δει.",
+          "days": [
+                "Δε",
+                "Τρ",
+                "Τε",
+                "Πε",
+                "Πα",
+                "Σα",
+                "Κυ"
+          ],
+          "everyDay": "Κάθε μέρα",
+          "onceOnly": "Μόνο μία φορά",
+          "yearly": "Κάθε χρόνο",
+          "monthly": "Κάθε μήνα",
+          "noRepeat": "Δεν επαναλαμβάνεται",
+          "inactive": "Φτάνει απενεργοποιημένο",
+          "smart": "Παραλείπει τις αργίες",
+          "gentle": "Απαλό ξύπνημα",
+          "gentleLead": function (n) { return "Απαλό ξύπνημα " + n + " λεπτά πριν"; },
+          "briefing": "Προφορική ενημέρωση",
+          "sleep": "Προγραμματισμός ύπνου",
+          "wakeCheck": function (n) { return "Έλεγχος αφύπνισης μετά από " + n + " λεπτά"; },
+          "snooze": function (n) { return "Αναβολή " + n + " λεπτών"; },
+          "maxSnoozes": function (n) { return "Μέγιστο " + n + " αναβολές"; },
+          "background": "Ταπετσαρία",
+          "solar": {
+                "sunrise": "Χτυπά την ανατολή",
+                "sunset": "Χτυπά τη δύση",
+                "civilDawn": "Χτυπά με το πρώτο φως"
+          },
+          "dismiss": {
+                "math": "Απενεργοποίηση: λύσε ένα μαθηματικό πρόβλημα",
+                "retype": "Απενεργοποίηση: ξαναγράψε έναν αριθμό",
+                "pattern": "Απενεργοποίηση: επανάλαβε ένα μοτίβο",
+                "emoji": "Απενεργοποίηση: βρες τα emoji",
+                "shake": "Απενεργοποίηση: κούνησε το κινητό",
+                "steps": "Απενεργοποίηση: περπάτησε μερικά βήματα",
+                "scan_item": "Απενεργοποίηση: σάρωσε ένα καθημερινό αντικείμενο",
+                "troll": "Απενεργοποίηση: χτύπα τα τρολ",
+                "mosquito": "Απενεργοποίηση: χτύπα τα κουνούπια",
+                "maze": "Απενεργοποίηση: γείρε μέσα από τον λαβύρινθο",
+                "pairs": "Απενεργοποίηση: ταίριαξε τα ζευγάρια"
+          },
+          "omitted": {
+                "geo": "Η συνθήκη τοποθεσίας (οι συντεταγμένες του αποστολέα δεν μοιράζονται ποτέ)",
+                "snd": "Ο ήχος κλήσης, που ανήκει στη συσκευή του αποστολέα",
+                "bgf": "Η προσαρμοσμένη εικόνα φόντου τους",
+                "pho": "Η αποστολή φωτογραφίας",
+                "bar": "Η αποστολή QR ή barcode",
+                "act": "Η ενέργεια που εκτελείται αφού απενεργοποιηθεί το ξυπνητήρι"
+          }
+    },
+    fil: {
+          "title": "May nagbahagi ng alarm sa iyo",
+          "subtitle": "Buksan ito sa Chronos para idagdag. Walang idaragdag hangga't hindi mo kinukumpirma sa app.",
+          "invalidTitle": "Hindi valid ang link ng alarm na ito",
+          "invalidBody": "Maaaring naputol ang link ng app kung saan ito ipinadala. Humingi ulit nito, at siguraduhing na-copy ang buong link — kasama ang lahat pagkatapos ng # sign.",
+          "outdatedTitle": "Kailangan ng mas bagong Chronos ang link na ito",
+          "outdatedBody": "Ginawa ito gamit ang mas bagong bersyon ng app. I-update ang Chronos at buksan ulit ang link.",
+          "emptyTitle": "Walang laman dito",
+          "emptyBody": "Ipinapakita ng pahinang ito ang alarm na ibinahagi sa iyo ng isang tao. Buksan ang link na ipinadala nila para makita ito.",
+          "open": "Buksan sa Chronos",
+          "get": "Kunin ang Chronos sa Google Play",
+          "soon": "Malapit nang dumating sa Google Play",
+          "home": "Bisitahin ang chronosintelligentalarm.com",
+          "hint": "May Chronos ka na? Direktang bubuksan ng button ang alarm.",
+          "caveats": "Dapat mong malaman",
+          "privacy": "Na-decode ang alarm na ito sa iyong browser. Ang bahagi ng link pagkatapos ng # ay hindi kailanman ipinapadala sa server namin — walang ibang nakakita nito kundi ikaw at ang nagpadala nito.",
+          "days": [
+                "Lun",
+                "Mar",
+                "Miy",
+                "Huw",
+                "Biy",
+                "Sab",
+                "Lin"
+          ],
+          "everyDay": "Araw-araw",
+          "onceOnly": "Isang beses lang",
+          "yearly": "Taon-taon",
+          "monthly": "Buwan-buwan",
+          "noRepeat": "Hindi umuulit",
+          "inactive": "Dumarating na naka-off",
+          "smart": "Lumalaktaw sa pista opisyal",
+          "gentle": "Mahinahong Paggising",
+          "gentleLead": function (n) { return "Mahinahong Paggising " + n + " minuto bago"; },
+          "briefing": "Sinasalitang Update",
+          "sleep": "Pagplano sa pagtulog",
+          "wakeCheck": function (n) { return "Pagsusuri sa Paggising pagkalipas ng " + n + " minuto"; },
+          "snooze": function (n) { return "" + n + " min na Snooze"; },
+          "maxSnoozes": function (n) { return "Max na " + n + " na Snooze"; },
+          "background": "Wallpaper",
+          "solar": {
+                "sunrise": "Tumutunog sa pagsikat ng araw",
+                "sunset": "Tumutunog sa paglubog ng araw",
+                "civilDawn": "Tumutunog sa unang liwanag"
+          },
+          "dismiss": {
+                "math": "Patayin: lutasin ang isang math problem",
+                "retype": "Patayin: i-type ulit ang numero",
+                "pattern": "Patayin: ulitin ang isang pattern",
+                "emoji": "Patayin: hanapin ang mga emoji",
+                "shake": "Patayin: i-shake ang phone",
+                "steps": "Patayin: maglakad ng ilang hakbang",
+                "scan_item": "Patayin: mag-scan ng pang-araw-araw na bagay",
+                "troll": "Patayin: batukan ang mga troll",
+                "mosquito": "Patayin: paluin ang mga lamok",
+                "maze": "Patayin: itagilid ang phone sa laberinto",
+                "pairs": "Patayin: itugma ang mga pares"
+          },
+          "omitted": {
+                "geo": "Ang kondisyon ng lokasyon (hindi kailanman ibinabahagi ang mga coordinate ng nagpadala)",
+                "snd": "Ang ringtone, na pag-aari ng sarili device ng nagpadala",
+                "bgf": "Ang custom na background image nila",
+                "pho": "Ang photo mission",
+                "bar": "Ang QR o barcode mission",
+                "act": "Ang aksyon na tatakbo pagkatapos mapatay ang alarm"
+          }
+    },
+    sv: {
+          "title": "Någon har delat ett larm med dig",
+          "subtitle": "Öppna det i Chronos för att lägga till det. Inget läggs till förrän du bekräftar i appen.",
+          "invalidTitle": "Den här larmlänken är inte giltig",
+          "invalidBody": "Länken kan ha klippts av av appen den skickades genom. Be om den igen, och se till att hela länken kopieras — inklusive allt efter #-tecknet.",
+          "outdatedTitle": "Den här länken kräver en nyare version av Chronos",
+          "outdatedBody": "Den skapades med en nyare version av appen. Uppdatera Chronos och öppna länken igen.",
+          "emptyTitle": "Inget att se här",
+          "emptyBody": "Den här sidan visar ett larm som någon har delat med dig. Öppna länken de skickade för att se det.",
+          "open": "Öppna i Chronos",
+          "get": "Hämta Chronos på Google Play",
+          "soon": "Kommer snart till Google Play",
+          "home": "Besök chronosintelligentalarm.com",
+          "hint": "Har du redan Chronos? Knappen öppnar den direkt i larmet.",
+          "caveats": "Bra att veta",
+          "privacy": "Det här larmet avkodades i din webbläsare. Delen av länken efter # skickas aldrig till vår server — ingen förutom du och den som skickade den har sett den.",
+          "days": [
+                "mån",
+                "tis",
+                "ons",
+                "tors",
+                "fre",
+                "lör",
+                "sön"
+          ],
+          "everyDay": "Varje dag",
+          "onceOnly": "Bara en gång",
+          "yearly": "Varje år",
+          "monthly": "Varje månad",
+          "noRepeat": "Upprepas inte",
+          "inactive": "Kommer avstängt",
+          "smart": "Hoppar över helgdagar",
+          "gentle": "Mjuk väckning",
+          "gentleLead": function (n) { return "Mjuk väckning " + n + " min innan"; },
+          "briefing": "Röstbriefing",
+          "sleep": "Sömnplanering",
+          "wakeCheck": function (n) { return "Uppvakningskontroll efter " + n + " min"; },
+          "snooze": function (n) { return "Snooze i " + n + " min"; },
+          "maxSnoozes": function (n) { return "Max " + n + " snoozer"; },
+          "background": "Bakgrundsbild",
+          "solar": {
+                "sunrise": "Ringer vid soluppgång",
+                "sunset": "Ringer vid solnedgång",
+                "civilDawn": "Ringer i gryningen"
+          },
+          "dismiss": {
+                "math": "Stäng av: lös ett matteproblem",
+                "retype": "Stäng av: skriv om ett nummer",
+                "pattern": "Stäng av: upprepa ett mönster",
+                "emoji": "Stäng av: hitta emojierna",
+                "shake": "Stäng av: skaka telefonen",
+                "steps": "Stäng av: gå några steg",
+                "scan_item": "Stäng av: skanna ett vardagsföremål",
+                "troll": "Stäng av: klappa till trollen",
+                "mosquito": "Stäng av: klappa till myggorna",
+                "maze": "Stäng av: luta dig genom labyrinten",
+                "pairs": "Stäng av: matcha paren"
+          },
+          "omitted": {
+                "geo": "Platsvillkoret (avsändarens koordinater delas aldrig)",
+                "snd": "Ringsignalen, som tillhör avsändarens egen enhet",
+                "bgf": "Deras anpassade bakgrundsbild",
+                "pho": "Fotouppdraget",
+                "bar": "QR- eller streckkodsuppdraget",
+                "act": "Åtgärden som körs efter att larmet stängts av"
+          }
+    },
+    da: {
+          "title": "Nogen har delt en alarm med dig",
+          "subtitle": "Åbn den i Chronos for at tilføje den. Intet tilføjes, før du bekræfter det i appen.",
+          "invalidTitle": "Dette alarmlink er ikke gyldigt",
+          "invalidBody": "Linket kan være blevet afkortet af den app, det blev sendt igennem. Bed om det igen, og sørg for, at hele linket bliver kopieret — inklusive alt efter #-tegnet.",
+          "outdatedTitle": "Dette link kræver en nyere version af Chronos",
+          "outdatedBody": "Det blev oprettet med en nyere version af appen. Opdater Chronos, og åbn linket igen.",
+          "emptyTitle": "Der er intet at se her",
+          "emptyBody": "Denne side viser en alarm, som nogen har delt med dig. Åbn det link, de har sendt dig, for at se den.",
+          "open": "Åbn i Chronos",
+          "get": "Hent Chronos på Google Play",
+          "soon": "Kommer snart på Google Play",
+          "home": "Besøg chronosintelligentalarm.com",
+          "hint": "Har du allerede Chronos? Knappen åbner den direkte i alarmen.",
+          "caveats": "Værd at vide",
+          "privacy": "Denne alarm blev afkodet i din browser. Den del af linket, der kommer efter #, sendes aldrig til vores server — ingen andre end dig og den, der sendte den, har set den.",
+          "days": [
+                "man",
+                "tirs",
+                "ons",
+                "tors",
+                "fre",
+                "lør",
+                "søn"
+          ],
+          "everyDay": "Hver dag",
+          "onceOnly": "Kun én gang",
+          "yearly": "Hvert år",
+          "monthly": "Hver måned",
+          "noRepeat": "Gentages ikke",
+          "inactive": "Ankommer slukket",
+          "smart": "Springer helligdage over",
+          "gentle": "Blid opvågning",
+          "gentleLead": function (n) { return "Blid opvågning " + n + " min før"; },
+          "briefing": "Oplæst briefing",
+          "sleep": "Søvnplanlægning",
+          "wakeCheck": function (n) { return "Opvågningstjek efter " + n + " min"; },
+          "snooze": function (n) { return "" + n + " min udsættelse"; },
+          "maxSnoozes": function (n) { return "Maks. " + n + " udsættelser"; },
+          "background": "Baggrund",
+          "solar": {
+                "sunrise": "Ringer ved solopgang",
+                "sunset": "Ringer ved solnedgang",
+                "civilDawn": "Ringer ved daggry"
+          },
+          "dismiss": {
+                "math": "Sluk: løs et regnestykke",
+                "retype": "Sluk: skriv et tal igen",
+                "pattern": "Sluk: gentag et mønster",
+                "emoji": "Sluk: find emojierne",
+                "shake": "Sluk: ryst telefonen",
+                "steps": "Sluk: gå nogle skridt",
+                "scan_item": "Sluk: scan en hverdagsgenstand",
+                "troll": "Sluk: slå trolde",
+                "mosquito": "Sluk: slå myg",
+                "maze": "Sluk: vip dig gennem labyrinten",
+                "pairs": "Sluk: match parrene"
+          },
+          "omitted": {
+                "geo": "Placeringsbetingelsen (afsenderens koordinater deles aldrig)",
+                "snd": "Ringetonen, som hører til afsenderens egen enhed",
+                "bgf": "Deres tilpassede baggrundsbillede",
+                "pho": "Fotoudfordringen",
+                "bar": "QR- eller stregkodeudfordringen",
+                "act": "Handlingen, der udføres, når alarmen slukkes"
+          }
+    },
+    nb: {
+          "title": "Noen har delt en alarm med deg",
+          "subtitle": "Åpne den i Chronos for å legge den til. Ingenting legges til før du bekrefter i appen.",
+          "invalidTitle": "Denne alarmlenken er ikke gyldig",
+          "invalidBody": "Lenken kan ha blitt forkortet av appen den ble sendt gjennom. Be om den på nytt, og sørg for at hele lenken kopieres — inkludert alt etter #-tegnet.",
+          "outdatedTitle": "Denne lenken krever en nyere versjon av Chronos",
+          "outdatedBody": "Den ble opprettet med en nyere versjon av appen. Oppdater Chronos, og åpne lenken på nytt.",
+          "emptyTitle": "Ingenting å se her",
+          "emptyBody": "Denne siden viser en alarm som noen har delt med deg. Åpne lenken de sendte deg, for å se den.",
+          "open": "Åpne i Chronos",
+          "get": "Last ned Chronos på Google Play",
+          "soon": "Kommer snart på Google Play",
+          "home": "Besøk chronosintelligentalarm.com",
+          "hint": "Har du allerede Chronos? Knappen åpner den rett inn i alarmen.",
+          "caveats": "Verdt å vite",
+          "privacy": "Denne alarmen ble avkodet i nettleseren din. Den delen av lenken som kommer etter #, sendes aldri til serveren vår — ingen andre enn deg og den som sendte den, har sett den.",
+          "days": [
+                "man",
+                "tir",
+                "ons",
+                "tor",
+                "fre",
+                "lør",
+                "søn"
+          ],
+          "everyDay": "Hver dag",
+          "onceOnly": "Bare én gang",
+          "yearly": "Hvert år",
+          "monthly": "Hver måned",
+          "noRepeat": "Gjentas ikke",
+          "inactive": "Kommer slått av",
+          "smart": "Hopper over helligdager",
+          "gentle": "Mild oppvåkning",
+          "gentleLead": function (n) { return "Mild oppvåkning " + n + " min før"; },
+          "briefing": "Muntlig briefing",
+          "sleep": "Søvnplanlegging",
+          "wakeCheck": function (n) { return "Oppvåkningssjekk etter " + n + " min"; },
+          "snooze": function (n) { return "" + n + " min slumring"; },
+          "maxSnoozes": function (n) { return "Maks. " + n + " slumringer"; },
+          "background": "Bakgrunn",
+          "solar": {
+                "sunrise": "Ringer ved soloppgang",
+                "sunset": "Ringer ved solnedgang",
+                "civilDawn": "Ringer ved daggry"
+          },
+          "dismiss": {
+                "math": "Slå av: løs et regnestykke",
+                "retype": "Slå av: skriv inn et tall på nytt",
+                "pattern": "Slå av: gjenta et mønster",
+                "emoji": "Slå av: finn emojiene",
+                "shake": "Slå av: rist telefonen",
+                "steps": "Slå av: gå noen skritt",
+                "scan_item": "Slå av: skann en hverdagsgjenstand",
+                "troll": "Slå av: slå ned trollene",
+                "mosquito": "Slå av: klask myggene",
+                "maze": "Slå av: vipp deg gjennom labyrinten",
+                "pairs": "Slå av: match parene"
+          },
+          "omitted": {
+                "geo": "Posisjonsbetingelsen (avsenderens koordinater deles aldri)",
+                "snd": "Ringetonen, som hører til avsenderens egen enhet",
+                "bgf": "Deres tilpassede bakgrunnsbilde",
+                "pho": "Fotooppdraget",
+                "bar": "QR- eller strekkodeoppdraget",
+                "act": "Handlingen som kjøres når alarmen slås av"
+          }
+    },
+    fi: {
+          "title": "Joku on jakanut herätyksen kanssasi",
+          "subtitle": "Avaa se Chronosissa lisätäksesi sen. Mitään ei lisätä, ennen kuin vahvistat sen sovelluksessa.",
+          "invalidTitle": "Tämä herätyslinkki ei ole kelvollinen",
+          "invalidBody": "Linkki on saattanut katketa sovelluksessa, jonka kautta se lähetettiin. Pyydä se uudelleen ja varmista, että koko linkki kopioidaan — myös kaikki #-merkin jälkeen tuleva.",
+          "outdatedTitle": "Tämä linkki vaatii uudemman Chronos-version",
+          "outdatedBody": "Se on luotu sovelluksen uudemmalla versiolla. Päivitä Chronos ja avaa linkki uudelleen.",
+          "emptyTitle": "Täällä ei ole mitään nähtävää",
+          "emptyBody": "Tällä sivulla näkyy herätys, jonka joku on jakanut kanssasi. Avaa linkki, jonka sait, nähdäksesi sen.",
+          "open": "Avaa Chronosissa",
+          "get": "Hanki Chronos Google Playsta",
+          "soon": "Tulossa pian Google Playhin",
+          "home": "Käy osoitteessa chronosintelligentalarm.com",
+          "hint": "Onko sinulla jo Chronos? Painike avaa sen suoraan herätykseen.",
+          "caveats": "Hyvä tietää",
+          "privacy": "Tämä herätys purettiin selaimessasi. Linkin osaa, joka tulee #-merkin jälkeen, ei koskaan lähetetä palvelimellemme — kukaan muu kuin sinä ja lähettäjä ei ole nähnyt sitä.",
+          "days": [
+                "ma",
+                "ti",
+                "ke",
+                "to",
+                "pe",
+                "la",
+                "su"
+          ],
+          "everyDay": "Joka päivä",
+          "onceOnly": "Vain kerran",
+          "yearly": "Joka vuosi",
+          "monthly": "Joka kuukausi",
+          "noRepeat": "Ei toistu",
+          "inactive": "Saapuu pois päältä",
+          "smart": "Ohittaa pyhäpäivät",
+          "gentle": "Pehmeä herätys",
+          "gentleLead": function (n) { return "Pehmeä herätys " + n + " min ennen"; },
+          "briefing": "Puhebriefing",
+          "sleep": "Unisuunnittelu",
+          "wakeCheck": function (n) { return "Herätystarkistus " + n + " min kuluttua"; },
+          "snooze": function (n) { return "" + n + " min torkku"; },
+          "maxSnoozes": function (n) { return "Enintään " + n + " torkkua"; },
+          "background": "Taustakuva",
+          "solar": {
+                "sunrise": "Soi auringonnousun aikaan",
+                "sunset": "Soi auringonlaskun aikaan",
+                "civilDawn": "Soi aamunkoitteessa"
+          },
+          "dismiss": {
+                "math": "Sammuta: ratkaise matematiikan tehtävä",
+                "retype": "Sammuta: kirjoita numero uudelleen",
+                "pattern": "Sammuta: toista kuvio",
+                "emoji": "Sammuta: etsi emojit",
+                "shake": "Sammuta: ravista puhelinta",
+                "steps": "Sammuta: kävele muutama askel",
+                "scan_item": "Sammuta: skannaa arkinen esine",
+                "troll": "Sammuta: mäiskytä peikkoja",
+                "mosquito": "Sammuta: läiskytä hyttysiä",
+                "maze": "Sammuta: kallistele labyrintin läpi",
+                "pairs": "Sammuta: yhdistä parit"
+          },
+          "omitted": {
+                "geo": "Sijaintiehto (lähettäjän koordinaatteja ei koskaan jaeta)",
+                "snd": "Soittoääni, joka kuuluu lähettäjän omaan laitteeseen",
+                "bgf": "Heidän mukautettu taustakuvansa",
+                "pho": "Valokuvatehtävä",
+                "bar": "QR- tai viivakooditehtävä",
+                "act": "Toiminto, joka suoritetaan, kun herätys sammutetaan"
+          }
+    },
+    pl: {
+          "title": "Ktoś udostępnił Ci alarm",
+          "subtitle": "Otwórz go w Chronos, aby dodać. Nic nie zostanie dodane, dopóki nie potwierdzisz tego w aplikacji.",
+          "invalidTitle": "Ten link do alarmu jest nieprawidłowy",
+          "invalidBody": "Link mógł zostać skrócony przez aplikację, przez którą został wysłany. Poproś o niego ponownie i upewnij się, że cały link został skopiowany — łącznie ze wszystkim po znaku #.",
+          "outdatedTitle": "Ten link wymaga nowszej wersji Chronos",
+          "outdatedBody": "Został utworzony w nowszej wersji aplikacji. Zaktualizuj Chronos i otwórz link ponownie.",
+          "emptyTitle": "Nie ma tu nic do zobaczenia",
+          "emptyBody": "Ta strona pokazuje alarm udostępniony Ci przez kogoś. Otwórz przesłany link, aby go zobaczyć.",
+          "open": "Otwórz w Chronos",
+          "get": "Pobierz Chronos z Google Play",
+          "soon": "Wkrótce w Google Play",
+          "home": "Odwiedź chronosintelligentalarm.com",
+          "hint": "Masz już Chronos? Ten przycisk otworzy go od razu przy alarmie.",
+          "caveats": "Warto wiedzieć",
+          "privacy": "Ten alarm został odczytany w Twojej przeglądarce. Część linku po znaku # nigdy nie trafia na nasz serwer — nikt poza Tobą i osobą, która go wysłała, jej nie widział.",
+          "days": [
+                "pn",
+                "wt",
+                "śr",
+                "cz",
+                "pt",
+                "so",
+                "nd"
+          ],
+          "everyDay": "Codziennie",
+          "onceOnly": "Tylko raz",
+          "yearly": "Co roku",
+          "monthly": "Co miesiąc",
+          "noRepeat": "Nie powtarza się",
+          "inactive": "Przychodzi wyłączony",
+          "smart": "Pomija święta",
+          "gentle": "Łagodne budzenie",
+          "gentleLead": function (n) { return "Łagodne budzenie " + n + " min wcześniej"; },
+          "briefing": "Zapowiedź głosowa",
+          "sleep": "Planowanie snu",
+          "wakeCheck": function (n) { return "Kontrola pobudki po " + n + " min"; },
+          "snooze": function (n) { return "Drzemka " + n + " min"; },
+          "maxSnoozes": function (n) { return "Maks. " + n + " drzemek"; },
+          "background": "Tapeta",
+          "solar": {
+                "sunrise": "Dzwoni o wschodzie słońca",
+                "sunset": "Dzwoni o zachodzie słońca",
+                "civilDawn": "Dzwoni o świcie"
+          },
+          "dismiss": {
+                "math": "Wyłącz: rozwiąż zadanie matematyczne",
+                "retype": "Wyłącz: przepisz liczbę",
+                "pattern": "Wyłącz: powtórz wzór",
+                "emoji": "Wyłącz: znajdź emoji",
+                "shake": "Wyłącz: potrząśnij telefonem",
+                "steps": "Wyłącz: zrób kilka kroków",
+                "scan_item": "Wyłącz: zeskanuj codzienny przedmiot",
+                "troll": "Wyłącz: pokonaj trolle",
+                "mosquito": "Wyłącz: przybij komary",
+                "maze": "Wyłącz: przechyl telefon, by przejść labirynt",
+                "pairs": "Wyłącz: dopasuj pary"
+          },
+          "omitted": {
+                "geo": "Warunek lokalizacji (współrzędne nadawcy nigdy nie są udostępniane)",
+                "snd": "Dzwonek, który należy do urządzenia nadawcy",
+                "bgf": "Ich niestandardowy obraz tła",
+                "pho": "Zadanie fotograficzne",
+                "bar": "Zadanie ze skanowaniem kodu QR lub kreskowego",
+                "act": "Czynność, która wykonuje się po wyłączeniu alarmu"
+          }
+    },
+    cs: {
+          "title": "Někdo s tebou sdílel alarm",
+          "subtitle": "Otevři ho v Chronosu, abys ho přidal. Nic se nepřidá, dokud to nepotvrdíš v aplikaci.",
+          "invalidTitle": "Tento odkaz na alarm není platný",
+          "invalidBody": "Odkaz mohla zkrátit aplikace, přes kterou byl odeslán. Požádej o něj znovu a ujisti se, že je zkopírovaný celý odkaz — včetně všeho za znakem #.",
+          "outdatedTitle": "Tento odkaz vyžaduje novější Chronos",
+          "outdatedBody": "Byl vytvořen novější verzí aplikace. Aktualizuj Chronos a odkaz otevři znovu.",
+          "emptyTitle": "Tady není nic k vidění",
+          "emptyBody": "Tato stránka zobrazuje alarm, který s tebou někdo sdílel. Otevři odkaz, který ti poslal, abys ho viděl.",
+          "open": "Otevřít v Chronos",
+          "get": "Získej Chronos na Google Play",
+          "soon": "Již brzy na Google Play",
+          "home": "Navštiv chronosintelligentalarm.com",
+          "hint": "Už máš Chronos? Tlačítko ho otevře přímo na alarmu.",
+          "caveats": "Stojí za zmínku",
+          "privacy": "Tento alarm byl dekódován přímo v tvém prohlížeči. Část odkazu za znakem # se nikdy neposílá na náš server — nikdo kromě tebe a toho, kdo ho poslal, ho neviděl.",
+          "days": [
+                "po",
+                "út",
+                "st",
+                "čt",
+                "pá",
+                "so",
+                "ne"
+          ],
+          "everyDay": "Každý den",
+          "onceOnly": "Jen jednou",
+          "yearly": "Každý rok",
+          "monthly": "Každý měsíc",
+          "noRepeat": "Neopakuje se",
+          "inactive": "Přijde vypnutý",
+          "smart": "Vynechává svátky",
+          "gentle": "Jemné probuzení",
+          "gentleLead": function (n) { return "Jemné probuzení " + n + " min předem"; },
+          "briefing": "Hlasové hlášení",
+          "sleep": "Plánování spánku",
+          "wakeCheck": function (n) { return "Kontrola probuzení po " + n + " min"; },
+          "snooze": function (n) { return "Odložení o " + n + " min"; },
+          "maxSnoozes": function (n) { return "Max. " + n + " odložení"; },
+          "background": "Tapeta",
+          "solar": {
+                "sunrise": "Zvoní za východu slunce",
+                "sunset": "Zvoní při západu slunce",
+                "civilDawn": "Zvoní za prvního světla"
+          },
+          "dismiss": {
+                "math": "Vypnutí: vyřeš matematický příklad",
+                "retype": "Vypnutí: přepiš číslo",
+                "pattern": "Vypnutí: zopakuj vzor",
+                "emoji": "Vypnutí: najdi emoji",
+                "shake": "Vypnutí: zatřes telefonem",
+                "steps": "Vypnutí: ujdi pár kroků",
+                "scan_item": "Vypnutí: naskenuj běžný předmět",
+                "troll": "Vypnutí: mlať trolly",
+                "mosquito": "Vypnutí: plácni komáry",
+                "maze": "Vypnutí: proveď se bludištěm nakláněním",
+                "pairs": "Vypnutí: najdi páry"
+          },
+          "omitted": {
+                "geo": "Podmínka polohy (souřadnice odesílatele se nikdy nesdílí)",
+                "snd": "Vyzváněcí tón, který patří k zařízení odesílatele",
+                "bgf": "Jejich vlastní obrázek na pozadí",
+                "pho": "Fotografická úloha",
+                "bar": "Úloha s QR kódem nebo čárovým kódem",
+                "act": "Akce, která se spustí po vypnutí alarmu"
+          }
+    },
+    hu: {
+          "title": "Valaki megosztott veled egy ébresztőt",
+          "subtitle": "Nyisd meg a Chronosban a hozzáadásához. Semmi sem kerül hozzáadásra, amíg meg nem erősíted az appban.",
+          "invalidTitle": "Ez az ébresztőlink nem érvényes",
+          "invalidBody": "Lehet, hogy az alkalmazás, amelyen keresztül küldték, lerövidítette a linket. Kérd el újra, és győződj meg róla, hogy a teljes linket másolod ki — beleértve a # jel utáni részt is.",
+          "outdatedTitle": "Ehhez a linkhez újabb Chronos szükséges",
+          "outdatedBody": "Az app egy újabb verziójával jött létre. Frissítsd a Chronost, és nyisd meg újra a linket.",
+          "emptyTitle": "Itt nincs mit látni",
+          "emptyBody": "Ez az oldal egy olyan ébresztőt mutat, amelyet valaki megosztott veled. Nyisd meg a neked küldött linket, hogy megnézhesd.",
+          "open": "Megnyitás a Chronosban",
+          "get": "Szerezd meg a Chronost a Google Play-en",
+          "soon": "Hamarosan a Google Play-en",
+          "home": "Látogass el a chronosintelligentalarm.com oldalra",
+          "hint": "Már van Chronosod? A gomb egyenesen az ébresztőre nyitja meg.",
+          "caveats": "Érdemes tudni",
+          "privacy": "Ez az ébresztő a böngésződben lett dekódolva. A link # utáni része soha nem kerül elküldésre a szerverünkre — rajtad és a küldőn kívül senki nem látta.",
+          "days": [
+                "H",
+                "K",
+                "Sze",
+                "Cs",
+                "P",
+                "Szo",
+                "V"
+          ],
+          "everyDay": "Minden nap",
+          "onceOnly": "Csak egyszer",
+          "yearly": "Minden évben",
+          "monthly": "Minden hónapban",
+          "noRepeat": "Nem ismétlődik",
+          "inactive": "Kikapcsolva érkezik",
+          "smart": "Kihagyja az ünnepnapokat",
+          "gentle": "Kíméletes ébresztés",
+          "gentleLead": function (n) { return "Kíméletes ébresztés " + n + " perccel előtte"; },
+          "briefing": "Hangos tájékoztató",
+          "sleep": "Alvástervezés",
+          "wakeCheck": function (n) { return "Ébredésellenőrzés " + n + " perc múlva"; },
+          "snooze": function (n) { return "" + n + " perces szundi"; },
+          "maxSnoozes": function (n) { return "Legfeljebb " + n + " szundi"; },
+          "background": "Háttérkép",
+          "solar": {
+                "sunrise": "Napkeltekor szól",
+                "sunset": "Napnyugtakor szól",
+                "civilDawn": "A hajnal első fényénél szól"
+          },
+          "dismiss": {
+                "math": "Kikapcsolás: oldj meg egy matekfeladatot",
+                "retype": "Kikapcsolás: gépelj be egy számot",
+                "pattern": "Kikapcsolás: ismételj meg egy mintát",
+                "emoji": "Kikapcsolás: találd meg az emojikat",
+                "shake": "Kikapcsolás: rázd meg a telefont",
+                "steps": "Kikapcsolás: tegyél meg néhány lépést",
+                "scan_item": "Kikapcsolás: szkennelj be egy hétköznapi tárgyat",
+                "troll": "Kikapcsolás: üsd le a trollokat",
+                "mosquito": "Kikapcsolás: csapd le a szúnyogokat",
+                "maze": "Kikapcsolás: dönts át a labirintuson",
+                "pairs": "Kikapcsolás: párosítsd össze a párokat"
+          },
+          "omitted": {
+                "geo": "A helyalapú feltétel (a küldő koordinátái sosem kerülnek megosztásra)",
+                "snd": "A csengőhang, amely a küldő saját eszközéhez tartozik",
+                "bgf": "A saját, egyéni háttérképük",
+                "pho": "A fotós küldetés",
+                "bar": "A QR- vagy vonalkód-küldetés",
+                "act": "A művelet, amely az ébresztő kikapcsolása után lefut"
+          }
+    },
+    tr: {
+          "title": "Biri seninle bir alarm paylaştı",
+          "subtitle": "Eklemek için Chronos'ta aç. Uygulamada onaylamadan hiçbir şey eklenmez.",
+          "invalidTitle": "Bu alarm bağlantısı geçerli değil",
+          "invalidBody": "Bağlantı, gönderildiği uygulama tarafından kısaltılmış olabilir. Tekrar iste ve bağlantının tamamının kopyalandığından emin ol — # işaretinden sonraki her şey dahil.",
+          "outdatedTitle": "Bu bağlantı daha yeni bir Chronos gerektiriyor",
+          "outdatedBody": "Uygulamanın daha yeni bir sürümüyle oluşturuldu. Chronos'u güncelle ve bağlantıyı tekrar aç.",
+          "emptyTitle": "Burada görülecek bir şey yok",
+          "emptyBody": "Bu sayfa, birinin seninle paylaştığı bir alarmı gösterir. Görmek için sana gönderdikleri bağlantıyı aç.",
+          "open": "Chronos'ta aç",
+          "get": "Chronos'u Google Play'den edin",
+          "soon": "Yakında Google Play'de",
+          "home": "chronosintelligentalarm.com'u ziyaret et",
+          "hint": "Zaten Chronos'un var mı? Düğme doğrudan alarma açar.",
+          "caveats": "Bilmekte fayda var",
+          "privacy": "Bu alarm tarayıcında çözüldü. Bağlantının # işaretinden sonraki kısmı sunucumuza asla gönderilmez — sen ve gönderen kişiden başka kimse görmedi.",
+          "days": [
+                "Pzt",
+                "Sal",
+                "Çar",
+                "Per",
+                "Cum",
+                "Cmt",
+                "Paz"
+          ],
+          "everyDay": "Her gün",
+          "onceOnly": "Sadece bir kez",
+          "yearly": "Her yıl",
+          "monthly": "Her ay",
+          "noRepeat": "Tekrarlanmıyor",
+          "inactive": "Kapalı olarak gelir",
+          "smart": "Tatilleri atlar",
+          "gentle": "Yumuşak Uyanış",
+          "gentleLead": function (n) { return "Yumuşak Uyanış " + n + " dk önce"; },
+          "briefing": "Sesli bilgilendirme",
+          "sleep": "Uyku planlama",
+          "wakeCheck": function (n) { return "" + n + " dk sonra uyanma kontrolü"; },
+          "snooze": function (n) { return "" + n + " dk erteleme"; },
+          "maxSnoozes": function (n) { return "En fazla " + n + " erteleme"; },
+          "background": "Duvar kağıdı",
+          "solar": {
+                "sunrise": "Gün doğumunda çalar",
+                "sunset": "Gün batımında çalar",
+                "civilDawn": "İlk ışıkla çalar"
+          },
+          "dismiss": {
+                "math": "Kapatma: bir matematik problemi çöz",
+                "retype": "Kapatma: bir sayıyı yeniden yaz",
+                "pattern": "Kapatma: bir deseni tekrarla",
+                "emoji": "Kapatma: emojileri bul",
+                "shake": "Kapatma: telefonu salla",
+                "steps": "Kapatma: birkaç adım yürü",
+                "scan_item": "Kapatma: günlük bir eşyayı tara",
+                "troll": "Kapatma: trolleri vur",
+                "mosquito": "Kapatma: sivrisinekleri yakala",
+                "maze": "Kapatma: telefonu eğerek labirentten geç",
+                "pairs": "Kapatma: eşleri bul"
+          },
+          "omitted": {
+                "geo": "Konum koşulu (gönderenin koordinatları asla paylaşılmaz)",
+                "snd": "Gönderenin kendi cihazına ait olan zil sesi",
+                "bgf": "Kendi özel arka plan görselleri",
+                "pho": "Fotoğraf görevi",
+                "bar": "QR veya barkod görevi",
+                "act": "Alarm kapatıldıktan sonra çalışan eylem"
+          }
+    },
+    ru: {
+          "title": "Кто-то поделился с тобой будильником",
+          "subtitle": "Открой его в Chronos, чтобы добавить. Ничего не добавится, пока ты не подтвердишь это в приложении.",
+          "invalidTitle": "Эта ссылка на будильник недействительна",
+          "invalidBody": "Возможно, ссылку обрезало приложение, через которое её отправили. Попроси прислать её ещё раз и убедись, что скопирована вся ссылка целиком — включая всё, что идёт после знака #.",
+          "outdatedTitle": "Для этой ссылки нужен более новый Chronos",
+          "outdatedBody": "Она была создана в более новой версии приложения. Обнови Chronos и открой ссылку снова.",
+          "emptyTitle": "Здесь ничего нет",
+          "emptyBody": "На этой странице показывается будильник, которым кто-то поделился с тобой. Открой присланную тебе ссылку, чтобы его увидеть.",
+          "open": "Открыть в Chronos",
+          "get": "Получить Chronos в Google Play",
+          "soon": "Скоро в Google Play",
+          "home": "Посетить chronosintelligentalarm.com",
+          "hint": "Уже есть Chronos? Кнопка откроет его прямо на будильнике.",
+          "caveats": "Полезно знать",
+          "privacy": "Этот будильник был расшифрован прямо в твоём браузере. Часть ссылки после знака # никогда не отправляется на наш сервер — её не видел никто, кроме тебя и того, кто её отправил.",
+          "days": [
+                "пн",
+                "вт",
+                "ср",
+                "чт",
+                "пт",
+                "сб",
+                "вс"
+          ],
+          "everyDay": "Каждый день",
+          "onceOnly": "Только один раз",
+          "yearly": "Каждый год",
+          "monthly": "Каждый месяц",
+          "noRepeat": "Не повторяется",
+          "inactive": "Приходит выключенным",
+          "smart": "Пропускает праздники",
+          "gentle": "Плавное пробуждение",
+          "gentleLead": function (n) { return "Плавное пробуждение за " + n + " мин"; },
+          "briefing": "Голосовое объявление",
+          "sleep": "Планирование сна",
+          "wakeCheck": function (n) { return "Проверка пробуждения через " + n + " мин"; },
+          "snooze": function (n) { return "Откладывание на " + n + " мин"; },
+          "maxSnoozes": function (n) { return "Максимум " + n + " откладываний"; },
+          "background": "Обои",
+          "solar": {
+                "sunrise": "Звонит на рассвете",
+                "sunset": "Звонит на закате",
+                "civilDawn": "Звонит с первыми лучами света"
+          },
+          "dismiss": {
+                "math": "Выключение: реши математическую задачу",
+                "retype": "Выключение: введи число заново",
+                "pattern": "Выключение: повтори узор",
+                "emoji": "Выключение: найди эмодзи",
+                "shake": "Выключение: потряси телефон",
+                "steps": "Выключение: сделай несколько шагов",
+                "scan_item": "Выключение: отсканируй обычный предмет",
+                "troll": "Выключение: побей троллей",
+                "mosquito": "Выключение: прихлопни комаров",
+                "maze": "Выключение: пройди лабиринт, наклоняя телефон",
+                "pairs": "Выключение: найди пары"
+          },
+          "omitted": {
+                "geo": "Условие по местоположению (координаты отправителя никогда не передаются)",
+                "snd": "Мелодия звонка, которая привязана к устройству отправителя",
+                "bgf": "Их собственное фоновое изображение",
+                "pho": "Фотозадание",
+                "bar": "Задание со сканированием QR-кода или штрихкода",
+                "act": "Действие, которое запускается после выключения будильника"
+          }
+    },
+    uk: {
+          "title": "Хтось поділився з тобою будильником",
+          "subtitle": "Відкрий у Chronos, щоб додати його. Нічого не додається, доки ти не підтвердиш у застосунку.",
+          "invalidTitle": "Це посилання на будильник недійсне",
+          "invalidBody": "Можливо, застосунок, через який його надіслали, обрізав посилання. Попроси надіслати ще раз і переконайся, що скопійовано все посилання цілком — разом з усім, що йде після знака #.",
+          "outdatedTitle": "Для цього посилання потрібен новіший Chronos",
+          "outdatedBody": "Його створено в новішій версії застосунку. Онови Chronos і відкрий посилання знову.",
+          "emptyTitle": "Тут нічого немає",
+          "emptyBody": "На цій сторінці показується будильник, яким з тобою поділилися. Відкрий надіслане тобі посилання, щоб побачити його.",
+          "open": "Відкрити в Chronos",
+          "get": "Завантаж Chronos у Google Play",
+          "soon": "Скоро в Google Play",
+          "home": "Відвідай chronosintelligentalarm.com",
+          "hint": "Уже маєш Chronos? Кнопка відкриє його прямо на цьому будильнику.",
+          "caveats": "Варто знати",
+          "privacy": "Цей будильник розшифровано у твоєму браузері. Частина посилання після # ніколи не надсилається на наш сервер — його не бачив ніхто, крім тебе й того, хто його надіслав.",
+          "days": [
+                "пн",
+                "вт",
+                "ср",
+                "чт",
+                "пт",
+                "сб",
+                "нд"
+          ],
+          "everyDay": "Щодня",
+          "onceOnly": "Лише один раз",
+          "yearly": "Щороку",
+          "monthly": "Щомісяця",
+          "noRepeat": "Без повторення",
+          "inactive": "Прибуває вимкненим",
+          "smart": "Пропускає свята",
+          "gentle": "Плавне пробудження",
+          "gentleLead": function (n) { return "Плавне пробудження за " + n + " хв до"; },
+          "briefing": "Голосове оголошення",
+          "sleep": "Планування сну",
+          "wakeCheck": function (n) { return "Перевірка пробудження через " + n + " хв"; },
+          "snooze": function (n) { return "Відкладення на " + n + " хв"; },
+          "maxSnoozes": function (n) { return "Максимум " + n + " відкладень"; },
+          "background": "Фон",
+          "solar": {
+                "sunrise": "Дзвонить на світанку",
+                "sunset": "Дзвонить на заході сонця",
+                "civilDawn": "Дзвонить із першим світлом"
+          },
+          "dismiss": {
+                "math": "Вимкнення: розв'яжи математичну задачу",
+                "retype": "Вимкнення: введи число ще раз",
+                "pattern": "Вимкнення: повтори візерунок",
+                "emoji": "Вимкнення: знайди емодзі",
+                "shake": "Вимкнення: потряси телефон",
+                "steps": "Вимкнення: пройди кілька кроків",
+                "scan_item": "Вимкнення: відскануй повсякденний предмет",
+                "troll": "Вимкнення: бий тролів",
+                "mosquito": "Вимкнення: бий комарів",
+                "maze": "Вимкнення: пройди лабіринт, нахиляючи телефон",
+                "pairs": "Вимкнення: знайди пари"
+          },
+          "omitted": {
+                "geo": "Умова місцезнаходження (координати відправника ніколи не передаються)",
+                "snd": "Мелодія дзвінка, яка належить пристрою відправника",
+                "bgf": "Їхнє власне фонове зображення",
+                "pho": "Завдання з фото",
+                "bar": "Завдання з QR-кодом або штрихкодом",
+                "act": "Дія, яка виконується після вимкнення будильника"
+          }
+    },
+    hi: {
+          "title": "किसी ने तुम्हारे साथ एक अलार्म शेयर किया है",
+          "subtitle": "इसे जोड़ने के लिए Chronos में खोलो। जब तक तुम ऐप में कन्फ़र्म नहीं करते, तब तक कुछ भी नहीं जुड़ता।",
+          "invalidTitle": "यह अलार्म लिंक सही नहीं है",
+          "invalidBody": "हो सकता है जिस ऐप से यह भेजा गया हो उसने लिंक को छोटा कर दिया हो। इसे फिर से माँगो, और देख लो कि पूरा लिंक कॉपी हुआ है — # चिह्न के बाद की सारी चीज़ों समेत।",
+          "outdatedTitle": "इस लिंक के लिए नए Chronos की ज़रूरत है",
+          "outdatedBody": "इसे ऐप के नए वर्ज़न से बनाया गया था। Chronos को अपडेट करो और लिंक फिर से खोलो।",
+          "emptyTitle": "यहाँ देखने के लिए कुछ नहीं है",
+          "emptyBody": "यह पेज किसी के शेयर किए गए अलार्म को दिखाता है। इसे देखने के लिए उनका भेजा हुआ लिंक खोलो।",
+          "open": "Chronos में खोलो",
+          "get": "Google Play पर Chronos लो",
+          "soon": "Google Play पर जल्द आ रहा है",
+          "home": "chronosintelligentalarm.com पर जाओ",
+          "hint": "पहले से Chronos है? बटन इसे सीधे अलार्म पर खोल देगा।",
+          "caveats": "जानने लायक बात",
+          "privacy": "यह अलार्म तुम्हारे ब्राउज़र में डीकोड हुआ था। लिंक का # के बाद वाला हिस्सा कभी हमारे सर्वर पर नहीं भेजा जाता — इसे तुम्हारे और इसे भेजने वाले के अलावा किसी ने नहीं देखा।",
+          "days": [
+                "सो",
+                "मं",
+                "बु",
+                "गु",
+                "शु",
+                "श",
+                "र"
+          ],
+          "everyDay": "हर दिन",
+          "onceOnly": "सिर्फ़ एक बार",
+          "yearly": "हर साल",
+          "monthly": "हर महीने",
+          "noRepeat": "रिपीट नहीं होता",
+          "inactive": "बंद हालत में आता है",
+          "smart": "छुट्टियों में नहीं बजता",
+          "gentle": "जेंटल वेक",
+          "gentleLead": function (n) { return "" + n + " मिनट पहले जेंटल वेक"; },
+          "briefing": "आवाज़ में जानकारी",
+          "sleep": "नींद की प्लानिंग",
+          "wakeCheck": function (n) { return "" + n + " मिनट बाद वेक चेक"; },
+          "snooze": function (n) { return "" + n + " मिनट का स्नूज़"; },
+          "maxSnoozes": function (n) { return "ज़्यादा से ज़्यादा " + n + " स्नूज़"; },
+          "background": "वॉलपेपर",
+          "solar": {
+                "sunrise": "सूर्योदय पर बजता है",
+                "sunset": "सूर्यास्त पर बजता है",
+                "civilDawn": "सुबह की पहली रोशनी में बजता है"
+          },
+          "dismiss": {
+                "math": "बंद करने के लिए: गणित की समस्या हल करो",
+                "retype": "बंद करने के लिए: एक नंबर दोबारा टाइप करो",
+                "pattern": "बंद करने के लिए: एक पैटर्न दोहराओ",
+                "emoji": "बंद करने के लिए: इमोजी ढूँढो",
+                "shake": "बंद करने के लिए: फ़ोन हिलाओ",
+                "steps": "बंद करने के लिए: कुछ कदम चलो",
+                "scan_item": "बंद करने के लिए: रोज़मर्रा की कोई चीज़ स्कैन करो",
+                "troll": "बंद करने के लिए: ट्रोल्स को मारो",
+                "mosquito": "बंद करने के लिए: मच्छरों को मारो",
+                "maze": "बंद करने के लिए: फ़ोन झुकाकर भूलभुलैया पार करो",
+                "pairs": "बंद करने के लिए: जोड़े मिलाओ"
+          },
+          "omitted": {
+                "geo": "लोकेशन की शर्त (भेजने वाले की कोऑर्डिनेट्स कभी शेयर नहीं होतीं)",
+                "snd": "रिंगटोन, जो भेजने वाले के अपने डिवाइस की है",
+                "bgf": "उनकी कस्टम बैकग्राउंड इमेज",
+                "pho": "फ़ोटो मिशन",
+                "bar": "QR या बारकोड मिशन",
+                "act": "अलार्म बंद होने के बाद चलने वाला एक्शन"
+          }
+    },
+    th: {
+          "title": "มีคนแชร์ปลุกให้คุณ",
+          "subtitle": "เปิดใน Chronos เพื่อเพิ่มปลุกนี้ จะยังไม่มีอะไรถูกเพิ่มจนกว่าคุณจะยืนยันในแอป",
+          "invalidTitle": "ลิงก์ปลุกนี้ใช้ไม่ได้",
+          "invalidBody": "ลิงก์อาจถูกตัดให้สั้นลงโดยแอปที่ใช้ส่งต่อ ลองขอลิงก์ใหม่อีกครั้ง และตรวจสอบว่าคัดลอกลิงก์มาทั้งหมด — รวมถึงทุกอย่างหลังเครื่องหมาย #",
+          "outdatedTitle": "ลิงก์นี้ต้องใช้ Chronos เวอร์ชันใหม่กว่า",
+          "outdatedBody": "ลิงก์นี้ถูกสร้างด้วยแอปเวอร์ชันใหม่กว่า อัปเดต Chronos แล้วเปิดลิงก์อีกครั้ง",
+          "emptyTitle": "ไม่มีอะไรให้ดูที่นี่",
+          "emptyBody": "หน้านี้แสดงปลุกที่มีคนแชร์ให้คุณ เปิดลิงก์ที่เขาส่งมาเพื่อดู",
+          "open": "เปิดใน Chronos",
+          "get": "ดาวน์โหลด Chronos บน Google Play",
+          "soon": "เร็วๆ นี้บน Google Play",
+          "home": "เยี่ยมชม chronosintelligentalarm.com",
+          "hint": "มี Chronos อยู่แล้วใช่ไหม? ปุ่มนี้จะเปิดตรงไปยังปลุกเลย",
+          "caveats": "ควรรู้ไว้",
+          "privacy": "ปลุกนี้ถูกถอดรหัสในเบราว์เซอร์ของคุณ ส่วนของลิงก์หลังเครื่องหมาย # จะไม่ถูกส่งไปยังเซิร์ฟเวอร์ของเราเลย — ไม่มีใครเห็นมันนอกจากคุณและคนที่ส่งมาให้",
+          "days": [
+                "จ",
+                "อ",
+                "พ",
+                "พฤ",
+                "ศ",
+                "ส",
+                "อา"
+          ],
+          "everyDay": "ทุกวัน",
+          "onceOnly": "ครั้งเดียวเท่านั้น",
+          "yearly": "ทุกปี",
+          "monthly": "ทุกเดือน",
+          "noRepeat": "ไม่ทำซ้ำ",
+          "inactive": "มาถึงในสถานะปิดอยู่",
+          "smart": "ไม่ดังในวันหยุด",
+          "gentle": "การปลุกแบบนุ่มนวล",
+          "gentleLead": function (n) { return "ปลุกแบบนุ่มนวลก่อน " + n + " นาที"; },
+          "briefing": "การแจ้งข้อมูลด้วยเสียง",
+          "sleep": "การวางแผนการนอน",
+          "wakeCheck": function (n) { return "เช็กการตื่นหลังจาก " + n + " นาที"; },
+          "snooze": function (n) { return "เลื่อนปลุก " + n + " นาที"; },
+          "maxSnoozes": function (n) { return "เลื่อนปลุกได้สูงสุด " + n + " ครั้ง"; },
+          "background": "วอลเปเปอร์",
+          "solar": {
+                "sunrise": "ดังตอนพระอาทิตย์ขึ้น",
+                "sunset": "ดังตอนพระอาทิตย์ตก",
+                "civilDawn": "ดังตอนแสงแรกของวัน"
+          },
+          "dismiss": {
+                "math": "ปิดปลุก: แก้โจทย์คณิตศาสตร์",
+                "retype": "ปิดปลุก: พิมพ์ตัวเลขซ้ำ",
+                "pattern": "ปิดปลุก: ทำรูปแบบซ้ำ",
+                "emoji": "ปิดปลุก: หาอิโมจิ",
+                "shake": "ปิดปลุก: เขย่าโทรศัพท์",
+                "steps": "ปิดปลุก: เดินสองสามก้าว",
+                "scan_item": "ปิดปลุก: สแกนของใช้ในชีวิตประจำวัน",
+                "troll": "ปิดปลุก: ตีโทรลล์",
+                "mosquito": "ปิดปลุก: ตียุง",
+                "maze": "ปิดปลุก: เอียงผ่านเขาวงกต",
+                "pairs": "ปิดปลุก: จับคู่ให้ตรงกัน"
+          },
+          "omitted": {
+                "geo": "เงื่อนไขตำแหน่งที่ตั้ง (พิกัดของผู้ส่งจะไม่ถูกแชร์)",
+                "snd": "เสียงเรียกเข้า ซึ่งเป็นของอุปกรณ์ของผู้ส่งเอง",
+                "bgf": "รูปพื้นหลังที่กำหนดเองของเขา",
+                "pho": "โจทย์ถ่ายรูป",
+                "bar": "โจทย์ QR หรือบาร์โค้ด",
+                "act": "การกระทำที่ทำงานหลังจากปิดปลุกแล้ว"
+          }
+    },
+    ar: {
+          "title": "شارك أحدهم منبهًا معك",
+          "subtitle": "افتحه في Chronos لإضافته. لن تتم إضافة أي شيء دون التأكيد في التطبيق.",
+          "invalidTitle": "رابط المنبه هذا غير صالح",
+          "invalidBody": "ربما تم اختصار الرابط بواسطة التطبيق الذي أُرسل عبره. يُنصح بطلبه من جديد والتأكد من نسخ الرابط كاملًا — بما في ذلك كل ما يأتي بعد علامة #.",
+          "outdatedTitle": "هذا الرابط يتطلب نسخة أحدث من Chronos",
+          "outdatedBody": "تم إنشاؤه بنسخة أحدث من التطبيق. يُرجى تحديث Chronos وفتح الرابط مرة أخرى.",
+          "emptyTitle": "لا يوجد شيء لعرضه هنا",
+          "emptyBody": "تعرض هذه الصفحة منبهًا شاركه أحدهم. افتح الرابط المُرسَل لعرضه.",
+          "open": "فتح في Chronos",
+          "get": "الحصول على Chronos من Google Play",
+          "soon": "قريبًا على Google Play",
+          "home": "زيارة chronosintelligentalarm.com",
+          "hint": "لديك Chronos بالفعل؟ الزر يفتحه مباشرة على هذا المنبه.",
+          "caveats": "يجدر معرفته",
+          "privacy": "تم فك تشفير هذا المنبه في المتصفح. الجزء من الرابط الذي يأتي بعد علامة # لا يُرسَل أبدًا إلى خادمنا — لم يره أحد سوى المُستلِم ومَن أرسله.",
+          "days": [
+                "ن",
+                "ث",
+                "ر",
+                "خ",
+                "ج",
+                "س",
+                "ح"
+          ],
+          "everyDay": "كل يوم",
+          "onceOnly": "مرة واحدة فقط",
+          "yearly": "كل سنة",
+          "monthly": "كل شهر",
+          "noRepeat": "لا يتكرر",
+          "inactive": "يصل في وضع الإيقاف",
+          "smart": "يتخطى العطلات",
+          "gentle": "الاستيقاظ اللطيف",
+          "gentleLead": function (n) { return "استيقاظ لطيف قبل " + n + " دقيقة"; },
+          "briefing": "الموجز الصوتي",
+          "sleep": "تخطيط النوم",
+          "wakeCheck": function (n) { return "التحقق من الاستيقاظ بعد " + n + " دقيقة"; },
+          "snooze": function (n) { return "غفوة لمدة " + n + " دقيقة"; },
+          "maxSnoozes": function (n) { return "الحد الأقصى " + n + " غفوات"; },
+          "background": "الخلفية",
+          "solar": {
+                "sunrise": "يرن عند الشروق",
+                "sunset": "يرن عند الغروب",
+                "civilDawn": "يرن عند أول ضوء"
+          },
+          "dismiss": {
+                "math": "الإيقاف: حل مسألة رياضية",
+                "retype": "الإيقاف: إعادة كتابة رقم",
+                "pattern": "الإيقاف: تكرار نمط",
+                "emoji": "الإيقاف: العثور على الرموز التعبيرية",
+                "shake": "الإيقاف: هز الهاتف",
+                "steps": "الإيقاف: المشي بضع خطوات",
+                "scan_item": "الإيقاف: مسح غرض يومي",
+                "troll": "الإيقاف: ضرب العفاريت",
+                "mosquito": "الإيقاف: ضرب البعوض",
+                "maze": "الإيقاف: اجتياز المتاهة بالإمالة",
+                "pairs": "الإيقاف: مطابقة الأزواج"
+          },
+          "omitted": {
+                "geo": "شرط الموقع (لا تُشارَك إحداثيات المُرسِل أبدًا)",
+                "snd": "نغمة الرنين، وهي خاصة بجهاز المُرسِل",
+                "bgf": "صورة الخلفية المخصصة الخاصة به",
+                "pho": "مهمة الصورة",
+                "bar": "مهمة رمز QR أو الباركود",
+                "act": "الإجراء الذي يعمل بعد إيقاف المنبه"
+          }
+    },
+    fa: {
+          "title": "کسی یک آلارم با تو به اشتراک گذاشته",
+          "subtitle": "برای افزودنش، آن را در Chronos باز کن. تا وقتی در اپ تأیید نکنی، چیزی اضافه نمی‌شود.",
+          "invalidTitle": "این لینک آلارم معتبر نیست",
+          "invalidBody": "ممکن است اپی که لینک از طریق آن فرستاده شده، آن را کوتاه کرده باشد. دوباره لینک را بخواه و مطمئن شو کل آن کپی شده — از جمله همه‌چیز بعد از علامت #.",
+          "outdatedTitle": "این لینک به Chronos جدیدتری نیاز دارد",
+          "outdatedBody": "این لینک با نسخهٔ جدیدتری از اپ ساخته شده. Chronos را به‌روزرسانی کن و دوباره لینک را باز کن.",
+          "emptyTitle": "اینجا چیزی برای دیدن نیست",
+          "emptyBody": "این صفحه آلارمی را نشان می‌دهد که کسی با تو به اشتراک گذاشته. لینکی را که برایت فرستاده باز کن تا آن را ببینی.",
+          "open": "باز کردن در Chronos",
+          "get": "دریافت Chronos از Google Play",
+          "soon": "به‌زودی در Google Play",
+          "home": "به chronosintelligentalarm.com سر بزن",
+          "hint": "Chronos را قبلاً داری؟ دکمه مستقیم به آلارم می‌برد.",
+          "caveats": "چیزهایی که خوب است بدانی",
+          "privacy": "این آلارم در مرورگر خودت رمزگشایی شده. بخشی از لینک که بعد از # است هرگز به سرور ما فرستاده نمی‌شود — هیچ‌کس جز تو و کسی که آن را فرستاده، آن را ندیده.",
+          "days": [
+                "د",
+                "س",
+                "چ",
+                "پ",
+                "ج",
+                "ش",
+                "ی"
+          ],
+          "everyDay": "هر روز",
+          "onceOnly": "فقط یک‌بار",
+          "yearly": "هر سال",
+          "monthly": "هر ماه",
+          "noRepeat": "تکرار نمی‌شود",
+          "inactive": "خاموش می‌رسد",
+          "smart": "تعطیلات را رد می‌کند",
+          "gentle": "بیداری ملایم",
+          "gentleLead": function (n) { return "بیداری ملایم " + n + " دقیقه قبل"; },
+          "briefing": "گزارش صوتی",
+          "sleep": "برنامه‌ریزی خواب",
+          "wakeCheck": function (n) { return "بررسی بیداری بعد از " + n + " دقیقه"; },
+          "snooze": function (n) { return "تعویق " + n + " دقیقه‌ای"; },
+          "maxSnoozes": function (n) { return "حداکثر " + n + " بار تعویق"; },
+          "background": "تصویر پس‌زمینه",
+          "solar": {
+                "sunrise": "هنگام طلوع آفتاب زنگ می‌زند",
+                "sunset": "هنگام غروب آفتاب زنگ می‌زند",
+                "civilDawn": "هنگام سپیده‌دم زنگ می‌زند"
+          },
+          "dismiss": {
+                "math": "خاموش کردن: یک مسئلهٔ ریاضی حل کن",
+                "retype": "خاموش کردن: یک عدد را دوباره بنویس",
+                "pattern": "خاموش کردن: یک الگو را تکرار کن",
+                "emoji": "خاموش کردن: اموجی‌ها را پیدا کن",
+                "shake": "خاموش کردن: گوشی را تکان بده",
+                "steps": "خاموش کردن: چند قدم راه برو",
+                "scan_item": "خاموش کردن: یک شیء روزمره را اسکن کن",
+                "troll": "خاموش کردن: ترول‌ها را بزن",
+                "mosquito": "خاموش کردن: پشه‌ها را بزن",
+                "maze": "خاموش کردن: با کج‌کردن گوشی از هزارتو عبور کن",
+                "pairs": "خاموش کردن: جفت‌ها را پیدا کن"
+          },
+          "omitted": {
+                "geo": "شرط مکانی (مختصات فرستنده هرگز به اشتراک گذاشته نمی‌شود)",
+                "snd": "آهنگ زنگ، که متعلق به گوشی خود فرستنده است",
+                "bgf": "تصویر پس‌زمینهٔ سفارشی‌شان",
+                "pho": "مأموریت عکس",
+                "bar": "مأموریت بارکد یا QR",
+                "act": "اقدامی که بعد از خاموش‌شدن آلارم اجرا می‌شود"
+          }
+    },
+    ur: {
+          "title": "کسی نے آپ کے ساتھ ایک الارم شیئر کیا ہے",
+          "subtitle": "اسے شامل کرنے کے لیے Chronos میں کھولیں۔ جب تک آپ ایپ میں تصدیق نہ کریں کچھ بھی شامل نہیں ہوگا۔",
+          "invalidTitle": "یہ الارم لنک درست نہیں ہے",
+          "invalidBody": "ممکن ہے جس ایپ کے ذریعے یہ بھیجا گیا ہو اس نے لنک کاٹ دیا ہو۔ دوبارہ لنک مانگیں، اور یقینی بنائیں کہ پورا لنک کاپی کیا گیا ہے — بشمول # نشان کے بعد کی ہر چیز۔",
+          "outdatedTitle": "اس لنک کے لیے نئے Chronos کی ضرورت ہے",
+          "outdatedBody": "یہ ایپ کے نئے ورژن کے ساتھ بنایا گیا تھا۔ Chronos اپ ڈیٹ کریں اور لنک دوبارہ کھولیں۔",
+          "emptyTitle": "یہاں دیکھنے کے لیے کچھ نہیں",
+          "emptyBody": "یہ صفحہ ایک ایسا الارم دکھاتا ہے جو کسی نے آپ کے ساتھ شیئر کیا ہو۔ اسے دیکھنے کے لیے وہ لنک کھولیں جو آپ کو بھیجا گیا تھا۔",
+          "open": "Chronos میں کھولیں",
+          "get": "Google Play سے Chronos حاصل کریں",
+          "soon": "جلد Google Play پر",
+          "home": "chronosintelligentalarm.com دیکھیں",
+          "hint": "پہلے سے Chronos ہے؟ بٹن اسے سیدھا الارم میں کھولتا ہے۔",
+          "caveats": "جاننے کے قابل باتیں",
+          "privacy": "یہ الارم آپ کے براؤزر میں ڈی کوڈ کیا گیا تھا۔ # کے بعد لنک کا حصہ ہمارے سرور کو کبھی نہیں بھیجا جاتا — آپ اور بھیجنے والے کے سوا کسی نے اسے نہیں دیکھا۔",
+          "days": [
+                "پیر",
+                "منگل",
+                "بدھ",
+                "جمعرات",
+                "جمعہ",
+                "ہفتہ",
+                "اتوار"
+          ],
+          "everyDay": "ہر روز",
+          "onceOnly": "صرف ایک بار",
+          "yearly": "ہر سال",
+          "monthly": "ہر ماہ",
+          "noRepeat": "دہرایا نہیں جاتا",
+          "inactive": "بند حالت میں آتا ہے",
+          "smart": "چھٹیوں میں خاموش",
+          "gentle": "نرم بیداری",
+          "gentleLead": function (n) { return "نرم بیداری الارم سے " + n + " منٹ پہلے"; },
+          "briefing": "صوتی بریفنگ",
+          "sleep": "نیند کی منصوبہ بندی",
+          "wakeCheck": function (n) { return "" + n + " منٹ بعد بیداری چیک"; },
+          "snooze": function (n) { return "" + n + " منٹ کا اسنوز"; },
+          "maxSnoozes": function (n) { return "زیادہ سے زیادہ " + n + " اسنوز"; },
+          "background": "وال پیپر",
+          "solar": {
+                "sunrise": "طلوعِ آفتاب پر بجتا ہے",
+                "sunset": "غروبِ آفتاب پر بجتا ہے",
+                "civilDawn": "پہلی روشنی پر بجتا ہے"
+          },
+          "dismiss": {
+                "math": "بند کریں: ایک ریاضی کا مسئلہ حل کریں",
+                "retype": "بند کریں: ایک نمبر دوبارہ لکھیں",
+                "pattern": "بند کریں: ایک پیٹرن دہرائیں",
+                "emoji": "بند کریں: ایموجیز تلاش کریں",
+                "shake": "بند کریں: فون ہلائیں",
+                "steps": "بند کریں: کچھ قدم چلیں",
+                "scan_item": "بند کریں: کسی روزمرہ چیز کو اسکین کریں",
+                "troll": "بند کریں: ٹرولز کو ماریں",
+                "mosquito": "بند کریں: مچھروں کو ماریں",
+                "maze": "بند کریں: فون جھکا کر بھول بھلیوں سے گزریں",
+                "pairs": "بند کریں: جوڑے ملائیں"
+          },
+          "omitted": {
+                "geo": "مقام کی شرط (بھیجنے والے کے کوآرڈینیٹس کبھی شیئر نہیں کیے جاتے)",
+                "snd": "رنگ ٹون، جو بھیجنے والے کی اپنی ڈیوائس سے تعلق رکھتی ہے",
+                "bgf": "ان کی حسبِ ضرورت پس منظر کی تصویر",
+                "pho": "تصویر والا مشن",
+                "bar": "QR یا بار کوڈ والا مشن",
+                "act": "وہ عمل جو الارم بند ہونے کے بعد چلتا ہے"
+          }
+    },
+    ca: {
+          "title": "Algú ha compartit una alarma amb tu",
+          "subtitle": "Obre-la a Chronos per afegir-la. No s'afegeix res fins que ho confirmis a l'aplicació.",
+          "invalidTitle": "Aquest enllaç d'alarma no és vàlid",
+          "invalidBody": "És possible que l'aplicació amb què es va enviar hagi escurçat l'enllaç. Torna a demanar-lo i assegura't que es copia sencer — inclòs tot el que hi ha després del símbol #.",
+          "outdatedTitle": "Aquest enllaç necessita un Chronos més nou",
+          "outdatedBody": "Es va crear amb una versió més nova de l'aplicació. Actualitza Chronos i torna a obrir l'enllaç.",
+          "emptyTitle": "Aquí no hi ha res a veure",
+          "emptyBody": "Aquesta pàgina mostra una alarma que algú ha compartit amb tu. Obre l'enllaç que t'han enviat per veure-la.",
+          "open": "Obre a Chronos",
+          "get": "Aconsegueix Chronos a Google Play",
+          "soon": "Molt aviat a Google Play",
+          "home": "Visita chronosintelligentalarm.com",
+          "hint": "Ja tens Chronos? El botó l'obre directament a l'alarma.",
+          "caveats": "Val la pena saber-ho",
+          "privacy": "Aquesta alarma s'ha desxifrat al teu navegador. La part de l'enllaç després del # mai s'envia al nostre servidor — ningú excepte tu i qui te l'ha enviat l'ha vist.",
+          "days": [
+                "dl",
+                "dt",
+                "dc",
+                "dj",
+                "dv",
+                "ds",
+                "dg"
+          ],
+          "everyDay": "Cada dia",
+          "onceOnly": "Només una vegada",
+          "yearly": "Cada any",
+          "monthly": "Cada mes",
+          "noRepeat": "No es repeteix",
+          "inactive": "Arriba apagada",
+          "smart": "Salta festius",
+          "gentle": "Despertar suau",
+          "gentleLead": function (n) { return "Despertar suau " + n + " min abans"; },
+          "briefing": "Resum parlat",
+          "sleep": "Planificació del son",
+          "wakeCheck": function (n) { return "Comprovació d'aquí a " + n + " min"; },
+          "snooze": function (n) { return "Posposició de " + n + " min"; },
+          "maxSnoozes": function (n) { return "Màxim " + n + " ajornaments"; },
+          "background": "Fons de pantalla",
+          "solar": {
+                "sunrise": "Sona a la sortida del sol",
+                "sunset": "Sona a la posta de sol",
+                "civilDawn": "Sona a la primera claror"
+          },
+          "dismiss": {
+                "math": "Apagar: resol un problema de matemàtiques",
+                "retype": "Apagar: torna a escriure un número",
+                "pattern": "Apagar: repeteix un patró",
+                "emoji": "Apagar: troba els emojis",
+                "shake": "Apagar: sacseja el mòbil",
+                "steps": "Apagar: camina uns passos",
+                "scan_item": "Apagar: escaneja un objecte quotidià",
+                "troll": "Apagar: aixafa els trols",
+                "mosquito": "Apagar: mata els mosquits",
+                "maze": "Apagar: inclina't per travessar el laberint",
+                "pairs": "Apagar: aparella les parelles"
+          },
+          "omitted": {
+                "geo": "La condició d'ubicació (les coordenades de qui l'envia mai es comparteixen)",
+                "snd": "El to de trucada, que pertany al dispositiu de qui l'envia",
+                "bgf": "La seva imatge de fons personalitzada",
+                "pho": "La missió de la foto",
+                "bar": "La missió del codi QR o de barres",
+                "act": "L'acció que s'executa després d'apagar l'alarma"
+          }
+    },
+    ms: {
+          "title": "Seseorang telah berkongsi penggera dengan anda",
+          "subtitle": "Buka dalam Chronos untuk menambahkannya. Tiada apa-apa ditambah sehingga anda mengesahkannya dalam aplikasi.",
+          "invalidTitle": "Pautan penggera ini tidak sah",
+          "invalidBody": "Pautan ini mungkin telah dipendekkan oleh aplikasi yang menghantarnya. Minta semula, dan pastikan keseluruhan pautan disalin — termasuk segala-galanya selepas tanda #.",
+          "outdatedTitle": "Pautan ini memerlukan Chronos yang lebih baharu",
+          "outdatedBody": "Ia dicipta menggunakan versi aplikasi yang lebih baharu. Kemas kini Chronos dan buka semula pautan itu.",
+          "emptyTitle": "Tiada apa-apa untuk dilihat di sini",
+          "emptyBody": "Halaman ini memaparkan penggera yang dikongsi oleh seseorang dengan anda. Buka pautan yang mereka hantar untuk melihatnya.",
+          "open": "Buka dalam Chronos",
+          "get": "Dapatkan Chronos di Google Play",
+          "soon": "Akan datang di Google Play",
+          "home": "Lawati chronosintelligentalarm.com",
+          "hint": "Sudah ada Chronos? Butang ini terus membukanya pada penggera.",
+          "caveats": "Perkara yang perlu diketahui",
+          "privacy": "Penggera ini telah dinyahkod dalam pelayar anda. Bahagian pautan selepas # tidak pernah dihantar ke pelayan kami — tiada sesiapa selain anda dan sesiapa yang menghantarnya pernah melihatnya.",
+          "days": [
+                "Isn",
+                "Sel",
+                "Rab",
+                "Kha",
+                "Jum",
+                "Sab",
+                "Ahd"
+          ],
+          "everyDay": "Setiap hari",
+          "onceOnly": "Sekali sahaja",
+          "yearly": "Setiap tahun",
+          "monthly": "Setiap bulan",
+          "noRepeat": "Tidak berulang",
+          "inactive": "Tiba dalam keadaan dimatikan",
+          "smart": "Tiada bunyi pada cuti",
+          "gentle": "Bangun Lembut",
+          "gentleLead": function (n) { return "Bangun Lembut " + n + " minit sebelum"; },
+          "briefing": "Taklimat suara",
+          "sleep": "Perancangan tidur",
+          "wakeCheck": function (n) { return "Semakan bangun tidur selepas " + n + " minit"; },
+          "snooze": function (n) { return "Tunda " + n + " minit"; },
+          "maxSnoozes": function (n) { return "Maksimum " + n + " tundaan"; },
+          "background": "Kertas dinding",
+          "solar": {
+                "sunrise": "Berbunyi ketika matahari terbit",
+                "sunset": "Berbunyi ketika matahari terbenam",
+                "civilDawn": "Berbunyi ketika cahaya pertama"
+          },
+          "dismiss": {
+                "math": "Matikan: selesaikan masalah matematik",
+                "retype": "Matikan: taip semula nombor",
+                "pattern": "Matikan: ulang corak",
+                "emoji": "Matikan: cari emoji",
+                "shake": "Matikan: goncang telefon",
+                "steps": "Matikan: berjalan beberapa langkah",
+                "scan_item": "Matikan: imbas objek harian",
+                "troll": "Matikan: pukul troll",
+                "mosquito": "Matikan: pukul nyamuk",
+                "maze": "Matikan: condongkan telefon melalui pagar sesat",
+                "pairs": "Matikan: padankan pasangan"
+          },
+          "omitted": {
+                "geo": "Syarat lokasi (koordinat penghantar tidak pernah dikongsi)",
+                "snd": "Nada dering, yang dimiliki oleh peranti penghantar sendiri",
+                "bgf": "Imej latar belakang tersuai mereka",
+                "pho": "Misi foto",
+                "bar": "Misi kod QR atau kod bar",
+                "act": "Tindakan yang dijalankan selepas penggera dimatikan"
+          }
+    },
+    ro: {
+          "title": "Cineva ți-a distribuit o alarmă",
+          "subtitle": "Deschide-o în Chronos ca s-o adaugi. Nimic nu se adaugă până nu confirmi în aplicație.",
+          "invalidTitle": "Acest link de alarmă nu este valid",
+          "invalidBody": "Linkul poate fi fost scurtat de aplicația prin care a fost trimis. Cere-l din nou și asigură-te că este copiat întreg — inclusiv tot ce urmează după semnul #.",
+          "outdatedTitle": "Acest link are nevoie de o versiune mai nouă de Chronos",
+          "outdatedBody": "A fost creat cu o versiune mai nouă a aplicației. Actualizează Chronos și deschide din nou linkul.",
+          "emptyTitle": "Nimic de văzut aici",
+          "emptyBody": "Această pagină arată o alarmă pe care cineva ți-a distribuit-o. Deschide linkul pe care ți l-a trimis ca s-o vezi.",
+          "open": "Deschide în Chronos",
+          "get": "Obține Chronos pe Google Play",
+          "soon": "În curând pe Google Play",
+          "home": "Vizitează chronosintelligentalarm.com",
+          "hint": "Ai deja Chronos? Butonul îl deschide direct la alarmă.",
+          "caveats": "Bine de știut",
+          "privacy": "Această alarmă a fost decodată în browserul tău. Partea linkului de după semnul # nu este trimisă niciodată la serverul nostru — nimeni în afară de tine și de cel care a trimis-o nu a văzut-o.",
+          "days": [
+                "L",
+                "M",
+                "M",
+                "J",
+                "V",
+                "S",
+                "D"
+          ],
+          "everyDay": "În fiecare zi",
+          "onceOnly": "O singură dată",
+          "yearly": "În fiecare an",
+          "monthly": "În fiecare lună",
+          "noRepeat": "Nu se repetă",
+          "inactive": "Ajunge dezactivată",
+          "smart": "Sare peste sărbători",
+          "gentle": "Trezire blândă",
+          "gentleLead": function (n) { return "Trezire blândă cu " + n + " min înainte"; },
+          "briefing": "Rezumat vocal",
+          "sleep": "Planificarea somnului",
+          "wakeCheck": function (n) { return "Verificare de trezire după " + n + " min"; },
+          "snooze": function (n) { return "Amânare de " + n + " min"; },
+          "maxSnoozes": function (n) { return "Maximum " + n + " amânări"; },
+          "background": "Fundal",
+          "solar": {
+                "sunrise": "Sună la răsărit",
+                "sunset": "Sună la apus",
+                "civilDawn": "Sună la zori"
+          },
+          "dismiss": {
+                "math": "Oprire: rezolvă o problemă de matematică",
+                "retype": "Oprire: rescrie un număr",
+                "pattern": "Oprire: repetă un model",
+                "emoji": "Oprire: găsește emoji-urile",
+                "shake": "Oprire: scutură telefonul",
+                "steps": "Oprire: mergi câțiva pași",
+                "scan_item": "Oprire: scanează un obiect din jur",
+                "troll": "Oprire: lovește trolii",
+                "mosquito": "Oprire: plesnește țânțarii",
+                "maze": "Oprire: înclină prin labirint",
+                "pairs": "Oprire: potrivește perechile"
+          },
+          "omitted": {
+                "geo": "Condiția de locație (coordonatele expeditorului nu sunt niciodată partajate)",
+                "snd": "Tonul de sonerie, care aparține dispozitivului expeditorului",
+                "bgf": "Fundalul lor personalizat",
+                "pho": "Misiunea foto",
+                "bar": "Misiunea cu cod QR sau cod de bare",
+                "act": "Acțiunea care rulează după ce alarma este oprită"
+          }
+    },
+    vi: {
+          "title": "Có người đã chia sẻ một báo thức với bạn",
+          "subtitle": "Mở trong Chronos để thêm báo thức này. Không có gì được thêm cho đến khi bạn xác nhận trong ứng dụng.",
+          "invalidTitle": "Liên kết báo thức này không hợp lệ",
+          "invalidBody": "Liên kết có thể đã bị cắt ngắn bởi ứng dụng dùng để gửi nó. Hãy xin lại liên kết và đảm bảo đã sao chép toàn bộ — kể cả phần sau dấu #.",
+          "outdatedTitle": "Liên kết này cần một phiên bản Chronos mới hơn",
+          "outdatedBody": "Liên kết được tạo bằng một phiên bản ứng dụng mới hơn. Hãy cập nhật Chronos rồi mở lại liên kết.",
+          "emptyTitle": "Không có gì để xem ở đây",
+          "emptyBody": "Trang này hiển thị một báo thức mà ai đó đã chia sẻ với bạn. Hãy mở liên kết họ đã gửi để xem nó.",
+          "open": "Mở trong Chronos",
+          "get": "Tải Chronos trên Google Play",
+          "soon": "Sắp có trên Google Play",
+          "home": "Truy cập chronosintelligentalarm.com",
+          "hint": "Đã có Chronos? Nút này sẽ mở thẳng vào báo thức.",
+          "caveats": "Điều nên biết",
+          "privacy": "Báo thức này được giải mã ngay trong trình duyệt của bạn. Phần liên kết sau dấu # không bao giờ được gửi đến máy chủ của chúng tôi — không ai ngoài bạn và người đã gửi nó từng thấy nó.",
+          "days": [
+                "T2",
+                "T3",
+                "T4",
+                "T5",
+                "T6",
+                "T7",
+                "CN"
+          ],
+          "everyDay": "Mỗi ngày",
+          "onceOnly": "Chỉ một lần",
+          "yearly": "Mỗi năm",
+          "monthly": "Mỗi tháng",
+          "noRepeat": "Không lặp lại",
+          "inactive": "Đến ở trạng thái tắt",
+          "smart": "Bỏ qua ngày lễ",
+          "gentle": "Đánh thức nhẹ nhàng",
+          "gentleLead": function (n) { return "Đánh thức nhẹ nhàng " + n + " phút trước"; },
+          "briefing": "Tóm tắt bằng giọng nói",
+          "sleep": "Lập kế hoạch giấc ngủ",
+          "wakeCheck": function (n) { return "Kiểm tra thức dậy sau " + n + " phút"; },
+          "snooze": function (n) { return "Báo lại sau " + n + " phút"; },
+          "maxSnoozes": function (n) { return "Tối đa " + n + " lần báo lại"; },
+          "background": "Hình nền",
+          "solar": {
+                "sunrise": "Reo lúc bình minh",
+                "sunset": "Reo lúc hoàng hôn",
+                "civilDawn": "Reo lúc rạng đông"
+          },
+          "dismiss": {
+                "math": "Tắt: giải một bài toán",
+                "retype": "Tắt: gõ lại một số",
+                "pattern": "Tắt: lặp lại một mẫu hình",
+                "emoji": "Tắt: tìm các emoji",
+                "shake": "Tắt: lắc điện thoại",
+                "steps": "Tắt: đi vài bước",
+                "scan_item": "Tắt: quét một vật dụng hằng ngày",
+                "troll": "Tắt: đập troll",
+                "mosquito": "Tắt: đập muỗi",
+                "maze": "Tắt: nghiêng điện thoại để đi qua mê cung",
+                "pairs": "Tắt: ghép các cặp"
+          },
+          "omitted": {
+                "geo": "Điều kiện vị trí (tọa độ của người gửi không bao giờ được chia sẻ)",
+                "snd": "Nhạc chuông, thuộc về thiết bị riêng của người gửi",
+                "bgf": "Hình nền tùy chỉnh của họ",
+                "pho": "Nhiệm vụ chụp ảnh",
+                "bar": "Nhiệm vụ quét mã QR hoặc mã vạch",
+                "act": "Hành động chạy sau khi báo thức được tắt"
+          }
+    },
+    he: {
+          "title": "מישהו שיתף שעון מעורר",
+          "subtitle": "פתיחה ב-Chronos כדי להוסיף אותו. שום דבר לא נוסף עד לאישור באפליקציה.",
+          "invalidTitle": "קישור השעון המעורר הזה אינו תקין",
+          "invalidBody": "ייתכן שהקישור קוצר על ידי האפליקציה שדרכה הוא נשלח. כדאי לבקש אותו מחדש ולוודא שהקישור הועתק במלואו — כולל כל מה שאחרי הסימן #.",
+          "outdatedTitle": "הקישור הזה דורש גרסת Chronos חדשה יותר",
+          "outdatedBody": "הוא נוצר בגרסה חדשה יותר של האפליקציה. יש לעדכן את Chronos ולפתוח את הקישור שוב.",
+          "emptyTitle": "אין כאן מה לראות",
+          "emptyBody": "הדף הזה מציג שעון מעורר ששותף על ידי מישהו. כדי לראות אותו, יש לפתוח את הקישור שנשלח.",
+          "open": "לפתוח ב-Chronos",
+          "get": "הורדת Chronos מ-Google Play",
+          "soon": "בקרוב ב-Google Play",
+          "home": "ביקור באתר chronosintelligentalarm.com",
+          "hint": "כבר יש Chronos מותקן? הכפתור פותח ישירות את השעון המעורר.",
+          "caveats": "כדאי לדעת",
+          "privacy": "השעון המעורר הזה פוענח בדפדפן. החלק שבקישור אחרי הסימן # לעולם לא נשלח לשרת שלנו — אף אחד מלבד מי ששלח את הקישור ומי שפותח אותו לא ראה אותו.",
+          "days": [
+                "ב",
+                "ג",
+                "ד",
+                "ה",
+                "ו",
+                "ש",
+                "א"
+          ],
+          "everyDay": "כל יום",
+          "onceOnly": "פעם אחת בלבד",
+          "yearly": "כל שנה",
+          "monthly": "כל חודש",
+          "noRepeat": "לא חוזר",
+          "inactive": "מגיע כבוי",
+          "smart": "מדלג על חגים",
+          "gentle": "השכמה עדינה",
+          "gentleLead": function (n) { return "השכמה עדינה " + n + " דקות לפני"; },
+          "briefing": "תקציר קולי",
+          "sleep": "תכנון שינה",
+          "wakeCheck": function (n) { return "בדיקת השכמה כעבור " + n + " דקות"; },
+          "snooze": function (n) { return "נודניק של " + n + " דקות"; },
+          "maxSnoozes": function (n) { return "עד " + n + " נודניקים"; },
+          "background": "רקע",
+          "solar": {
+                "sunrise": "מצלצל בזריחה",
+                "sunset": "מצלצל בשקיעה",
+                "civilDawn": "מצלצל בעלות השחר"
+          },
+          "dismiss": {
+                "math": "כיבוי: פתרון תרגיל חשבון",
+                "retype": "כיבוי: הקלדה מחדש של מספר",
+                "pattern": "כיבוי: חזרה על תבנית",
+                "emoji": "כיבוי: איתור האימוג'ים",
+                "shake": "כיבוי: ניעור הטלפון",
+                "steps": "כיבוי: הליכה כמה צעדים",
+                "scan_item": "כיבוי: סריקת חפץ יומיומי",
+                "troll": "כיבוי: הכאת הטרולים",
+                "mosquito": "כיבוי: הכאת היתושים",
+                "maze": "כיבוי: מעבר במבוך על ידי הטיה",
+                "pairs": "כיבוי: התאמת זוגות"
+          },
+          "omitted": {
+                "geo": "תנאי המיקום (הקואורדינטות של השולח לעולם לא משותפות)",
+                "snd": "צליל הצלצול, ששייך למכשיר של השולח",
+                "bgf": "הרקע המותאם אישית שלהם",
+                "pho": "משימת הצילום",
+                "bar": "משימת קוד ה-QR או הברקוד",
+                "act": "הפעולה שרצה אחרי כיבוי השעון המעורר"
+          }
+    },
+    bn: {
+          "title": "কেউ আপনার সাথে একটি অ্যালার্ম শেয়ার করেছেন",
+          "subtitle": "এটি যোগ করতে Chronos-এ খুলুন। আপনি অ্যাপে নিশ্চিত না করা পর্যন্ত কিছুই যোগ হয় না।",
+          "invalidTitle": "এই অ্যালার্ম লিংকটি বৈধ নয়",
+          "invalidBody": "যে অ্যাপের মাধ্যমে এটি পাঠানো হয়েছিল তা লিংকটি ছোট করে ফেলে থাকতে পারে। আবার এটি চেয়ে নিন এবং নিশ্চিত করুন যে পুরো লিংকটি কপি করা হয়েছে — # চিহ্নের পরের সবকিছুসহ।",
+          "outdatedTitle": "এই লিংকের জন্য Chronos-এর নতুন সংস্করণ প্রয়োজন",
+          "outdatedBody": "এটি অ্যাপের একটি নতুন সংস্করণ দিয়ে তৈরি হয়েছিল। Chronos আপডেট করুন এবং লিংকটি আবার খুলুন।",
+          "emptyTitle": "এখানে দেখার মতো কিছু নেই",
+          "emptyBody": "এই পেজে কেউ আপনার সাথে শেয়ার করা একটি অ্যালার্ম দেখানো হয়। এটি দেখতে তারা আপনাকে পাঠানো লিংকটি খুলুন।",
+          "open": "Chronos-এ খুলুন",
+          "get": "Google Play-তে Chronos পান",
+          "soon": "শীঘ্রই Google Play-তে আসছে",
+          "home": "chronosintelligentalarm.com দেখুন",
+          "hint": "আগে থেকেই Chronos আছে? বোতামটি সরাসরি অ্যালার্মে নিয়ে যাবে।",
+          "caveats": "জেনে রাখা ভালো",
+          "privacy": "এই অ্যালার্মটি আপনার ব্রাউজারে ডিকোড করা হয়েছিল। # চিহ্নের পরে লিংকের অংশটি কখনো আমাদের সার্ভারে পাঠানো হয় না — আপনি এবং যিনি এটি পাঠিয়েছেন তিনি ছাড়া আর কেউ এটি দেখেননি।",
+          "days": [
+                "সো",
+                "ম",
+                "বু",
+                "বৃ",
+                "শু",
+                "শ",
+                "র"
+          ],
+          "everyDay": "প্রতিদিন",
+          "onceOnly": "শুধু একবার",
+          "yearly": "প্রতি বছর",
+          "monthly": "প্রতি মাসে",
+          "noRepeat": "পুনরাবৃত্তি হয় না",
+          "inactive": "বন্ধ অবস্থায় আসে",
+          "smart": "ছুটির দিন বাদ দেয়",
+          "gentle": "মৃদু জাগরণ",
+          "gentleLead": function (n) { return "" + n + " মিনিট আগে মৃদু জাগরণ"; },
+          "briefing": "কথ্য সারসংক্ষেপ",
+          "sleep": "ঘুমের পরিকল্পনা",
+          "wakeCheck": function (n) { return "" + n + " মিনিট পর জাগরণ যাচাই"; },
+          "snooze": function (n) { return "" + n + " মিনিটের স্নুজ"; },
+          "maxSnoozes": function (n) { return "সর্বোচ্চ " + n + "টি স্নুজ"; },
+          "background": "ওয়ালপেপার",
+          "solar": {
+                "sunrise": "সূর্যোদয়ে বাজবে",
+                "sunset": "সূর্যাস্তে বাজবে",
+                "civilDawn": "প্রথম আলোয় বাজবে"
+          },
+          "dismiss": {
+                "math": "বন্ধ করুন: একটি গণিত সমস্যার সমাধান করুন",
+                "retype": "বন্ধ করুন: একটি সংখ্যা আবার লিখুন",
+                "pattern": "বন্ধ করুন: একটি প্যাটার্ন পুনরাবৃত্তি করুন",
+                "emoji": "বন্ধ করুন: ইমোজিগুলো খুঁজুন",
+                "shake": "বন্ধ করুন: ফোনটি ঝাঁকান",
+                "steps": "বন্ধ করুন: কয়েক পা হাঁটুন",
+                "scan_item": "বন্ধ করুন: একটি নিত্যব্যবহার্য জিনিস স্ক্যান করুন",
+                "troll": "বন্ধ করুন: ট্রোলদের আঘাত করুন",
+                "mosquito": "বন্ধ করুন: মশা মারুন",
+                "maze": "বন্ধ করুন: গোলকধাঁধা পার হতে ফোন কাত করুন",
+                "pairs": "বন্ধ করুন: জোড়া মেলান"
+          },
+          "omitted": {
+                "geo": "অবস্থানের শর্ত (প্রেরকের স্থানাঙ্ক কখনো শেয়ার করা হয় না)",
+                "snd": "রিংটোন, যা প্রেরকের নিজের ডিভাইসের অন্তর্গত",
+                "bgf": "তাদের কাস্টম ব্যাকগ্রাউন্ড ছবি",
+                "pho": "ছবি তোলার মিশন",
+                "bar": "QR বা বারকোড মিশন",
+                "act": "অ্যালার্ম বন্ধ করার পর চলা অ্যাকশন"
+          }
     }
   };
 
@@ -335,7 +2544,7 @@
 
   function formatTime(hh, mm) {
     var minutes = String(mm).padStart(2, '0');
-    if (lang === 'es') return { time: hh + ':' + minutes, suffix: '' };
+    if (lang !== 'en') return { time: hh + ':' + minutes, suffix: '' };
     var suffix = hh < 12 ? 'AM' : 'PM';
     var h12 = hh % 12 === 0 ? 12 : hh % 12;
     return { time: h12 + ':' + minutes, suffix: suffix };
@@ -485,10 +2694,12 @@
     return frag;
   }
 
+  var SHARED_ALARM_TITLE = { en: 'Chronos — Shared alarm', es: 'Chronos — Alarma compartida', "fr": "Chronos — Alarme partagée", "de": "Chronos — Geteilter Wecker", "pt": "Chronos — Alarme compartilhado", "it": "Chronos — Sveglia condivisa", "zh": "Chronos — 分享的闹钟", "ja": "Chronos — 共有されたアラーム", "ko": "Chronos — 공유된 알람", "nl": "Chronos — Gedeelde wekker", "id": "Chronos — Alarm yang dibagikan", "el": "Chronos — Κοινόχρηστο ξυπνητήρι", "fil": "Chronos — Ibinahaging Alarm", "sv": "Chronos — Delat larm", "da": "Chronos – Delt alarm", "nb": "Chronos – Delt alarm", "fi": "Chronos – Jaettu herätys", "pl": "Chronos – Udostępniony alarm", "cs": "Chronos — Sdílený alarm", "hu": "Chronos — Megosztott ébresztő", "tr": "Chronos — Paylaşılan alarm", "ru": "Chronos — Общий будильник", "uk": "Chronos — Спільний будильник", "hi": "Chronos — शेयर किया गया अलार्म", "th": "Chronos — ปลุกที่แชร์มา", "ar": "Chronos — منبه مُشارَك", "fa": "Chronos — آلارم اشتراک‌گذاشته‌شده", "ur": "Chronos — شیئر کردہ الارم", "ca": "Chronos — Alarma compartida", "ms": "Chronos — Penggera dikongsi", "ro": "Chronos — Alarmă distribuită", "vi": "Chronos — Báo thức được chia sẻ", "he": "Chronos — שעון מעורר משותף", "bn": "Chronos — শেয়ার করা অ্যালার্ম" };
+
   function render() {
-    var t = T[lang];
+    var t = T[lang] || T.en;
     document.documentElement.lang = lang;
-    document.title = lang === 'es' ? 'Chronos — Alarma compartida' : 'Chronos — Shared alarm';
+    document.title = SHARED_ALARM_TITLE[lang] || SHARED_ALARM_TITLE.en;
     var result = readPayload();
     root.textContent = '';
     if (result.status === 'ok') {
@@ -503,23 +2714,22 @@
   }
 
   function setLang(next) {
-    lang = next === 'es' ? 'es' : 'en';
-    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+    lang = chronosResolveLang(next) || 'en';
+    if (CHRONOS_RTL.indexOf(lang) !== -1) document.documentElement.setAttribute('dir', 'rtl');
+    else document.documentElement.removeAttribute('dir');
+    var select = document.getElementById('lang-select');
+    if (select) select.value = lang;
     try { window.localStorage.setItem('chronos-lang', lang); } catch (e) { /* private mode */ }
     render();
   }
 
   function initialLang() {
-    try {
-      var saved = window.localStorage.getItem('chronos-lang');
-      if (saved === 'en' || saved === 'es') return saved;
-    } catch (e) { /* private mode */ }
-    return (navigator.language || 'en').toLowerCase().indexOf('es') === 0 ? 'es' : 'en';
+    var saved = null;
+    try { saved = window.localStorage.getItem('chronos-lang'); } catch (e) { /* private mode */ }
+    return chronosResolveLang(saved) || chronosResolveLang(navigator.language) || 'en';
   }
 
-  document.getElementById('btn-en').addEventListener('click', function () { setLang('en'); });
-  document.getElementById('btn-es').addEventListener('click', function () { setLang('es'); });
+  document.getElementById('lang-select').addEventListener('change', function (e) { setLang(e.target.value); });
   // A second link opened while this page is already up only changes the
   // fragment, which fires no navigation.
   window.addEventListener('hashchange', render);

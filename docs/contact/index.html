@@ -36,8 +36,9 @@
 
   header {
     padding: 16px 0; display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px 16px;
   }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15em; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15em; flex: none; }
   .brand img { width: 34px; height: 34px; border-radius: 50%; display: block; }
   .brand .dot { color: var(--warm); }
   .lang-switch { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 9px; padding: 3px; }
@@ -103,6 +104,18 @@
   footer a:hover { text-decoration: underline; }
 
   [data-l]:not(.show) { display: none; }
+  [data-l-legal]:not(.show) { display: none; }
+  .lang-select { background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 9px;
+    padding: 7px 30px 7px 12px; font-size: 0.83em; font-weight: 600; font-family: inherit; cursor: pointer;
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a89ec3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center; background-size: 14px; }
+  .lang-select:hover { border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+  .lang-select option { background: var(--card); color: var(--text); }
+  html[dir="rtl"] .lang-select { padding: 7px 12px 7px 30px; background-position: left 8px center; }
+  @media (max-width: 420px) {
+    .lang-select { max-width: 44vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  }
 </style>
 </head>
 <body>
@@ -113,62 +126,94 @@
       <img src="../assets/logo.png" alt="Chronos logo">
       <span>Chronos<span class="dot">.</span></span>
     </div>
-    <div class="lang-switch">
-      <button id="btn-en" type="button" onclick="setLang('en')">EN</button>
-      <button id="btn-es" type="button" onclick="setLang('es')">ES</button>
-    </div>
+    <select class="lang-select" id="lang-select" aria-label="Language / Idioma" onchange="setLang(this.value)">
+      <option value="en">English</option>
+      <option value="es">Español</option>
+      <option value="fr">Français</option>
+      <option value="de">Deutsch</option>
+      <option value="pt">Português</option>
+      <option value="it">Italiano</option>
+      <option value="zh">中文</option>
+      <option value="ja">日本語</option>
+      <option value="ko">한국어</option>
+      <option value="nl">Nederlands</option>
+      <option value="id">Bahasa Indonesia</option>
+      <option value="el">Ελληνικά</option>
+      <option value="fil">Filipino</option>
+      <option value="sv">Svenska</option>
+      <option value="da">Dansk</option>
+      <option value="nb">Norsk</option>
+      <option value="fi">Suomi</option>
+      <option value="pl">Polski</option>
+      <option value="cs">Čeština</option>
+      <option value="hu">Magyar</option>
+      <option value="tr">Türkçe</option>
+      <option value="ru">Русский</option>
+      <option value="uk">Українська</option>
+      <option value="hi">हिन्दी</option>
+      <option value="th">ไทย</option>
+      <option value="ar">العربية</option>
+      <option value="fa">فارسی</option>
+      <option value="ur">اردو</option>
+      <option value="ca">Català</option>
+      <option value="ms">Bahasa Melayu</option>
+      <option value="ro">Română</option>
+      <option value="vi">Tiếng Việt</option>
+      <option value="he">עברית</option>
+      <option value="bn">বাংলা</option>
+    </select>
   </header>
 
   <main>
-    <h1 data-l="en">Contact us</h1>
-    <h1 data-l="es">Contáctanos</h1>
-    <p class="subtitle" data-l="en">We read every message and reply from a real inbox — you'll get a confirmation as soon as we receive it.</p>
-    <p class="subtitle" data-l="es">Leemos todos los mensajes y respondemos desde una bandeja real — recibirás una confirmación en cuanto lo recibamos.</p>
+    <h1 data-key="contact.title" data-l="en">Contact us</h1>
+    <h1 data-key="contact.title" data-l="es">Contáctanos</h1><h1 data-key="contact.title" data-l="fr">Contacte-nous</h1><h1 data-key="contact.title" data-l="de">Kontaktiere uns</h1><h1 data-key="contact.title" data-l="pt">Fale conosco</h1><h1 data-key="contact.title" data-l="it">Contattaci</h1><h1 data-key="contact.title" data-l="zh">联系我们</h1><h1 data-key="contact.title" data-l="ja">お問い合わせ</h1><h1 data-key="contact.title" data-l="ko">문의하기</h1><h1 data-key="contact.title" data-l="nl">Neem contact op</h1><h1 data-key="contact.title" data-l="id">Hubungi kami</h1><h1 data-key="contact.title" data-l="el">Επικοινώνησε μαζί μας</h1><h1 data-key="contact.title" data-l="fil">Makipag-ugnayan sa amin</h1><h1 data-key="contact.title" data-l="sv">Kontakta oss</h1><h1 data-key="contact.title" data-l="da">Kontakt os</h1><h1 data-key="contact.title" data-l="nb">Kontakt oss</h1><h1 data-key="contact.title" data-l="fi">Ota yhteyttä</h1><h1 data-key="contact.title" data-l="pl">Skontaktuj się z nami</h1><h1 data-key="contact.title" data-l="cs">Kontaktuj nás</h1><h1 data-key="contact.title" data-l="hu">Lépj kapcsolatba velünk</h1><h1 data-key="contact.title" data-l="tr">Bize ulaş</h1><h1 data-key="contact.title" data-l="ru">Свяжись с нами</h1><h1 data-key="contact.title" data-l="uk">Зв'яжися з нами</h1><h1 data-key="contact.title" data-l="hi">हमसे संपर्क करो</h1><h1 data-key="contact.title" data-l="th">ติดต่อเรา</h1><h1 data-key="contact.title" data-l="ar">تواصل معنا</h1><h1 data-key="contact.title" data-l="fa">با ما تماس بگیر</h1><h1 data-key="contact.title" data-l="ur">ہم سے رابطہ کریں</h1><h1 data-key="contact.title" data-l="ca">Contacta amb nosaltres</h1><h1 data-key="contact.title" data-l="ms">Hubungi kami</h1><h1 data-key="contact.title" data-l="ro">Contactează-ne</h1><h1 data-key="contact.title" data-l="vi">Liên hệ với chúng tôi</h1><h1 data-key="contact.title" data-l="he">יצירת קשר</h1><h1 data-key="contact.title" data-l="bn">যোগাযোগ করুন</h1>
+    <p class="subtitle" data-key="contact.subtitle" data-l="en">We read every message and reply from a real inbox — you'll get a confirmation as soon as we receive it.</p>
+    <p class="subtitle" data-key="contact.subtitle" data-l="es">Leemos todos los mensajes y respondemos desde una bandeja real — recibirás una confirmación en cuanto lo recibamos.</p><p data-key="contact.subtitle" data-l="fr">On lit chaque message et on répond depuis une vraie boîte mail — tu recevras une confirmation dès qu'on l'aura reçu.</p><p data-key="contact.subtitle" data-l="de">Wir lesen jede Nachricht und antworten aus einem echten Postfach — du bekommst eine Bestätigung, sobald wir sie erhalten haben.</p><p data-key="contact.subtitle" data-l="pt">Lemos todas as mensagens e respondemos de uma caixa de entrada de verdade — você vai receber uma confirmação assim que recebermos.</p><p data-key="contact.subtitle" data-l="it">Leggiamo ogni messaggio e rispondiamo da una casella di posta reale — riceverai una conferma non appena lo riceviamo.</p><p data-key="contact.subtitle" data-l="zh">我们会阅读每一条消息，并从真实邮箱回复——一收到消息就会给你发送确认。</p><p data-key="contact.subtitle" data-l="ja">すべてのメッセージに目を通し、実在する受信箱から返信します——受信し次第、確認メールをお送りします。</p><p data-key="contact.subtitle" data-l="ko">모든 메시지를 직접 읽고 실제 받은 편지함에서 답장해요. 메시지를 받는 즉시 확인 메일을 보내드려요.</p><p data-key="contact.subtitle" data-l="nl">We lezen elk bericht en reageren vanuit een echte inbox — je krijgt een bevestiging zodra we het ontvangen hebben.</p><p data-key="contact.subtitle" data-l="id">Kami membaca setiap pesan dan membalas dari kotak masuk yang nyata — kamu akan mendapatkan konfirmasi begitu pesanmu kami terima.</p><p data-key="contact.subtitle" data-l="el">Διαβάζουμε κάθε μήνυμα και απαντάμε από ένα πραγματικό inbox — θα λάβεις επιβεβαίωση μόλις το παραλάβουμε.</p><p data-key="contact.subtitle" data-l="fil">Binabasa namin ang bawat mensahe at sumasagot mula sa totoong inbox — makakatanggap ka ng kumpirmasyon sa sandaling matanggap namin ito.</p><p data-key="contact.subtitle" data-l="sv">Vi läser varje meddelande och svarar från en riktig inkorg — du får en bekräftelse så snart vi tagit emot det.</p><p data-key="contact.subtitle" data-l="da">Vi læser alle beskeder og svarer fra en rigtig indbakke — du får en bekræftelse, så snart vi har modtaget den.</p><p data-key="contact.subtitle" data-l="nb">Vi leser alle meldinger og svarer fra en ekte innboks — du får en bekreftelse så snart vi har mottatt den.</p><p data-key="contact.subtitle" data-l="fi">Luemme jokaisen viestin ja vastaamme oikeasta postilaatikosta — saat vahvistuksen heti, kun olemme vastaanottaneet viestisi.</p><p data-key="contact.subtitle" data-l="pl">Czytamy każdą wiadomość i odpowiadamy z prawdziwej skrzynki — otrzymasz potwierdzenie, gdy tylko ją otrzymamy.</p><p data-key="contact.subtitle" data-l="cs">Čteme každou zprávu a odpovídáme ze skutečné schránky — jakmile ji obdržíme, dostaneš potvrzení.</p><p data-key="contact.subtitle" data-l="hu">Minden üzenetet elolvasunk, és egy valódi postafiókból válaszolunk — amint megkapjuk, kapsz egy visszaigazolást.</p><p data-key="contact.subtitle" data-l="tr">Her mesajı okuyoruz ve gerçek bir gelen kutusundan yanıt veriyoruz — mesajını alır almaz bir onay alacaksın.</p><p data-key="contact.subtitle" data-l="ru">Мы читаем каждое сообщение и отвечаем из настоящего почтового ящика — как только получим его, ты получишь подтверждение.</p><p data-key="contact.subtitle" data-l="uk">Ми читаємо кожне повідомлення і відповідаємо зі справжньої поштової скриньки — ти отримаєш підтвердження, щойно ми його отримаємо.</p><p data-key="contact.subtitle" data-l="hi">हम हर मैसेज पढ़ते हैं और एक असली इनबॉक्स से जवाब देते हैं — मिलते ही तुम्हें एक कन्फ़र्मेशन मिल जाएगा।</p><p data-key="contact.subtitle" data-l="th">เราอ่านทุกข้อความและตอบกลับจากกล่องข้อความจริง — คุณจะได้รับการยืนยันทันทีที่เราได้รับ</p><p data-key="contact.subtitle" data-l="ar">نقرأ كل رسالة ونرد من صندوق بريد حقيقي — ستصلك رسالة تأكيد فور استلامها.</p><p data-key="contact.subtitle" data-l="fa">همهٔ پیام‌ها را می‌خوانیم و از یک صندوق ورودی واقعی پاسخ می‌دهیم — به‌محض دریافت پیامت یک تأییدیه می‌گیری.</p><p data-key="contact.subtitle" data-l="ur">ہم ہر پیغام پڑھتے ہیں اور ایک حقیقی ان باکس سے جواب دیتے ہیں — پیغام موصول ہوتے ہی آپ کو تصدیق مل جائے گی۔</p><p data-key="contact.subtitle" data-l="ca">Llegim tots els missatges i responem des d'una bústia real — rebràs una confirmació just quan el rebem.</p><p data-key="contact.subtitle" data-l="ms">Kami membaca setiap mesej dan membalas daripada peti mel sebenar — anda akan menerima pengesahan sebaik sahaja kami menerimanya.</p><p data-key="contact.subtitle" data-l="ro">Citim fiecare mesaj și răspundem dintr-o căsuță de email reală — vei primi o confirmare imediat ce îl primim.</p><p data-key="contact.subtitle" data-l="vi">Chúng tôi đọc mọi tin nhắn và phản hồi từ một hộp thư thật — bạn sẽ nhận được xác nhận ngay khi chúng tôi nhận được tin nhắn.</p><p data-key="contact.subtitle" data-l="he">כל הודעה נקראת, והתשובה מגיעה מתיבת דואר אמיתית — אישור יישלח מיד עם קבלת ההודעה.</p><p data-key="contact.subtitle" data-l="bn">আমরা প্রতিটি বার্তা পড়ি এবং একটি সত্যিকারের ইনবক্স থেকে উত্তর দিই — বার্তা পাওয়ার সাথে সাথেই আপনি একটি নিশ্চিতকরণ পাবেন।</p>
 
     <form id="contact-form" novalidate>
       <div class="field">
-        <label for="category" data-l="en">What is this about?</label>
-        <label for="category" data-l="es">¿Sobre qué es tu mensaje?</label>
+        <label for="category" data-key="contact.category.label" data-l="en">What is this about?</label>
+        <label for="category" data-key="contact.category.label" data-l="es">¿Sobre qué es tu mensaje?</label><label data-key="contact.category.label" data-l="fr">De quoi s'agit-il ?</label><label data-key="contact.category.label" data-l="de">Worum geht es?</label><label data-key="contact.category.label" data-l="pt">Sobre o que é sua mensagem?</label><label data-key="contact.category.label" data-l="it">Di cosa si tratta?</label><label data-key="contact.category.label" data-l="zh">你想咨询什么问题？</label><label data-key="contact.category.label" data-l="ja">ご用件は何ですか？</label><label data-key="contact.category.label" data-l="ko">무엇에 대한 문의인가요?</label><label data-key="contact.category.label" data-l="nl">Waar gaat dit over?</label><label data-key="contact.category.label" data-l="id">Ini tentang apa?</label><label data-key="contact.category.label" data-l="el">Για τι αφορά αυτό;</label><label data-key="contact.category.label" data-l="fil">Tungkol saan ito?</label><label data-key="contact.category.label" data-l="sv">Vad gäller det?</label><label data-key="contact.category.label" data-l="da">Hvad handler det om?</label><label data-key="contact.category.label" data-l="nb">Hva handler det om?</label><label data-key="contact.category.label" data-l="fi">Mistä on kyse?</label><label data-key="contact.category.label" data-l="pl">Czego dotyczy Twoja wiadomość?</label><label data-key="contact.category.label" data-l="cs">O čem je tvoje zpráva?</label><label data-key="contact.category.label" data-l="hu">Miről szól az üzeneted?</label><label data-key="contact.category.label" data-l="tr">Bu ne hakkında?</label><label data-key="contact.category.label" data-l="ru">О чём твоё сообщение?</label><label data-key="contact.category.label" data-l="uk">Про що твоє повідомлення?</label><label data-key="contact.category.label" data-l="hi">तुम्हारा मैसेज किस बारे में है?</label><label data-key="contact.category.label" data-l="th">ข้อความนี้เกี่ยวกับอะไร?</label><label data-key="contact.category.label" data-l="ar">ما موضوع الرسالة؟</label><label data-key="contact.category.label" data-l="fa">پیامت دربارهٔ چیست؟</label><label data-key="contact.category.label" data-l="ur">یہ کس بارے میں ہے؟</label><label data-key="contact.category.label" data-l="ca">Sobre què és el teu missatge?</label><label data-key="contact.category.label" data-l="ms">Mesej anda mengenai apa?</label><label data-key="contact.category.label" data-l="ro">Despre ce este mesajul tău?</label><label data-key="contact.category.label" data-l="vi">Bạn muốn liên hệ về vấn đề gì?</label><label data-key="contact.category.label" data-l="he">על מה ההודעה?</label><label data-key="contact.category.label" data-l="bn">আপনার বার্তাটি কী সম্পর্কে?</label>
         <select id="category" name="category" required>
-          <option value="bug" data-en="Report a bug" data-es="Reportar un error">Report a bug</option>
-          <option value="feedback" data-en="App feedback" data-es="Feedback de la app">App feedback</option>
-          <option value="deletion" data-en="Delete my account" data-es="Eliminar mi cuenta">Delete my account</option>
-          <option value="other" data-en="Other" data-es="Otro">Other</option>
+          <option value="bug">Report a bug</option>
+          <option value="feedback">App feedback</option>
+          <option value="deletion">Delete my account</option>
+          <option value="other">Other</option>
         </select>
         <div class="deletion-warning" id="deletion-warning">
-          <p data-l="en">This asks us to permanently delete your account and its data.</p>
-          <p data-l="es">Esto nos pide eliminar permanentemente tu cuenta y tus datos.</p>
+          <p data-key="contact.deletion.warning" data-l="en">This asks us to permanently delete your account and its data.</p>
+          <p data-key="contact.deletion.warning" data-l="es">Esto nos pide eliminar permanentemente tu cuenta y tus datos.</p><p data-key="contact.deletion.warning" data-l="fr">Ceci nous demande de supprimer définitivement ton compte et ses données.</p><p data-key="contact.deletion.warning" data-l="de">Das bittet uns, dein Konto und seine Daten dauerhaft zu löschen.</p><p data-key="contact.deletion.warning" data-l="pt">Isso pede que a gente exclua permanentemente sua conta e seus dados.</p><p data-key="contact.deletion.warning" data-l="it">Questo ci chiede di eliminare definitivamente il tuo account e i suoi dati.</p><p data-key="contact.deletion.warning" data-l="zh">这将要求我们永久删除你的账户及其数据。</p><p data-key="contact.deletion.warning" data-l="ja">これは、あなたのアカウントとそのデータを完全に削除するよう依頼するものです。</p><p data-key="contact.deletion.warning" data-l="ko">이 요청은 당신의 계정과 데이터를 영구적으로 삭제해달라는 요청이에요.</p><p data-key="contact.deletion.warning" data-l="nl">Hiermee vraag je ons je account en de bijbehorende gegevens permanent te verwijderen.</p><p data-key="contact.deletion.warning" data-l="id">Ini meminta kami menghapus akunmu dan datanya secara permanen.</p><p data-key="contact.deletion.warning" data-l="el">Αυτό μας ζητά να διαγράψουμε μόνιμα τον λογαριασμό σου και τα δεδομένα του.</p><p data-key="contact.deletion.warning" data-l="fil">Hinihiling nito sa amin na permanenteng tanggalin ang account mo at ang mga datos nito.</p><p data-key="contact.deletion.warning" data-l="sv">Det här ber oss att permanent radera ditt konto och dess data.</p><p data-key="contact.deletion.warning" data-l="da">Dette beder os om permanent at slette din konto og dens data.</p><p data-key="contact.deletion.warning" data-l="nb">Dette ber oss om å slette kontoen din og dataene permanent.</p><p data-key="contact.deletion.warning" data-l="fi">Tämä pyytää meitä poistamaan tilisi ja sen tiedot pysyvästi.</p><p data-key="contact.deletion.warning" data-l="pl">To prosi nas o trwałe usunięcie Twojego konta i jego danych.</p><p data-key="contact.deletion.warning" data-l="cs">Tímto nás žádáš o trvalé smazání tvého účtu a jeho dat.</p><p data-key="contact.deletion.warning" data-l="hu">Ezzel arra kérsz minket, hogy véglegesen töröljük a fiókodat és annak adatait.</p><p data-key="contact.deletion.warning" data-l="tr">Bu, hesabını ve verilerini kalıcı olarak silmemizi istediğin anlamına gelir.</p><p data-key="contact.deletion.warning" data-l="ru">Этим ты просишь нас безвозвратно удалить твой аккаунт и все его данные.</p><p data-key="contact.deletion.warning" data-l="uk">Це запит на остаточне видалення твого акаунта та його даних.</p><p data-key="contact.deletion.warning" data-l="hi">इससे हमें तुम्हारा अकाउंट और उसका डेटा हमेशा के लिए डिलीट करने के लिए कहा जाता है।</p><p data-key="contact.deletion.warning" data-l="th">นี่คือการขอให้เราลบบัญชีและข้อมูลของคุณอย่างถาวร</p><p data-key="contact.deletion.warning" data-l="ar">هذا يطلب حذف الحساب وبياناته نهائيًا.</p><p data-key="contact.deletion.warning" data-l="fa">این از ما می‌خواهد حساب کاربری و داده‌هایت را برای همیشه حذف کنیم.</p><p data-key="contact.deletion.warning" data-l="ur">یہ ہم سے آپ کا اکاؤنٹ اور اس کا ڈیٹا مستقل طور پر حذف کرنے کی درخواست کرتا ہے۔</p><p data-key="contact.deletion.warning" data-l="ca">Això ens demana eliminar permanentment el teu compte i les teves dades.</p><p data-key="contact.deletion.warning" data-l="ms">Ini meminta kami memadamkan akaun dan data anda secara kekal.</p><p data-key="contact.deletion.warning" data-l="ro">Aceasta ne cere să ștergem definitiv contul tău și datele tale.</p><p data-key="contact.deletion.warning" data-l="vi">Yêu cầu này đề nghị chúng tôi xóa vĩnh viễn tài khoản và dữ liệu của bạn.</p><p data-key="contact.deletion.warning" data-l="he">הבקשה הזו מבקשת למחוק לצמיתות את החשבון ואת הנתונים שלך.</p><p data-key="contact.deletion.warning" data-l="bn">এটি আমাদের কাছে আপনার অ্যাকাউন্ট এবং এর ডেটা স্থায়ীভাবে মুছে ফেলার অনুরোধ।</p>
           <label class="checkbox-label">
             <input type="checkbox" id="deletion-confirm-checkbox">
-            <span data-l="en">Yes, I want to delete my account</span>
-            <span data-l="es">Sí, quiero eliminar mi cuenta</span>
+            <span data-key="contact.deletion.confirm" data-l="en">Yes, I want to delete my account</span>
+            <span data-key="contact.deletion.confirm" data-l="es">Sí, quiero eliminar mi cuenta</span><span data-key="contact.deletion.confirm" data-l="fr">Oui, je veux supprimer mon compte</span><span data-key="contact.deletion.confirm" data-l="de">Ja, ich möchte mein Konto löschen</span><span data-key="contact.deletion.confirm" data-l="pt">Sim, quero excluir minha conta</span><span data-key="contact.deletion.confirm" data-l="it">Sì, voglio eliminare il mio account</span><span data-key="contact.deletion.confirm" data-l="zh">是的，我要删除我的账户</span><span data-key="contact.deletion.confirm" data-l="ja">はい、アカウントを削除します</span><span data-key="contact.deletion.confirm" data-l="ko">네, 제 계정을 삭제할게요</span><span data-key="contact.deletion.confirm" data-l="nl">Ja, ik wil mijn account verwijderen</span><span data-key="contact.deletion.confirm" data-l="id">Ya, saya ingin menghapus akun saya</span><span data-key="contact.deletion.confirm" data-l="el">Ναι, θέλω να διαγράψω τον λογαριασμό μου</span><span data-key="contact.deletion.confirm" data-l="fil">Oo, gusto kong tanggalin ang account ko</span><span data-key="contact.deletion.confirm" data-l="sv">Ja, jag vill radera mitt konto</span><span data-key="contact.deletion.confirm" data-l="da">Ja, jeg vil gerne slette min konto</span><span data-key="contact.deletion.confirm" data-l="nb">Ja, jeg vil slette kontoen min</span><span data-key="contact.deletion.confirm" data-l="fi">Kyllä, haluan poistaa tilini</span><span data-key="contact.deletion.confirm" data-l="pl">Tak, chcę usunąć moje konto</span><span data-key="contact.deletion.confirm" data-l="cs">Ano, chci smazat svůj účet</span><span data-key="contact.deletion.confirm" data-l="hu">Igen, törölni szeretném a fiókomat</span><span data-key="contact.deletion.confirm" data-l="tr">Evet, hesabımı silmek istiyorum</span><span data-key="contact.deletion.confirm" data-l="ru">Да, я хочу удалить свой аккаунт</span><span data-key="contact.deletion.confirm" data-l="uk">Так, я хочу видалити свій акаунт</span><span data-key="contact.deletion.confirm" data-l="hi">हाँ, मुझे अपना अकाउंट डिलीट करना है</span><span data-key="contact.deletion.confirm" data-l="th">ใช่ ฉันต้องการลบบัญชีของฉัน</span><span data-key="contact.deletion.confirm" data-l="ar">نعم، أريد حذف حسابي</span><span data-key="contact.deletion.confirm" data-l="fa">بله، می‌خواهم حسابم را حذف کنم</span><span data-key="contact.deletion.confirm" data-l="ur">جی ہاں، میرا اکاؤنٹ حذف کر دیا جائے</span><span data-key="contact.deletion.confirm" data-l="ca">Sí, vull eliminar el meu compte</span><span data-key="contact.deletion.confirm" data-l="ms">Ya, saya mahu memadamkan akaun saya</span><span data-key="contact.deletion.confirm" data-l="ro">Da, vreau să-mi șterg contul</span><span data-key="contact.deletion.confirm" data-l="vi">Có, tôi muốn xóa tài khoản của mình</span><span data-key="contact.deletion.confirm" data-l="he">כן, ברצוני למחוק את החשבון</span><span data-key="contact.deletion.confirm" data-l="bn">হ্যাঁ, আমি আমার অ্যাকাউন্ট মুছে ফেলতে চাই</span>
           </label>
           <div class="field-error" id="deletion-confirm-error">
-            <span data-l="en">Please confirm you want to delete your account.</span>
-            <span data-l="es">Confirma que quieres eliminar tu cuenta.</span>
+            <span data-key="contact.deletion.error" data-l="en">Please confirm you want to delete your account.</span>
+            <span data-key="contact.deletion.error" data-l="es">Confirma que quieres eliminar tu cuenta.</span><span data-key="contact.deletion.error" data-l="fr">Confirme que tu veux supprimer ton compte.</span><span data-key="contact.deletion.error" data-l="de">Bitte bestätige, dass du dein Konto löschen möchtest.</span><span data-key="contact.deletion.error" data-l="pt">Confirme que você quer excluir sua conta.</span><span data-key="contact.deletion.error" data-l="it">Conferma che vuoi eliminare il tuo account.</span><span data-key="contact.deletion.error" data-l="zh">请确认你要删除账户。</span><span data-key="contact.deletion.error" data-l="ja">アカウントを削除することを確認してください。</span><span data-key="contact.deletion.error" data-l="ko">계정을 삭제하려는 것이 맞는지 확인해 주세요.</span><span data-key="contact.deletion.error" data-l="nl">Bevestig dat je je account wilt verwijderen.</span><span data-key="contact.deletion.error" data-l="id">Mohon konfirmasi bahwa kamu ingin menghapus akunmu.</span><span data-key="contact.deletion.error" data-l="el">Παρακαλώ επιβεβαίωσε ότι θέλεις να διαγράψεις τον λογαριασμό σου.</span><span data-key="contact.deletion.error" data-l="fil">Pakikumpirma na gusto mong tanggalin ang account mo.</span><span data-key="contact.deletion.error" data-l="sv">Bekräfta att du vill radera ditt konto.</span><span data-key="contact.deletion.error" data-l="da">Bekræft, at du vil slette din konto.</span><span data-key="contact.deletion.error" data-l="nb">Bekreft at du vil slette kontoen din.</span><span data-key="contact.deletion.error" data-l="fi">Vahvista, että haluat poistaa tilisi.</span><span data-key="contact.deletion.error" data-l="pl">Potwierdź, że chcesz usunąć swoje konto.</span><span data-key="contact.deletion.error" data-l="cs">Potvrď prosím, že chceš smazat svůj účet.</span><span data-key="contact.deletion.error" data-l="hu">Kérjük, erősítsd meg, hogy törölni szeretnéd a fiókodat.</span><span data-key="contact.deletion.error" data-l="tr">Lütfen hesabını silmek istediğini onayla.</span><span data-key="contact.deletion.error" data-l="ru">Пожалуйста, подтверди, что хочешь удалить свой аккаунт.</span><span data-key="contact.deletion.error" data-l="uk">Підтверди, що хочеш видалити свій акаунт.</span><span data-key="contact.deletion.error" data-l="hi">कृपया कन्फ़र्म करो कि तुम्हें अपना अकाउंट डिलीट करना है।</span><span data-key="contact.deletion.error" data-l="th">กรุณายืนยันว่าคุณต้องการลบบัญชีของคุณ</span><span data-key="contact.deletion.error" data-l="ar">يُرجى تأكيد الرغبة في حذف الحساب.</span><span data-key="contact.deletion.error" data-l="fa">لطفاً تأیید کن که می‌خواهی حسابت را حذف کنی.</span><span data-key="contact.deletion.error" data-l="ur">براہِ کرم تصدیق کریں کہ آپ اپنا اکاؤنٹ حذف کرنا چاہتے ہیں۔</span><span data-key="contact.deletion.error" data-l="ca">Confirma que vols eliminar el teu compte.</span><span data-key="contact.deletion.error" data-l="ms">Sila sahkan bahawa anda mahu memadamkan akaun anda.</span><span data-key="contact.deletion.error" data-l="ro">Confirmă că vrei să-ți ștergi contul.</span><span data-key="contact.deletion.error" data-l="vi">Vui lòng xác nhận rằng bạn muốn xóa tài khoản của mình.</span><span data-key="contact.deletion.error" data-l="he">יש לאשר את הרצון למחוק את החשבון.</span><span data-key="contact.deletion.error" data-l="bn">অনুগ্রহ করে নিশ্চিত করুন যে আপনি আপনার অ্যাকাউন্ট মুছে ফেলতে চান।</span>
           </div>
         </div>
       </div>
 
       <div class="field">
-        <label for="email" data-l="en">Your email</label>
-        <label for="email" data-l="es">Tu email</label>
+        <label for="email" data-key="contact.email.label" data-l="en">Your email</label>
+        <label for="email" data-key="contact.email.label" data-l="es">Tu email</label><label data-key="contact.email.label" data-l="fr">Ton email</label><label data-key="contact.email.label" data-l="de">Deine E-Mail</label><label data-key="contact.email.label" data-l="pt">Seu email</label><label data-key="contact.email.label" data-l="it">La tua email</label><label data-key="contact.email.label" data-l="zh">你的邮箱</label><label data-key="contact.email.label" data-l="ja">メールアドレス</label><label data-key="contact.email.label" data-l="ko">이메일 주소</label><label data-key="contact.email.label" data-l="nl">Jouw e-mailadres</label><label data-key="contact.email.label" data-l="id">Emailmu</label><label data-key="contact.email.label" data-l="el">Το email σου</label><label data-key="contact.email.label" data-l="fil">Email mo</label><label data-key="contact.email.label" data-l="sv">Din e-post</label><label data-key="contact.email.label" data-l="da">Din email</label><label data-key="contact.email.label" data-l="nb">Din e-post</label><label data-key="contact.email.label" data-l="fi">Sähköpostisi</label><label data-key="contact.email.label" data-l="pl">Twój e-mail</label><label data-key="contact.email.label" data-l="cs">Tvůj e-mail</label><label data-key="contact.email.label" data-l="hu">E-mail-címed</label><label data-key="contact.email.label" data-l="tr">E-postan</label><label data-key="contact.email.label" data-l="ru">Твой email</label><label data-key="contact.email.label" data-l="uk">Твій email</label><label data-key="contact.email.label" data-l="hi">तुम्हारा ईमेल</label><label data-key="contact.email.label" data-l="th">อีเมลของคุณ</label><label data-key="contact.email.label" data-l="ar">البريد الإلكتروني</label><label data-key="contact.email.label" data-l="fa">ایمیلت</label><label data-key="contact.email.label" data-l="ur">آپ کا ای میل</label><label data-key="contact.email.label" data-l="ca">El teu correu</label><label data-key="contact.email.label" data-l="ms">E-mel anda</label><label data-key="contact.email.label" data-l="ro">Emailul tău</label><label data-key="contact.email.label" data-l="vi">Email của bạn</label><label data-key="contact.email.label" data-l="he">כתובת האימייל</label><label data-key="contact.email.label" data-l="bn">আপনার ইমেল</label>
         <input type="email" id="email" name="email" required maxlength="254" autocomplete="email">
       </div>
 
       <div class="field">
-        <label for="email-confirm" data-l="en">Confirm your email</label>
-        <label for="email-confirm" data-l="es">Confirma tu email</label>
+        <label for="email-confirm" data-key="contact.emailconfirm.label" data-l="en">Confirm your email</label>
+        <label for="email-confirm" data-key="contact.emailconfirm.label" data-l="es">Confirma tu email</label><label data-key="contact.emailconfirm.label" data-l="fr">Confirme ton email</label><label data-key="contact.emailconfirm.label" data-l="de">Bestätige deine E-Mail</label><label data-key="contact.emailconfirm.label" data-l="pt">Confirme seu email</label><label data-key="contact.emailconfirm.label" data-l="it">Conferma la tua email</label><label data-key="contact.emailconfirm.label" data-l="zh">确认你的邮箱</label><label data-key="contact.emailconfirm.label" data-l="ja">メールアドレスの確認</label><label data-key="contact.emailconfirm.label" data-l="ko">이메일 주소 확인</label><label data-key="contact.emailconfirm.label" data-l="nl">Bevestig je e-mailadres</label><label data-key="contact.emailconfirm.label" data-l="id">Konfirmasi emailmu</label><label data-key="contact.emailconfirm.label" data-l="el">Επιβεβαίωσε το email σου</label><label data-key="contact.emailconfirm.label" data-l="fil">Kumpirmahin ang email mo</label><label data-key="contact.emailconfirm.label" data-l="sv">Bekräfta din e-post</label><label data-key="contact.emailconfirm.label" data-l="da">Bekræft din email</label><label data-key="contact.emailconfirm.label" data-l="nb">Bekreft e-posten din</label><label data-key="contact.emailconfirm.label" data-l="fi">Vahvista sähköpostisi</label><label data-key="contact.emailconfirm.label" data-l="pl">Potwierdź swój e-mail</label><label data-key="contact.emailconfirm.label" data-l="cs">Potvrď svůj e-mail</label><label data-key="contact.emailconfirm.label" data-l="hu">Erősítsd meg az e-mail-címedet</label><label data-key="contact.emailconfirm.label" data-l="tr">E-postanı onayla</label><label data-key="contact.emailconfirm.label" data-l="ru">Подтверди свой email</label><label data-key="contact.emailconfirm.label" data-l="uk">Підтверди свій email</label><label data-key="contact.emailconfirm.label" data-l="hi">अपने ईमेल की पुष्टि करो</label><label data-key="contact.emailconfirm.label" data-l="th">ยืนยันอีเมลของคุณ</label><label data-key="contact.emailconfirm.label" data-l="ar">تأكيد البريد الإلكتروني</label><label data-key="contact.emailconfirm.label" data-l="fa">ایمیلت را تأیید کن</label><label data-key="contact.emailconfirm.label" data-l="ur">اپنے ای میل کی تصدیق کریں</label><label data-key="contact.emailconfirm.label" data-l="ca">Confirma el teu correu</label><label data-key="contact.emailconfirm.label" data-l="ms">Sahkan e-mel anda</label><label data-key="contact.emailconfirm.label" data-l="ro">Confirmă-ți emailul</label><label data-key="contact.emailconfirm.label" data-l="vi">Xác nhận email của bạn</label><label data-key="contact.emailconfirm.label" data-l="he">אימות כתובת האימייל</label><label data-key="contact.emailconfirm.label" data-l="bn">আপনার ইমেল নিশ্চিত করুন</label>
         <input type="email" id="email-confirm" name="email-confirm" required maxlength="254" autocomplete="email">
         <div class="field-error" id="email-mismatch-error">
-          <span data-l="en">Emails don't match.</span>
-          <span data-l="es">Los emails no coinciden.</span>
+          <span data-key="contact.email.mismatch" data-l="en">Emails don't match.</span>
+          <span data-key="contact.email.mismatch" data-l="es">Los emails no coinciden.</span><span data-key="contact.email.mismatch" data-l="fr">Les emails ne correspondent pas.</span><span data-key="contact.email.mismatch" data-l="de">Die E-Mails stimmen nicht überein.</span><span data-key="contact.email.mismatch" data-l="pt">Os emails não coincidem.</span><span data-key="contact.email.mismatch" data-l="it">Le email non corrispondono.</span><span data-key="contact.email.mismatch" data-l="zh">两次输入的邮箱不一致。</span><span data-key="contact.email.mismatch" data-l="ja">メールアドレスが一致しません。</span><span data-key="contact.email.mismatch" data-l="ko">이메일 주소가 일치하지 않아요.</span><span data-key="contact.email.mismatch" data-l="nl">E-mailadressen komen niet overeen.</span><span data-key="contact.email.mismatch" data-l="id">Email tidak cocok.</span><span data-key="contact.email.mismatch" data-l="el">Τα email δεν ταιριάζουν.</span><span data-key="contact.email.mismatch" data-l="fil">Hindi magkatugma ang mga email.</span><span data-key="contact.email.mismatch" data-l="sv">E-postadresserna matchar inte.</span><span data-key="contact.email.mismatch" data-l="da">Emails stemmer ikke overens.</span><span data-key="contact.email.mismatch" data-l="nb">E-postadressene stemmer ikke overens.</span><span data-key="contact.email.mismatch" data-l="fi">Sähköpostiosoitteet eivät täsmää.</span><span data-key="contact.email.mismatch" data-l="pl">E-maile się nie zgadzają.</span><span data-key="contact.email.mismatch" data-l="cs">E-maily se neshodují.</span><span data-key="contact.email.mismatch" data-l="hu">Az e-mail-címek nem egyeznek.</span><span data-key="contact.email.mismatch" data-l="tr">E-postalar eşleşmiyor.</span><span data-key="contact.email.mismatch" data-l="ru">Адреса email не совпадают.</span><span data-key="contact.email.mismatch" data-l="uk">Email-адреси не збігаються.</span><span data-key="contact.email.mismatch" data-l="hi">ईमेल मैच नहीं करते।</span><span data-key="contact.email.mismatch" data-l="th">อีเมลไม่ตรงกัน</span><span data-key="contact.email.mismatch" data-l="ar">البريدان الإلكترونيان غير متطابقين.</span><span data-key="contact.email.mismatch" data-l="fa">ایمیل‌ها یکسان نیستند.</span><span data-key="contact.email.mismatch" data-l="ur">ای میلز مماثل نہیں ہیں۔</span><span data-key="contact.email.mismatch" data-l="ca">Els correus no coincideixen.</span><span data-key="contact.email.mismatch" data-l="ms">E-mel tidak sepadan.</span><span data-key="contact.email.mismatch" data-l="ro">Emailurile nu coincid.</span><span data-key="contact.email.mismatch" data-l="vi">Email không khớp.</span><span data-key="contact.email.mismatch" data-l="he">כתובות האימייל אינן תואמות.</span><span data-key="contact.email.mismatch" data-l="bn">ইমেল মিলছে না।</span>
         </div>
       </div>
 
       <div class="field">
-        <label for="message" data-l="en">Message</label>
-        <label for="message" data-l="es">Mensaje</label>
+        <label for="message" data-key="contact.message.label" data-l="en">Message</label>
+        <label for="message" data-key="contact.message.label" data-l="es">Mensaje</label><label data-key="contact.message.label" data-l="fr">Message</label><label data-key="contact.message.label" data-l="de">Nachricht</label><label data-key="contact.message.label" data-l="pt">Mensagem</label><label data-key="contact.message.label" data-l="it">Messaggio</label><label data-key="contact.message.label" data-l="zh">留言内容</label><label data-key="contact.message.label" data-l="ja">メッセージ</label><label data-key="contact.message.label" data-l="ko">메시지</label><label data-key="contact.message.label" data-l="nl">Bericht</label><label data-key="contact.message.label" data-l="id">Pesan</label><label data-key="contact.message.label" data-l="el">Μήνυμα</label><label data-key="contact.message.label" data-l="fil">Mensahe</label><label data-key="contact.message.label" data-l="sv">Meddelande</label><label data-key="contact.message.label" data-l="da">Besked</label><label data-key="contact.message.label" data-l="nb">Melding</label><label data-key="contact.message.label" data-l="fi">Viesti</label><label data-key="contact.message.label" data-l="pl">Wiadomość</label><label data-key="contact.message.label" data-l="cs">Zpráva</label><label data-key="contact.message.label" data-l="hu">Üzenet</label><label data-key="contact.message.label" data-l="tr">Mesaj</label><label data-key="contact.message.label" data-l="ru">Сообщение</label><label data-key="contact.message.label" data-l="uk">Повідомлення</label><label data-key="contact.message.label" data-l="hi">मैसेज</label><label data-key="contact.message.label" data-l="th">ข้อความ</label><label data-key="contact.message.label" data-l="ar">الرسالة</label><label data-key="contact.message.label" data-l="fa">پیام</label><label data-key="contact.message.label" data-l="ur">پیغام</label><label data-key="contact.message.label" data-l="ca">Missatge</label><label data-key="contact.message.label" data-l="ms">Mesej</label><label data-key="contact.message.label" data-l="ro">Mesaj</label><label data-key="contact.message.label" data-l="vi">Tin nhắn</label><label data-key="contact.message.label" data-l="he">הודעה</label><label data-key="contact.message.label" data-l="bn">বার্তা</label>
         <textarea id="message" name="message" required maxlength="5000"></textarea>
         <div class="char-counter" id="char-counter"></div>
       </div>
@@ -180,8 +225,8 @@
       </div>
 
       <button type="submit" id="submit-btn">
-        <span data-l="en">Send message</span>
-        <span data-l="es">Enviar mensaje</span>
+        <span data-key="contact.submit" data-l="en">Send message</span>
+        <span data-key="contact.submit" data-l="es">Enviar mensaje</span><span data-key="contact.submit" data-l="fr">Envoyer le message</span><span data-key="contact.submit" data-l="de">Nachricht senden</span><span data-key="contact.submit" data-l="pt">Enviar mensagem</span><span data-key="contact.submit" data-l="it">Invia messaggio</span><span data-key="contact.submit" data-l="zh">发送消息</span><span data-key="contact.submit" data-l="ja">メッセージを送信</span><span data-key="contact.submit" data-l="ko">메시지 보내기</span><span data-key="contact.submit" data-l="nl">Bericht versturen</span><span data-key="contact.submit" data-l="id">Kirim pesan</span><span data-key="contact.submit" data-l="el">Αποστολή μηνύματος</span><span data-key="contact.submit" data-l="fil">Ipadala ang mensahe</span><span data-key="contact.submit" data-l="sv">Skicka meddelande</span><span data-key="contact.submit" data-l="da">Send besked</span><span data-key="contact.submit" data-l="nb">Send melding</span><span data-key="contact.submit" data-l="fi">Lähetä viesti</span><span data-key="contact.submit" data-l="pl">Wyślij wiadomość</span><span data-key="contact.submit" data-l="cs">Odeslat zprávu</span><span data-key="contact.submit" data-l="hu">Üzenet küldése</span><span data-key="contact.submit" data-l="tr">Mesajı gönder</span><span data-key="contact.submit" data-l="ru">Отправить сообщение</span><span data-key="contact.submit" data-l="uk">Надіслати повідомлення</span><span data-key="contact.submit" data-l="hi">मैसेज भेजो</span><span data-key="contact.submit" data-l="th">ส่งข้อความ</span><span data-key="contact.submit" data-l="ar">إرسال الرسالة</span><span data-key="contact.submit" data-l="fa">ارسال پیام</span><span data-key="contact.submit" data-l="ur">پیغام بھیجیں</span><span data-key="contact.submit" data-l="ca">Envia el missatge</span><span data-key="contact.submit" data-l="ms">Hantar mesej</span><span data-key="contact.submit" data-l="ro">Trimite mesajul</span><span data-key="contact.submit" data-l="vi">Gửi tin nhắn</span><span data-key="contact.submit" data-l="he">שליחת ההודעה</span><span data-key="contact.submit" data-l="bn">বার্তা পাঠান</span>
       </button>
 
       <div class="status" id="status"></div>
@@ -189,24 +234,57 @@
   </main>
 
   <footer>
-    <div data-l="en">Prefer not to use a form? See our <a href="https://legal.chronosintelligentalarm.com/">Privacy Policy</a> for how we handle your data.</div>
-    <div data-l="es">¿Prefieres no usar un formulario? Consulta nuestra <a href="https://legal.chronosintelligentalarm.com/">Política de privacidad</a> para saber cómo tratamos tus datos.</div>
+    <div data-key="contact.footer" data-l="en">Prefer not to use a form? See our <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> for how we handle your data.</div>
+    <div data-key="contact.footer" data-l="es">¿Prefieres no usar un formulario? Consulta nuestra <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> para saber cómo tratamos tus datos.</div><div data-key="contact.footer" data-l="fr">Tu préfères ne pas utiliser un formulaire ? Consulte notre <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> pour savoir comment on traite tes données.</div><div data-key="contact.footer" data-l="de">Möchtest du lieber kein Formular verwenden? Sieh dir unsere <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> an, um zu erfahren, wie wir mit deinen Daten umgehen.</div><div data-key="contact.footer" data-l="pt">Prefere não usar um formulário? Veja nossa <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> para saber como tratamos seus dados.</div><div data-key="contact.footer" data-l="it">Preferisci non usare un modulo? Consulta la nostra <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> per sapere come trattiamo i tuoi dati.</div><div data-key="contact.footer" data-l="zh">不想使用表单？请查看我们的<a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a>，了解我们如何处理你的数据。</div><div data-key="contact.footer" data-l="ja">フォームを使いたくない場合は、<a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a>をご覧いただき、データの取り扱い方法をご確認ください。</div><div data-key="contact.footer" data-l="ko">양식을 사용하고 싶지 않으신가요? 데이터를 어떻게 다루는지는 <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a>에서 확인하세요.</div><div data-key="contact.footer" data-l="nl">Liever geen formulier gebruiken? Bekijk ons <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> voor hoe we met je gegevens omgaan.</div><div data-key="contact.footer" data-l="id">Tidak ingin menggunakan formulir? Lihat <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> kami untuk mengetahui cara kami menangani datamu.</div><div data-key="contact.footer" data-l="el">Προτιμάς να μη χρησιμοποιήσεις φόρμα; Δες την <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> μας για το πώς χειριζόμαστε τα δεδομένα σου.</div><div data-key="contact.footer" data-l="fil">Ayaw gumamit ng form? Tingnan ang aming <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> para malaman kung paano namin pinangangasiwaan ang datos mo.</div><div data-key="contact.footer" data-l="sv">Föredrar du att inte använda ett formulär? Se vår <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> för hur vi hanterar dina uppgifter.</div><div data-key="contact.footer" data-l="da">Foretrækker du ikke at bruge en formular? Se vores <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> for at se, hvordan vi behandler dine data.</div><div data-key="contact.footer" data-l="nb">Foretrekker du å ikke bruke et skjema? Se vår <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> for å se hvordan vi behandler dataene dine.</div><div data-key="contact.footer" data-l="fi">Etkö halua käyttää lomaketta? Katso <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> saadaksesi tietää, miten käsittelemme tietojasi.</div><div data-key="contact.footer" data-l="pl">Wolisz nie korzystać z formularza? Zobacz naszą <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a>, aby dowiedzieć się, jak przetwarzamy Twoje dane.</div><div data-key="contact.footer" data-l="cs">Radši nechceš použít formulář? Podívej se na naši <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a>, kde se dozvíš, jak nakládáme s tvými daty.</div><div data-key="contact.footer" data-l="hu">Inkább nem használnál űrlapot? Nézd meg a <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> dokumentumunkat, hogy megtudd, hogyan kezeljük az adataidat.</div><div data-key="contact.footer" data-l="tr">Form kullanmak istemiyor musun? Verilerini nasıl işlediğimizi öğrenmek için <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> sayfamıza bak.</div><div data-key="contact.footer" data-l="ru">Не хочешь пользоваться формой? Посмотри нашу <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a>, чтобы узнать, как мы обращаемся с твоими данными.</div><div data-key="contact.footer" data-l="uk">Не хочеш користуватися формою? Переглянь нашу <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a>, щоб дізнатися, як ми обробляємо твої дані.</div><div data-key="contact.footer" data-l="hi">फ़ॉर्म इस्तेमाल नहीं करना चाहते? हम तुम्हारा डेटा कैसे संभालते हैं, यह जानने के लिए हमारी <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> देखो।</div><div data-key="contact.footer" data-l="th">ไม่อยากใช้แบบฟอร์มใช่ไหม? ดู <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> ของเราว่าเราจัดการข้อมูลของคุณอย่างไร</div><div data-key="contact.footer" data-l="ar">تفضّل عدم استخدام نموذج؟ راجع <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> لمعرفة كيفية التعامل مع البيانات.</div><div data-key="contact.footer" data-l="fa">ترجیح می‌دهی فرم را استفاده نکنی؟ برای اینکه ببینی با داده‌هایت چه می‌کنیم به <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> ما نگاه کن.</div><div data-key="contact.footer" data-l="ur">فارم استعمال نہیں کرنا چاہتے؟ ہم آپ کے ڈیٹا کے ساتھ کیا کرتے ہیں یہ جاننے کے لیے ہماری <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> ملاحظہ کریں۔</div><div data-key="contact.footer" data-l="ca">Prefereixes no fer servir un formulari? Consulta la nostra <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> per saber com tractem les teves dades.</div><div data-key="contact.footer" data-l="ms">Lebih suka tidak menggunakan borang? Lihat <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> kami untuk mengetahui cara kami mengendalikan data anda.</div><div data-key="contact.footer" data-l="ro">Preferi să nu folosești un formular? Consultă <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> pentru a afla cum îți gestionăm datele.</div><div data-key="contact.footer" data-l="vi">Không muốn dùng biểu mẫu? Xem <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> để biết cách chúng tôi xử lý dữ liệu của bạn.</div><div data-key="contact.footer" data-l="he">לא רוצים למלא טופס? אפשר לעיין ב<a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> כדי לדעת איך הנתונים מטופלים.</div><div data-key="contact.footer" data-l="bn">ফর্ম ব্যবহার করতে চান না? আমরা আপনার ডেটা কীভাবে পরিচালনা করি তা জানতে আমাদের <a href="https://legal.chronosintelligentalarm.com/" data-l-legal="en">Privacy Policy</a><a href="https://legal.chronosintelligentalarm.com/#es" data-l-legal="es">Política de privacidad</a> দেখুন।</div>
   </footer>
 </div>
 
 <script>
   var FUNCTION_URL = 'https://chronos-contact.netlify.app/.netlify/functions/contact';
 
+  var CHRONOS_LANGS = ['en', 'es', 'fr', 'de', 'pt', 'it', 'zh', 'ja', 'ko', 'nl', 'id', 'el',
+    'fil', 'sv', 'da', 'nb', 'fi', 'pl', 'cs', 'hu', 'tr', 'ru', 'uk', 'hi', 'th', 'ar', 'fa',
+    'ur', 'ca', 'ms', 'ro', 'vi', 'he', 'bn'];
+  var CHRONOS_RTL = ['ar', 'fa', 'ur', 'he'];
+  var CHRONOS_LANG_ALIASES = { 'in': 'id', 'tl': 'fil', 'no': 'nb', 'iw': 'he' };
+  function chronosResolveLang(code) {
+    code = (code || '').toLowerCase();
+    var primary = code.split('-')[0];
+    if (CHRONOS_LANGS.indexOf(primary) !== -1) return primary;
+    if (CHRONOS_LANG_ALIASES[primary]) return CHRONOS_LANG_ALIASES[primary];
+    return null;
+  }
+
+  // category value -> { lang: label }. en is the fallback for any language
+  // not yet listed here.
+  var CATEGORY_LABELS = {
+    bug: { en: "Report a bug", es: "Reportar un error", fr: "Signaler un bug", de: "Fehler melden", pt: "Relatar um bug", it: "Segnala un bug", zh: "报告问题", ja: "不具合を報告", ko: "버그 신고", nl: "Bug melden", id: "Laporkan bug", el: "Αναφορά σφάλματος", fil: "I-report ang bug", sv: "Rapportera ett fel", da: "Rapportér en fejl", nb: "Rapporter en feil", fi: "Ilmoita virheestä", pl: "Zgłoś błąd", cs: "Nahlásit chybu", hu: "Hiba bejelentése", tr: "Hata bildir", ru: "Сообщить об ошибке", uk: "Повідомити про помилку", hi: "बग की रिपोर्ट करें", th: "แจ้งปัญหา", ar: "الإبلاغ عن مشكلة", fa: "گزارش یک اشکال", ur: "بگ کی رپورٹ کریں", ca: "Informa d'un error", ms: "Laporkan pepijat", ro: "Raportează o eroare", vi: "Báo lỗi", he: "דיווח על באג", bn: "বাগ রিপোর্ট করুন" },
+    feedback: { en: "App feedback", es: "Feedback de la app", fr: "Avis sur l'app", de: "Feedback zur App", pt: "Feedback do app", it: "Feedback sull'app", zh: "应用反馈", ja: "アプリのフィードバック", ko: "앱 피드백", nl: "Feedback over de app", id: "Masukan aplikasi", el: "Σχόλια για την εφαρμογή", fil: "Feedback sa app", sv: "Feedback om appen", da: "Feedback om appen", nb: "Tilbakemelding om appen", fi: "Palautetta sovelluksesta", pl: "Opinia o aplikacji", cs: "Zpětná vazba k aplikaci", hu: "Visszajelzés az appról", tr: "Uygulama hakkında geri bildirim", ru: "Отзыв о приложении", uk: "Відгук про застосунок", hi: "ऐप फीडबैक", th: "ความคิดเห็นเกี่ยวกับแอป", ar: "ملاحظات حول التطبيق", fa: "بازخورد درباره اپ", ur: "ایپ کے بارے میں رائے", ca: "Opinió sobre l'app", ms: "Maklum balas aplikasi", ro: "Feedback despre aplicație", vi: "Phản hồi về ứng dụng", he: "משוב על האפליקציה", bn: "অ্যাপ ফিডব্যাক" },
+    deletion: { en: "Delete my account", es: "Eliminar mi cuenta", fr: "Supprimer mon compte", de: "Mein Konto löschen", pt: "Excluir minha conta", it: "Elimina il mio account", zh: "删除我的账户", ja: "アカウントを削除", ko: "계정 삭제", nl: "Mijn account verwijderen", id: "Hapus akun saya", el: "Διαγραφή λογαριασμού μου", fil: "Tanggalin ang account ko", sv: "Radera mitt konto", da: "Slet min konto", nb: "Slett kontoen min", fi: "Poista tilini", pl: "Usuń moje konto", cs: "Smazat můj účet", hu: "Fiókom törlése", tr: "Hesabımı sil", ru: "Удалить мой аккаунт", uk: "Видалити мій акаунт", hi: "मेरा अकाउंट डिलीट करें", th: "ลบบัญชีของฉัน", ar: "حذف حسابي", fa: "حذف حسابم", ur: "میرا اکاؤنٹ حذف کریں", ca: "Elimina el meu compte", ms: "Padam akaun saya", ro: "Șterge-mi contul", vi: "Xóa tài khoản của tôi", he: "מחיקת החשבון שלי", bn: "আমার অ্যাকাউন্ট মুছে ফেলুন" },
+    other: { en: "Other", es: "Otro", fr: "Autre", de: "Sonstiges", pt: "Outro", it: "Altro", zh: "其他", ja: "その他", ko: "기타", nl: "Overig", id: "Lainnya", el: "Άλλο", fil: "Iba pa", sv: "Annat", da: "Andet", nb: "Annet", fi: "Muu", pl: "Inne", cs: "Jiné", hu: "Egyéb", tr: "Diğer", ru: "Другое", uk: "Інше", hi: "अन्य", th: "อื่นๆ", ar: "أخرى", fa: "دیگر", ur: "دیگر", ca: "Altres", ms: "Lain-lain", ro: "Altele", vi: "Khác", he: "אחר", bn: "অন্যান্য" },
+  };
+
   function setLang(lang) {
+    if (!chronosResolveLang(lang)) lang = 'en';
     document.documentElement.lang = lang;
+    if (CHRONOS_RTL.indexOf(lang) !== -1) document.documentElement.setAttribute('dir', 'rtl');
+    else document.documentElement.removeAttribute('dir');
     document.querySelectorAll('[data-l]').forEach(function (el) {
       el.classList.toggle('show', el.getAttribute('data-l') === lang);
     });
-    document.querySelectorAll('#category option').forEach(function (opt) {
-      opt.textContent = lang === 'es' ? opt.getAttribute('data-es') : opt.getAttribute('data-en');
+    // Legal link: only 2 real variants — es shows the Spanish policy (with
+    // the #es fragment), every other one of the 34 site languages shows the
+    // English policy. Everything else on this page DOES get all 34.
+    document.querySelectorAll('[data-l-legal]').forEach(function (el) {
+      var wantsEs = lang === 'es';
+      el.classList.toggle('show', el.getAttribute('data-l-legal') === (wantsEs ? 'es' : 'en'));
     });
-    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+    document.querySelectorAll('#category option').forEach(function (opt) {
+      var labels = CATEGORY_LABELS[opt.value];
+      opt.textContent = (labels && (labels[lang] || labels.en)) || opt.value;
+    });
+    var select = document.getElementById('lang-select');
+    if (select) select.value = lang;
     try { localStorage.setItem('chronos-lang', lang); } catch (e) {}
     updateCharCounter();
   }
@@ -214,6 +292,7 @@
   // Looks up its own elements each time rather than closing over outer vars,
   // so it's safe to call from setLang() before the rest of the script below
   // has run.
+  var CHAR_COUNTER_TEXT = { en: 'characters remaining', es: 'caracteres restantes' };
   function updateCharCounter() {
     var textarea = document.getElementById('message');
     var counter = document.getElementById('char-counter');
@@ -221,16 +300,15 @@
     var max = textarea.maxLength;
     var remaining = max - textarea.value.length;
     var lang = document.documentElement.lang;
-    counter.textContent = lang === 'es'
-      ? remaining + ' caracteres restantes'
-      : remaining + ' characters remaining';
+    var suffix = CHAR_COUNTER_TEXT[lang] || CHAR_COUNTER_TEXT.en;
+    counter.textContent = remaining + ' ' + suffix;
     counter.classList.toggle('warn', remaining <= 200 && remaining > 20);
     counter.classList.toggle('limit', remaining <= 20);
   }
 
   var saved = null;
   try { saved = localStorage.getItem('chronos-lang'); } catch (e) {}
-  var initialLang = saved || ((navigator.language || 'en').toLowerCase().startsWith('es') ? 'es' : 'en');
+  var initialLang = chronosResolveLang(saved) || chronosResolveLang(navigator.language) || 'en';
   setLang(initialLang);
 
   // Preselect the category when linked from a specific context, e.g.
@@ -301,43 +379,48 @@
   // them into one generic line is how an `invalid_category` - the App feedback
   // option existed in this form before the function knew it - read as an
   // outage instead of a mismatch. Codes come from netlify/functions/contact.js.
-  var GENERIC_ERROR = [
-    'Something went wrong. Please try again in a moment.',
-    'Algo ha ido mal. Inténtalo de nuevo en un momento.'
-  ];
+  var GENERIC_ERROR = {
+    en: 'Something went wrong. Please try again in a moment.',
+    es: 'Algo ha ido mal. Inténtalo de nuevo en un momento.'
+  };
 
   // Our bug, not theirs: the page sent something the function rejects outright.
   // Repeating the same submission cannot work, so do not invite a retry - and
   // do not offer an address to write to instead, since keeping the inbox off
   // the page is the whole reason this form exists.
-  var CONFIG_ERROR = [
-    "This option isn't working right now - that's on our side, not yours. " +
+  var CONFIG_ERROR = {
+    en: "This option isn't working right now - that's on our side, not yours. " +
       'Please try a different category, or come back in a little while.',
-    'Esta opción no funciona ahora mismo; el fallo es nuestro, no tuyo. ' +
+    es: 'Esta opción no funciona ahora mismo; el fallo es nuestro, no tuyo. ' +
       'Prueba con otra categoría o vuelve a intentarlo más tarde.'
-  ];
+  };
 
   var ERROR_MESSAGES = {
-    rate_limited: [
-      "You've sent several messages in a short time. Please try again in an hour.",
-      'Has enviado varios mensajes en poco tiempo. Vuelve a intentarlo dentro de una hora.'
-    ],
-    invalid_email: [
-      "That email address doesn't look valid. Please check it and try again.",
-      'Esa dirección de email no parece válida. Revísala e inténtalo de nuevo.'
-    ],
-    invalid_message: [
-      'Your message is empty or too long (5,000 characters maximum).',
-      'Tu mensaje está vacío o es demasiado largo (5.000 caracteres como máximo).'
-    ],
+    rate_limited: {
+      en: "You've sent several messages in a short time. Please try again in an hour.",
+      es: 'Has enviado varios mensajes en poco tiempo. Vuelve a intentarlo dentro de una hora.'
+    },
+    invalid_email: {
+      en: "That email address doesn't look valid. Please check it and try again.",
+      es: 'Esa dirección de email no parece válida. Revísala e inténtalo de nuevo.'
+    },
+    invalid_message: {
+      en: 'Your message is empty or too long (5,000 characters maximum).',
+      es: 'Tu mensaje está vacío o es demasiado largo (5.000 caracteres como máximo).'
+    },
     invalid_category: CONFIG_ERROR,
     invalid_json: CONFIG_ERROR,
     method_not_allowed: CONFIG_ERROR
   };
 
-  function showStatus(kind, textEn, textEs) {
+  function localizedText(obj) {
+    var lang = document.documentElement.lang;
+    return (obj && (obj[lang] || obj.en)) || '';
+  }
+
+  function showStatus(kind, textObj) {
     statusEl.className = 'status show ' + kind;
-    statusEl.textContent = document.documentElement.lang === 'es' ? textEs : textEn;
+    statusEl.textContent = localizedText(textObj);
   }
 
   form.addEventListener('submit', function (e) {
@@ -378,11 +461,10 @@
       .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
       .then(function (result) {
         if (result.ok && result.data && result.data.ok) {
-          showStatus(
-            'success',
-            "Thanks — we've received your message and sent a confirmation to your email.",
-            'Gracias — hemos recibido tu mensaje y enviado una confirmación a tu email.'
-          );
+          showStatus('success', {
+            en: "Thanks — we've received your message and sent a confirmation to your email.",
+            es: 'Gracias — hemos recibido tu mensaje y enviado una confirmación a tu email.'
+          });
           form.reset();
           formLoadedAt = Date.now();
           updateCharCounter();
@@ -394,8 +476,7 @@
           if (window.console && console.error) {
             console.error('contact_error', code);
           }
-          var msg = ERROR_MESSAGES[code] || GENERIC_ERROR;
-          showStatus('error', msg[0], msg[1]);
+          showStatus('error', ERROR_MESSAGES[code] || GENERIC_ERROR);
           submitBtn.disabled = false;
         }
       })
@@ -403,7 +484,7 @@
         // No response at all (offline, DNS, the function cold-starting past
         // the browser's patience). Nothing to distinguish, so say the generic
         // thing - but say it from the one place that owns the wording.
-        showStatus('error', GENERIC_ERROR[0], GENERIC_ERROR[1]);
+        showStatus('error', GENERIC_ERROR);
         submitBtn.disabled = false;
       });
   });
