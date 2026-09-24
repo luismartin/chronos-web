@@ -5,8 +5,25 @@ Uso: python3 design/build-index.py
 Convierte el tablero en una página estática: quita la lógica del editor, añade las
 metaetiquetas SEO, el selector EN/ES real (localStorage + idioma del navegador) y
 los efectos de scroll como script normal.
+
+DESACTIVADO desde el 2026-09-24: ver el bloqueo justo debajo.
 """
-import re, pathlib
+import sys
+
+# Desde c9db544 («Translate site to all 34 app languages…») y 99b0471, docs/index.html se edita a
+# mano y es la fuente de verdad: 34 idiomas, un <span data-key=… data-l=…> por idioma. El lienzo
+# (design/Main.dc.html) se quedó en EN/ES, así que regenerar desde él borraría 32 idiomas de la
+# web pública sin avisar (casi pasó el 2026-09-24). El código de abajo se conserva (SEO, PLAY_LIVE,
+# conversión del lienzo) por si algún día el lienzo se reconstruye en los 34 idiomas; sólo entonces
+# se quita este bloqueo. Para enlazar los botones de Google Play el día del lanzamiento, ver
+# README.md, «Launch day: turning on the Google Play buttons».
+sys.exit(
+    'build-index.py está desactivado: docs/index.html es la fuente de verdad (34 idiomas) y\n'
+    'regenerarlo desde design/Main.dc.html (sólo EN/ES) borraría 32 idiomas de la web.\n'
+    'Edita docs/index.html directamente. Detalles en README.md y en design/README.md.'
+)
+
+import re, pathlib  # noqa: E402  (inalcanzable mientras siga el bloqueo)
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 src = (ROOT / 'design' / 'Main.dc.html').read_text(encoding='utf-8')

@@ -24,6 +24,107 @@ were taking Cloudflare-fronted sites offline for Spanish ISPs. The old Cloudflar
 Worker (`wrangler.toml`, `index.js`) was removed along with it — if it is still
 deployed in the Cloudflare dashboard, it is unreachable and can be deleted there.
 
+## The landing page: `docs/index.html` is the source of truth
+
+`docs/index.html` is edited **by hand** and is the only source of the landing
+page. Every piece of text is repeated once per language as
+`<span data-key="…" data-l="xx">…</span>`, and CSS shows only the spans whose
+`data-l` matches `html[data-lang]`. A change to the copy is a change in all 34
+languages.
+
+`design/` is a **historical** design canvas, in English and Spanish only. It
+used to be the source: `design/build-index.py` regenerated `docs/index.html`
+from `design/Main.dc.html`. Since c9db544 and 99b0471 translated the page
+directly, running that script would wipe 32 languages off the public site with
+no warning (it nearly happened on 2026-09-24), so **it now refuses to run**. Its
+code is kept for its SEO head, its `PLAY_LIVE` switch and the canvas conversion,
+in case the canvas is ever rebuilt in all 34 languages; only then should the
+guard at its top be removed. See `design/README.md`.
+
+## Launch day: turning on the Google Play buttons
+
+While the app is in closed testing its public Play listing returns 404, so the
+page links nowhere: the six download buttons are inert pills saying "Coming soon
+to Google Play". This used to be the `PLAY_LIVE` switch in
+`design/build-index.py`; now it has to be done in `docs/index.html` itself.
+Do it the day the app reaches production (planned around 2026-09-28) — **check
+first that the listing loads**, logged out:
+https://play.google.com/store/apps/details?id=com.chronos.smartalarm
+
+**What to look for.** Each button is a single line of this shape (header, hero,
+shared-alarm demo, Free plan, Premium plan, final CTA):
+
+```html
+<span class="btn btn-soon[ btn-sm]"[ style="margin-top: auto;"]><span class="pulse" aria-hidden="true"></span><span data-key="cta.soon" data-l="en">Coming soon to Google Play</span> … 34 languages … <span data-key="cta.soon" data-l="bn">…</span></span>
+```
+
+`grep -c 'class="btn btn-soon' docs/index.html` must print `6` (the other two
+`btn-soon` hits are the CSS rules, which can stay).
+
+**What to replace it with.** Per button:
+
+1. `<span class="btn btn-soon` → `<a class="btn btn-primary` plus
+   `href="https://play.google.com/store/apps/details?id=com.chronos.smartalarm"`,
+   keeping any ` btn-sm` and `style="…"` it had;
+2. drop the `<span class="pulse" aria-hidden="true"></span>`;
+3. replace each of the 34 "coming soon" texts with a live label (key renamed to
+   `cta.play`), and the final `</span>` that closes the button with `</a>`.
+
+The labels below are the app's own `rating_positive_cta` ("Go to Google Play"),
+already translated and reviewed in all 34 languages in
+`lib/l10n/app_strings.dart` in the app repo, so the change needs no new
+translation. This does all of it, refuses to write anything unless it finds
+exactly six buttons, and keeps the file's line endings (tested on a copy of the
+page on 2026-09-24: only the six button lines change). Run it from the repo root:
+
+```python
+import html, pathlib, re
+
+URL = 'https://play.google.com/store/apps/details?id=com.chronos.smartalarm'
+LABELS = {  # rating_positive_cta de lib/l10n/app_strings.dart (repo de la app)
+    'en': 'Go to Google Play', 'es': 'Ir a Google Play', 'fr': 'Aller sur Google Play',
+    'de': 'Zu Google Play', 'pt': 'Ir para a Google Play', 'it': 'Vai su Google Play',
+    'zh': '前往 Google Play', 'ja': 'Google Playを開く', 'ko': 'Google Play로 이동',
+    'nl': 'Ga naar Google Play', 'id': 'Buka Google Play', 'el': 'Μετάβαση στο Google Play',
+    'fil': 'Pumunta sa Google Play', 'sv': 'Gå till Google Play', 'da': 'Gå til Google Play',
+    'nb': 'Gå til Google Play', 'fi': 'Siirry Google Playhin', 'pl': 'Przejdź do Google Play',
+    'cs': 'Přejít na Google Play', 'hu': 'Ugrás a Google Playre', 'tr': "Google Play'e git",
+    'ru': 'Перейти в Google Play', 'uk': 'Перейти до Google Play', 'hi': 'Google Play पर जाओ',
+    'th': 'ไปที่ Google Play', 'ar': 'انتقل إلى Google Play', 'fa': 'برو به Google Play',
+    'ur': 'Google Play پر جائیں', 'ca': 'Ves a Google Play', 'ms': 'Pergi ke Google Play',
+    'ro': 'Mergi la Google Play', 'vi': 'Tới Google Play', 'he': 'מעבר ל-Google Play',
+    'bn': 'Google Play তে যান',
+}
+
+page = pathlib.Path('docs/index.html')
+s = page.read_bytes().decode('utf-8')  # bytes: sin traducir finales de línea en Windows
+BTN = re.compile(r'<span class="btn btn-soon([^"]*)"([^>]*)><span class="pulse" aria-hidden="true"></span>'
+                 r'((?:<span data-key="cta\.soon" data-l="[^"]+">[^<]*</span>)+)</span>')
+def live(m):
+    labels = re.sub(r'data-key="cta\.soon" data-l="([^"]+)">[^<]*<',
+                    lambda t: 'data-key="cta.play" data-l="%s">%s<' % (t.group(1), html.escape(LABELS[t.group(1)], quote=False)),
+                    m.group(3))
+    return '<a class="btn btn-primary%s" href="%s"%s>%s</a>' % (m.group(1), URL, m.group(2), labels)
+s, n = BTN.subn(live, s)
+assert n == 6, 'esperaba 6 botones, cambie %d: no escribo nada' % n
+assert 'cta.soon' not in s and s.count('data-key="cta.play"') == 6 * 34
+page.write_bytes(s.encode('utf-8'))
+print('6 botones enlazados a', URL)
+```
+
+Then check before pushing: `git diff --stat` shows `docs/index.html` with
+6 lines changed, `grep -c 'play.google.com/store/apps/details?id=com.chronos.smartalarm' docs/index.html`
+prints `6` (all on separate lines), and the page opened locally shows six
+clickable buttons in a couple of languages (include one RTL: `ar` or `he`).
+After the push, the same `grep` over `curl -s https://chronosintelligentalarm.com/`
+must find the six links (allow ~40 s plus the 10-min cache).
+
+**The shared-alarm landing has its own switch, flip it the same day.**
+`docs/a/index.html` (see below) says "Coming soon to Google Play" too, but it
+builds its buttons in JS: change `var STORE_LIVE = false;` to `true` there. Its
+"Get Chronos on Google Play" label (`get`) is already translated in all 34
+languages, so that one-word change is all it needs.
+
 ## Shared alarm links (`/a`)
 
 Chronos shares an alarm as `https://chronosintelligentalarm.com/a#<payload>`
