@@ -62,6 +62,12 @@ if (labels && allowlist) {
     '`feedback` survives on both sides (the app links to it)');
 }
 
+// --- 2b. The app's language wins ------------------------------------------
+// StoreReviewService (app repo) sends `lang=<its UI language>` on every link
+// here; without this the form opened in the phone's language instead.
+check(/get\('lang'\)/.test(page) && /chronosResolveLang\(linkedLang\) \|\|/.test(page),
+  'the page honours ?lang= ahead of the saved and browser language');
+
 // --- 3. Error codes reach a message the visitor can act on ------------------
 
 // GENERIC_ERROR/ERROR_MESSAGES moved from 2-element [en, es] arrays to

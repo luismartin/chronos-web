@@ -306,9 +306,13 @@
     counter.classList.toggle('limit', remaining <= 20);
   }
 
+  // ?lang= first: the app links here with its own UI language (which can
+  // differ from the phone's), and setLang() saves it like any other choice.
+  var linkedLang = new URLSearchParams(window.location.search).get('lang');
   var saved = null;
   try { saved = localStorage.getItem('chronos-lang'); } catch (e) {}
-  var initialLang = chronosResolveLang(saved) || chronosResolveLang(navigator.language) || 'en';
+  var initialLang = chronosResolveLang(linkedLang) || chronosResolveLang(saved) ||
+    chronosResolveLang(navigator.language) || 'en';
   setLang(initialLang);
 
   // Preselect the category when linked from a specific context, e.g.

@@ -32,6 +32,43 @@ page. Every piece of text is repeated once per language as
 `data-l` matches `html[data-lang]`. A change to the copy is a change in all 34
 languages.
 
+### One URL per language (SEO) — run the generator after every edit
+
+Since 2026-10-18 every language also has its own page: `/es/`, `/fr/`, … (33
+folders under `docs/`; English is the root itself, there is no `/en/`). They
+exist because Googlebot sends no browser language, so the single page above was
+only ever indexed in English and the other 33 translations brought no search
+traffic.
+
+They are **generated**, never edited by hand:
+
+```bash
+node scripts/build-lang-pages.js     # or: npm run build:langs
+```
+
+From `docs/index.html` it writes each `docs/<lang>/index.html` with only that
+language's text, a static `<html lang>`/`dir`, its own `<title>` (from
+`hero.eyebrow`), description (`hero.tagline`), canonical and `og:` tags. It also
+writes `docs/sitemap.xml`, `docs/robots.txt`, and the `hreflang` block between
+the `hreflang:start`/`hreflang:end` comments inside `docs/index.html` itself.
+`npm test` runs it with `--check` and fails if any of that is out of date, so
+**commit the regenerated files together with the edit to `index.html`**.
+
+How language works now:
+
+- On `/xx/` the language is the URL's (`CHRONOS_PAGE_LANG`), whatever the
+  browser says. The root keeps its old behaviour: saved choice, else the
+  browser's language, else English — but Google, with no language, sees English,
+  which is why the root is also the `x-default`.
+- The selector navigates to that language's URL (`chronosGoLang`) instead of
+  swapping text in place. Every page still saves the choice in the
+  `chronos-lang` localStorage key, which `/contact/` and `/a` read, so going
+  from `/es/` to the contact form or to a shared alarm keeps Spanish.
+- A new language means adding it to `CHRONOS_LANGS` in `docs/index.html` and to
+  `OG_LOCALE` in the script; the script refuses to run without the latter.
+- Once deployed, submit `https://chronosintelligentalarm.com/sitemap.xml` in
+  Google Search Console.
+
 `design/` is a **historical** design canvas, in English and Spanish only. It
 used to be the source: `design/build-index.py` regenerated `docs/index.html`
 from `design/Main.dc.html`. Since c9db544 and 99b0471 translated the page
