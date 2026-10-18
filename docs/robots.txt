@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://chronosintelligentalarm.com/sitemap.xml
